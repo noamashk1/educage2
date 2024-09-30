@@ -1,16 +1,18 @@
 import json
 from typing import List, Dict, Any
-import reward_and_punishment_system
+from reward_and_punishment_system import RewardAndPunishmentSystem
 import trial
-import level
+from level import Level
 import data_analysis
-import exp_parameters
-import mouse
-import states_exp
+from exp_parameters import ExpParameters
+from mouse import Mouse
+from finite_state_machine import FiniteStateMachine
+from stimulus import Stimulus
+
 
 class Experiment:
-    def __init__(self, mice_levels_IDs: dict[str, int], levels_dict: dict[level]):
-        self.prams = exp_parameters.ExpParameters()
+    def __init__(self, mice_levels_IDs: dict[str, int], levels_dict: dict[Level]):
+        self.prams = ExpParameters()
         self.levels_dict = levels_dict
         self.mice_dict = self.create_mice(mice_levels_IDs)
         self.results = []
@@ -20,12 +22,13 @@ class Experiment:
         mice = dict()
         for id in mice_dict:
             level = self.levels_dict[mice_dict[id]]
-            mice[id] = mouse.Mouse(id, level)
+            mice[id] = Mouse(id, level)
         return mice
 
     def run_experiment(self):
         # the main loop?
-        fsm = states_exp.FiniteStateMachine()
+        fsm = FiniteStateMachine(self.prams,self.levels_dict, self.mice_dict)
+
         return fsm
 
     def pause_experiment(self):
@@ -36,7 +39,7 @@ class Experiment:
 
     def finish_experiment(self):
         pass
-    def run_trial(self, mouse: mouse):
+    def run_trial(self, mouse: Mouse):
         parameters = mouse.level.get_parameters()
 
         # Example stimulus interaction (simply mocked for demonstration)
@@ -46,7 +49,7 @@ class Experiment:
         # Simulated response (In a real scenario, this would come from the user's input)
         response = 'correct'  # Replace this with actual response capturing.
 
-        reward_system = reward_and_punishment_system.RewardAndPunishmentSystem()
+        reward_system = RewardAndPunishmentSystem()
         reward_type = reward_system.evaluate_response(response)
 
         # Record the result

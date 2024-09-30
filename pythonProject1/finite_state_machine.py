@@ -46,14 +46,22 @@ class IdleState(State):
         while ser.in_waiting <= 0:
             ser.flushInput()  # Flush input buffer
             time.sleep(0.05)
-        data = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port
-        print('recognized mouse: ' + data)
-        self.on_event('in_port')
+        mouse_id = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port
+        if self.recognize_mouse(mouse_id):
+            self.on_event('in_port')
 
     def on_event(self, event):
         if event == 'in_port':
             print("Transitioning from Idle to in_port")
             self.fsm.state = InPortState(self.fsm)
+
+    def recognize_mouse(self,data: str):
+        if data in self.fsm.mouse_dict:
+            print('recognized mouse: ' + data)
+            return "pass to next state"
+        else:
+            print("mouse ID: '" +data+ "' does not exist in the dictionary.")
+            self.wait_for_event()
 
 
 class InPortState(State):
@@ -127,8 +135,11 @@ class TrialState(State):
 
 
 class FiniteStateMachine:
-    def __init__(self):
+    def __init__(self,exp_params,levels_dict, mice_dict):
         self.state = IdleState(self)
+        self.exp_params = exp_params
+        self.levels_dict = levels_dict
+        self.mice_dict =  mice_dict
 
     def on_event(self, event):
         self.state.on_event(event)
