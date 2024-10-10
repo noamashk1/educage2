@@ -28,7 +28,6 @@ class Experiment:
     def run_experiment(self):
         # the main loop?
         fsm = FiniteStateMachine(self.prams,self.levels_dict, self.mice_dict)
-
         return fsm
 
     def pause_experiment(self):

@@ -60,7 +60,7 @@ class IdleState(State):
             print('recognized mouse: ' + data)
             return "pass to next state"
         else:
-            print("mouse ID: '" +data+ "' does not exist in the dictionary.")
+            print("mouse ID: '" +data+ "' does not exist in the mouse dictionary.")
             self.wait_for_event()
 
 
@@ -70,7 +70,7 @@ class InPortState(State):
         self.wait_for_event()
 
     def wait_for_event(self):
-        while GPIO.input(IR_pin) != GPIO.HIGH:
+        while GPIO.input(IR_pin) != GPIO.HIGH: # Waiting for IR rays to break
             time.sleep(0.09)
         print("The mouse entered!")
         self.on_event('IR_stim')
