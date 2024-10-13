@@ -109,10 +109,10 @@ if __name__ == "__main__":
     # Create an experiment
     experiment = Experiment(exp_name = 'exp1', mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_dict={1: level_1, 2: level_2})
     # Run trials
-    experiment.run_trial(mouse_1)
-    experiment.run_trial(mouse_2)
-
-    # Save results to a file
-    experiment.save_results('experiment_results.json')
+    # experiment.run_trial(mouse_1)
+    # experiment.run_trial(mouse_2)
+    # 
+    # # Save results to a file
+    # experiment.save_results('experiment_results.json')
 
     print("Experiment completed and results saved.")
