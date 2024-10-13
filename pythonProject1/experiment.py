@@ -11,12 +11,27 @@ from stimulus import Stimulus
 
 
 class Experiment:
-    def __init__(self, mice_levels_IDs: dict[str, int], levels_dict: dict[Level]):
+    def __init__(self,exp_name, mice_dict: dict[str, Mouse], levels_dict: dict[int:Level]):
         self.prams = ExpParameters()
         self.levels_dict = levels_dict
-        self.mice_dict = self.create_mice(mice_levels_IDs)
+        self.mice_dict = self.create_mice(mice_dict)
         self.results = []
+        self.txt_file_name = exp_name
+        self.new_txt_file(self.txt_file_name)
         self.fsm = self.run_experiment()
+
+
+    def new_txt_file(self, filename):
+        with open(self.filename, 'w') as file:
+            file.write("Experiment Log\n")
+            file.write("=" * 30 + "\n")
+
+    def log_parameters(self, **trial_params):
+        # This writes the given parameters to the text file
+        with open(self.txt_file_name, 'a') as file:
+            for key, value in trial_params.items():
+                file.write(f"{key}: {value}\n")
+            file.write("-" * 30 + "\n")
 
     def create_mice(self, mice_dict):
         mice = dict()
@@ -82,17 +97,17 @@ class Experiment:
 
 # Example usage:
 if __name__ == "__main__":
+
     # Create levels
-    level_1 = Level(level_id=1, parameters={'stimuli': ['light', 'sound'], 'reaction_time': '2s'})
-    level_2 = Level(level_id=2, parameters={'stimuli': ['noise', 'visual'], 'reaction_time': '1s'})
+    level_1 = Level(level_id=1, parameters={'stimuli': ['noise1', 'sound'], 'reaction_time': '2s'})
+    level_2 = Level(level_id=2, parameters={'stimuli': ['noise2', 'visual'], 'reaction_time': '1s'})
 
     # Create mice
-    mouse_1 = Mouse(mouse_id=1, level=level_1)
-    mouse_2 = Mouse(mouse_id=2, level=level_1)
+    mouse_1 = Mouse(mouse_id='m1', level=level_1)
+    mouse_2 = Mouse(mouse_id='m2', level=level_2)
 
     # Create an experiment
-    experiment = Experiment(mice=[mouse_1, mouse_2], levels={1: level_1, 2: level_2})
-
+    experiment = Experiment(exp_name = 'exp1', mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_dict={1: level_1, 2: level_2})
     # Run trials
     experiment.run_trial(mouse_1)
     experiment.run_trial(mouse_2)

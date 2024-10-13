@@ -118,12 +118,14 @@ class TrialState(State):
     def receive_input(self, stop):
         counter = 0
         print('wating for licks..')
-        while not stop():
-            #             print('wating for licks..')
+        got_response = False
+        while not stop() and not got_response:
             if GPIO.input(lick_pin) == GPIO.HIGH:
                 counter += 1
                 print(f"Received input: lick!")
-
+                if counter >= fsm.exp_params.lick_threshold:
+                    self.valve_as_stim()
+                    got_response = True
             time.sleep(0.08)
         print('input thread stoping')
         print('num of licks: ' + str(counter))
@@ -136,10 +138,10 @@ class TrialState(State):
 
 class FiniteStateMachine:
     def __init__(self,exp_params,levels_dict, mice_dict):
-        self.state = IdleState(self)
         self.exp_params = exp_params
         self.levels_dict = levels_dict
         self.mice_dict =  mice_dict
+        self.state = IdleState(self)
 
     def on_event(self, event):
         self.state.on_event(event)
