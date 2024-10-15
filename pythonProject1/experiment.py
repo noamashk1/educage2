@@ -117,3 +117,4 @@ if __name__ == "__main__":
 
     print("Experiment completed and results saved.")
     print("control it from goggle remote!")
+    print("rasp_commit!")
