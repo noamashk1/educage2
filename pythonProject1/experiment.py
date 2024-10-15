@@ -111,8 +111,9 @@ if __name__ == "__main__":
     # Run trials
     # experiment.run_trial(mouse_1)
     # experiment.run_trial(mouse_2)
-    # 
+    #
     # # Save results to a file
     # experiment.save_results('experiment_results.json')
 
     print("Experiment completed and results saved.")
+    print("control it from goggle remote!")
