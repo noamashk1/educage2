@@ -18,7 +18,7 @@ GPIO.setup(valve_pin, GPIO.OUT)
 GPIO.setup(LED_PIN, GPIO.OUT)
 GPIO.setup(tdt_pin, GPIO.OUT)
 
-Fs = 4400  # PWM frequency
+Fs = 44000  # PWM frequency
 pwm = GPIO.PWM(tdt_pin, Fs)  # Set PWM frequency
 
 GPIO.setwarnings(False)
@@ -56,7 +56,7 @@ class IdleState(State):
             self.fsm.state = InPortState(self.fsm)
 
     def recognize_mouse(self,data: str):
-        if data in self.fsm.mouse_dict:
+        if data in self.fsm.mice_dict:
             print('recognized mouse: ' + data)
             return "pass to next state"
         else:
@@ -100,7 +100,7 @@ class TrialState(State):
         GPIO.output(valve_pin, GPIO.HIGH)
         time.sleep(0.01)
         GPIO.output(valve_pin, GPIO.LOW)
-        time.sleep(3)
+        #time.sleep(5)
 
     def tdt_as_stim(self):
         try:
@@ -108,12 +108,13 @@ class TrialState(State):
             pwm.start(50)  # Start PWM with 50% duty cycle
 
             # Let the PWM signal play for 2 seconds
-            time.sleep(0.3)
+            time.sleep(2)
 
         finally:
             # Clean up GPIO
             pwm.stop()
             time.sleep(3)
+            print('output stoping')
 
     def receive_input(self, stop):
         counter = 0
@@ -123,9 +124,10 @@ class TrialState(State):
             if GPIO.input(lick_pin) == GPIO.HIGH:
                 counter += 1
                 print(f"Received input: lick!")
-                if counter >= fsm.exp_params.lick_threshold:
+                if counter >= self.fsm.exp_params.lick_threshold:
                     self.valve_as_stim()
                     got_response = True
+                    print('threshold has been reached!')
             time.sleep(0.08)
         print('input thread stoping')
         print('num of licks: ' + str(counter))
