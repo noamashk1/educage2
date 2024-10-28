@@ -12,7 +12,7 @@ from stimulus import Stimulus
 
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse], levels_dict: dict[int:Level]):
-        self.prams = ExpParameters()
+        self.exp_prams = ExpParameters()
         self.levels_dict = levels_dict
         self.mice_dict = mice_dict#self.create_mice(mice_dict)
         self.results = []
@@ -42,7 +42,7 @@ class Experiment:
 
     def run_experiment(self):
         # the main loop?
-        fsm = FiniteStateMachine(self.prams,self.levels_dict, self.mice_dict)
+        fsm = FiniteStateMachine(self.exp_prams, self.mice_dict,self.levels_dict)
         return fsm
 
     def pause_experiment(self):

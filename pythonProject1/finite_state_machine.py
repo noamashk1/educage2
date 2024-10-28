@@ -139,7 +139,7 @@ class TrialState(State):
 
 
 class FiniteStateMachine:
-    def __init__(self,exp_params,levels_dict, mice_dict):
+    def __init__(self,exp_params, mice_dict,levels_dict):
         self.exp_params = exp_params
         self.levels_dict = levels_dict
         self.mice_dict =  mice_dict
