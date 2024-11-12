@@ -4,10 +4,10 @@ from tkinter import ttk
 import tkinter.font as tkFont
 
 class App:
-    def __init__(self, root):
+    def __init__(self, root, experiment):
         self.root = root
         self.root.title("Data Analysis App")
-
+        self.experiment = experiment  # Reference to Experiment instance
         # Set window size and position
         window_width = 700
         window_height = 600
@@ -137,6 +137,8 @@ class App:
             "num_licks_as_response": self.licks_entry.get(),
             "ITI": self.ITI_entry.get(),
         }
+        # Set parameters in the Experiment class
+        self.experiment.set_parameters(parameters)
         return parameters
 
     # def run_analysis(self):

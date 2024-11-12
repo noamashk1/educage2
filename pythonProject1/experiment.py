@@ -4,23 +4,35 @@ from reward_and_punishment_system import RewardAndPunishmentSystem
 import trial
 from level import Level
 import data_analysis
-from exp_parameters import ExpParameters
+#from exp_parameters import ExpParameters
 from mouse import Mouse
 from finite_state_machine import FiniteStateMachine
 from stimulus import Stimulus
-
+from main_GUI import App
+import tkinter as tk
+import threading
 
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse], levels_dict: dict[int:Level]):
-        self.exp_prams = ExpParameters()
+        self.exp_params = None#ExpParameters(self)
+        self.fsm = None
         self.levels_dict = levels_dict
         self.mice_dict = mice_dict#self.create_mice(mice_dict)
         self.results = []
         self.txt_file_name = exp_name
         self.new_txt_file(self.txt_file_name)
-        self.fsm = self.run_experiment()
 
+        self.root = tk.Tk()
+        self.GUI = App(self.root,self)
+        self.run_experiment()
+        self.root.mainloop()
 
+    def set_parameters(self, parameters):
+        """This method is called by App when the OK button is pressed."""
+        print("set_parameters")
+        self.exp_params = parameters
+        print("Parameters set in Experiment:", self.exp_params)
+        
     def new_txt_file(self, filename):
         with open(self.txt_file_name, 'w') as file:
             file.write("Experiment Log\n")
@@ -40,10 +52,32 @@ class Experiment:
             mice[id] = Mouse(id, level)
         return mice
 
+#     def run_experiment(self):
+#          # Check periodically if parameters have been set
+#         if self.exp_params is None:
+#             print("Waiting for parameters...")
+#             self.root.after(100, lambda: self.run_experiment())  # Check every 100ms
+#         else:
+#             fsm = FiniteStateMachine(self.exp_params, self.mice_dict,self.levels_dict)
+#             self.fsm=fsm
+            
     def run_experiment(self):
-        # the main loop?
-        fsm = FiniteStateMachine(self.exp_prams, self.mice_dict,self.levels_dict)
-        return fsm
+        # Check periodically if parameters have been set
+        if self.exp_params is None:
+            print("Waiting for parameters...")
+            self.root.after(100,lambda: self.run_experiment())  # Check again after 100ms
+        else:
+            print("Parameters received.")
+            # Proceed with the experiment once parameters are set
+            # Start experiment in a separate thread to keep the GUI responsive
+            threading.Thread(target=self.start_experiment).start()
+
+    def start_experiment(self):
+        # This method runs the actual experiment (on a separate thread)
+        print("Experiment started with parameters:", self.exp_params)
+        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_dict)
+        self.fsm = fsm
+        print("FSM created:", self.fsm)
 
     def pause_experiment(self):
         pass

@@ -8,12 +8,13 @@ import main_GUI
 
 
 
-class ExpParameters():
-    def __init__(self):
+class ExpParameters:
+    def __init__(self,exp):
 
         self.root = tk.Tk()
-        self.app = main_GUI.App(self.root)
+        self.app = main_GUI.App(self.root,exp)
         self.root.mainloop()
+        self.params =None
         # threading.Thread(target=main_GUI.run, daemon=True).start()
         # print("GUI started in background.")
 
