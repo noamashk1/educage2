@@ -3,6 +3,8 @@ import time
 import RPi.GPIO as GPIO
 import asyncio
 import threading
+from trial import Trial
+from datetime import datetime
 
 valve_pin = 23
 IR_pin = 25
@@ -40,6 +42,7 @@ class IdleState(State):
     def __init__(self, fsm):
         super().__init__("Idle", fsm)
         ser.flushInput()  # clear the data from the serial
+        self.fsm.current_trial.clear_trial()
         self.wait_for_event()
 
     def wait_for_event(self):
@@ -48,6 +51,7 @@ class IdleState(State):
             time.sleep(0.05)
         mouse_id = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port
         if self.recognize_mouse(mouse_id):
+            self.fsm.current_trial.update_current_mouse(self.fsm.mice_dict[mouse_id])
             self.on_event('in_port')
 
     def on_event(self, event):
@@ -73,6 +77,9 @@ class InPortState(State):
         while GPIO.input(IR_pin) != GPIO.HIGH: # Waiting for IR rays to break
             time.sleep(0.09)
         print("The mouse entered!")
+        if self.fsm.exp_params["start_trial_time"] is not None:
+            time.sleep(int(self.fsm.exp_params["start_trial_time"]))
+            print("sleep before start trial")
         self.on_event('IR_stim')
 
     def on_event(self, event):
@@ -84,7 +91,7 @@ class InPortState(State):
 class TrialState(State):
     def __init__(self, fsm):
         super().__init__("trial", fsm)
-        print("trial_constructor")
+        self.fsm.current_trial.start_time = datetime.now().strftime('%H:%M:%S')  # Get current time
         self.stop_threads = False
         # stim_thread = threading.Thread(target = self.valve_as_stim)
         stim_thread = threading.Thread(target=self.tdt_as_stim)
@@ -95,6 +102,7 @@ class TrialState(State):
         self.stop_threads = True
         input_thread.join()
         self.on_event('trial_over')
+        
 
     def valve_as_stim(self):
         GPIO.output(valve_pin, GPIO.HIGH)
@@ -124,26 +132,47 @@ class TrialState(State):
             if GPIO.input(lick_pin) == GPIO.HIGH:
                 counter += 1
                 print(f"Received input: lick!")
-                if counter >= self.fsm.exp_params.lick_threshold:
+                if counter >= int(self.fsm.exp_params["lick_threshold"]):
                     self.valve_as_stim()
                     got_response = True
                     print('threshold has been reached!')
             time.sleep(0.08)
+        if got_response == False:
+            print('no response recived')
         print('input thread stoping')
         print('num of licks: ' + str(counter))
 
     def on_event(self, event):
         if event == 'trial_over':
+            print("record data...")
+            self.fsm.current_trial.write_trial_to_csv(self.fsm.txt_file_name)
             print("Transitioning from trial to idel")
             self.fsm.state = IdleState(self.fsm)
 
-
 class FiniteStateMachine:
-    def __init__(self,exp_params, mice_dict,levels_dict):
+#     def __init__(self,exp_params, mice_dict,levels_dict):
+#         self.exp_params = exp_params
+#         self.levels_dict = levels_dict
+#         self.mice_dict =  mice_dict
+#         self.current_trial = Trial()
+#         self.state = IdleState(self)
+
+    def __init__(self,exp_params, mice_dict,levels_dict,txt_file_name):
         self.exp_params = exp_params
         self.levels_dict = levels_dict
         self.mice_dict =  mice_dict
+        self.txt_file_name = txt_file_name
+        self.current_trial = Trial()
         self.state = IdleState(self)
+        
+#     def __init__(self,exp):
+#         self.exp_params = exp.exp_params
+#         self.levels_dict = exp.levels_dict
+#         self.mice_dict =  exp.mice_dict
+#         self.txt_file_name = exp.txt_file_name
+#         self.current_trial = Trial()
+#         self.state = IdleState(self)
+        
 
     def on_event(self, event):
         self.state.on_event(event)

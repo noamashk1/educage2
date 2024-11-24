@@ -35,15 +35,14 @@ class Experiment:
         
     def new_txt_file(self, filename):
         with open(self.txt_file_name, 'w') as file:
-            file.write("Experiment Log\n")
-            file.write("=" * 30 + "\n")
+            pass
 
-    def log_parameters(self, **trial_params):
-        # This writes the given parameters to the text file
-        with open(self.txt_file_name, 'a') as file:
-            for key, value in trial_params.items():
-                file.write(f"{key}: {value}\n")
-            file.write("-" * 30 + "\n")
+#     def log_parameters(self, **trial_params):
+#         # This writes the given parameters to the text file
+#         with open(self.txt_file_name, 'a') as file:
+#             for key, value in trial_params.items():
+#                 file.write(f"{key}: {value}\n")
+#             file.write("-" * 30 + "\n")
 
     def create_mice(self, mice_dict):
         mice = dict()
@@ -75,7 +74,7 @@ class Experiment:
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
         print("Experiment started with parameters:", self.exp_params)
-        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_dict)
+        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_dict, self.txt_file_name)
         self.fsm = fsm
         print("FSM created:", self.fsm)
 
@@ -123,10 +122,6 @@ class Experiment:
         with open(filename, 'w') as f:
             json.dump(self.results, f, indent=4)
 
-#
-#
-#
-#
 
 
 # Example usage:

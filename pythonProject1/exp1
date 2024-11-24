@@ -1,2 +1,10 @@
-Experiment Log
-==============================
+date,start time,end time,trial number,mouse ID,level,"go
+o-go",stim,score
+2024-11-24,15:56:36,15:56:41,0007B80FBC,<level.Level object at 0x763daf88>,"go
+o-go",stim,score
+2024-11-24,15:56:43,15:56:49,0007B80FBC,<level.Level object at 0x763daf88>,"go
+o-go",stim,score
+2024-11-24,15:57:01,15:57:06,0007DECB4A,<level.Level object at 0x764325c8>,"go
+o-go",stim,score
+2024-11-24,15:57:09,15:57:14,0007DECB4A,<level.Level object at 0x764325c8>,"go
+o-go",stim,score

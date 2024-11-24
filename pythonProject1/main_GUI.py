@@ -90,19 +90,44 @@ class App:
         self.num_licks_label = tk.Label(self.num_licks_frame, text="num of licks as response:", font=self.font_style)
         self.num_licks_label.pack(side=tk.LEFT)
         self.licks_entry = tk.Entry(self.num_licks_frame, font=self.font_style, width=5)
+        self.licks_entry.insert(0,"4")
         self.licks_entry.pack(side=tk.LEFT, padx=10)
         self.num_licks_frame.pack(anchor=tk.W,pady=10)
 
 #####################################################################
 
         # Entry field for custom bin size (initially hidden)
-        self.ITI_frame = tk.Frame(root)
-        self.ITI_label = tk.Label(self.ITI_frame, text="ITI:", font=self.font_style)
-        self.ITI_label.pack(side=tk.LEFT)
-        self.ITI_entry = tk.Entry(self.ITI_frame, font=self.font_style, width=5)
-        self.ITI_entry.pack(side=tk.LEFT, padx=10)
-        self.ITI_frame.pack(anchor=tk.W, pady=10)
+#         self.ITI_frame = tk.Frame(root)
+#         self.ITI_label = tk.Label(self.ITI_frame, text="ITI:", font=self.font_style)
+#         self.ITI_label.pack(side=tk.LEFT)
+#         self.ITI_entry = tk.Entry(self.ITI_frame, font=self.font_style, width=5)
+#         self.ITI_entry.insert(0,"3")
+#         self.ITI_entry.pack(side=tk.LEFT, padx=10)
+#         self.ITI_frame.pack(anchor=tk.W, pady=10)
+#####################################################################
+        self.ITI_display_option = tk.StringVar(value='1')  # Default to 1
 
+        # Radiobuttons frame
+        self.ITI_radiobuttons_frame = tk.Frame(root)
+        self.ITI_radiobuttons_frame.pack(pady=10)
+        self.ITI_custom_input_label = tk.Label(self.ITI_radiobuttons_frame, text="ITI:", font=self.font_style)
+        self.ITI_custom_input_label.pack(anchor=tk.W)
+        # Radiobuttons with command to trigger display of entry field
+        tk.Radiobutton(self.ITI_radiobuttons_frame, text="exit and enter", variable=self.ITI_display_option, value='1',
+                       font=self.font_style, command=self.ITI_show_entry_field).pack(anchor=tk.W)
+
+        # Radiobutton with associated entry field
+        self.ITI_bin_size_frame = tk.Frame(self.ITI_radiobuttons_frame)
+        self.ITI_bin_size_radiobutton = tk.Radiobutton(self.ITI_bin_size_frame, text="By time",
+                                                   variable=self.ITI_display_option, value='2',
+                                                   font=self.font_style, command=self.ITI_show_entry_field)
+        self.ITI_bin_size_radiobutton.pack(side=tk.LEFT)
+
+        # Entry field for custom bin size (initially hidden)
+        self.ITI_bin_size_entry = tk.Entry(self.ITI_bin_size_frame, font=self.font_style, width=5)
+        self.ITI_bin_size_entry.pack(side=tk.LEFT, padx=5)
+        self.ITI_bin_size_entry.pack_forget()  # Hide initially
+        self.ITI_bin_size_frame.pack(anchor=tk.W)
 #####################################################################
 
         # OK button to run analysis
@@ -123,6 +148,13 @@ class App:
             self.bin_size_entry2.pack(side=tk.LEFT, padx=5)
         else:  # Hide entry for other options
             self.bin_size_entry2.pack_forget()
+            
+    def ITI_show_entry_field(self):
+        """Show entry field only when 'By Bin Size' is selected."""
+        if self.ITI_display_option.get() == '2':  # Show entry if "By Bin Size" is selected
+            self.ITI_bin_size_entry.pack(side=tk.LEFT, padx=5)
+        else:  # Hide entry for other options
+            self.ITI_bin_size_entry.pack_forget()
 
     def get_parameters(self):
         """Retrieve all user-selected parameters from the GUI."""
@@ -134,8 +166,9 @@ class App:
             "start_trial_option": self.display_option2.get(),
             "start_trial_time": self.bin_size_entry2.get() if self.display_option2.get() == '2' else None,
             "IR_no_RFID_option": self.option_var.get(),
-            "num_licks_as_response": self.licks_entry.get(),
-            "ITI": self.ITI_entry.get(),
+            "lick_threshold": self.licks_entry.get(),
+            "ITI": self.ITI_display_option.get(),
+            "ITI_time": self.ITI_bin_size_entry.get() if self.ITI_display_option.get() == '2' else None,
         }
         # Set parameters in the Experiment class
         self.experiment.set_parameters(parameters)
