@@ -1,6 +1,2 @@
-Stimulus Name,Filename,Probability
-/home/educage/Documents/python_programs/all_together.py,33,go,.!frame2.!entry2
-/home/educage/Documents/python_programs/experiment_data.csv,33,no-go,.!frame2.!entry4
-/home/educage/Documents/python_programs/GUI_main2.py,33,catch,.!frame2.!entry6
-/home/educage/Documents/python_programs/GUI_main2.py,50,go,.!frame2.!entry8
-/home/educage/Documents/python_programs/asyncio_test.py,50,no-go,.!frame2.!entry10
+Level Name,Stimulus Path,Probability,Value,Index
+1,C:/Users/noam4/OneDrive/Desktop/educage2/educage2/pythonProject1/exp1,1,go,1
