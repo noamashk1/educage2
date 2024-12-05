@@ -11,8 +11,8 @@ import experiment_1
 class TkinterApp:
     def __init__(self, root, exp_name = "exp_name"):
         self.root = root
-        self.root.title("Three-Part Layout")
-        self.experiment = experiment.Experiment(exp_name)
+        self.root.title("Educage")
+        self.experiment = experiment_1.Experiment(exp_name)
         self.levels_list = []
         self.levels_df = None
 

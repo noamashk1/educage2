@@ -69,7 +69,7 @@ class Experiment:
     def run_experiment(self):
         # Check periodically if parameters have been set
         if self.exp_params is None:
-            print("Waiting for parameters...")
+            #print("Waiting for parameters...")
             self.root.after(100,lambda: self.run_experiment())  # Check again after 100ms
         else:
             print("Parameters received.")
@@ -131,26 +131,26 @@ class Experiment:
 
 
  # Example usage:
-if __name__ == "__main__":
-
-    # Create levels
-    level_1 = Level(level_id=1, parameters={'stimuli': ['noise1', 'sound'], 'reaction_time': '2s'})
-    level_2 = Level(level_id=2, parameters={'stimuli': ['noise2', 'visual'], 'reaction_time': '1s'})
-
-    # Create mice
-    mouse_1 = Mouse(mouse_id='0007B80FBC', level= "level_1")
-    mouse_2 = Mouse(mouse_id='0007DECB4A', level="level_2")
-    mouse_3 = Mouse(mouse_id='0007DEC04C', level="level_2")
-
-    # Create an experiment
-    experiment = Experiment(exp_name = 'exp1', mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_df={1: level_1, 2: level_2})
-    # Run trials
-    # experiment.run_trial(mouse_1)
-    # experiment.run_trial(mouse_2)
-    #
-    # # Save results to a file
-    # experiment.save_results('experiment_results.json')
-
-    print("Experiment completed and results saved.")
-    print("control it from goggle remote!")
-    print("rasp_commit!")
+# if __name__ == "__main__":
+# 
+#     # Create levels
+#     level_1 = Level(level_id=1, parameters={'stimuli': ['noise1', 'sound'], 'reaction_time': '2s'})
+#     level_2 = Level(level_id=2, parameters={'stimuli': ['noise2', 'visual'], 'reaction_time': '1s'})
+# 
+#     # Create mice
+#     mouse_1 = Mouse(mouse_id='0007B80FBC', level= "level_1")
+#     mouse_2 = Mouse(mouse_id='0007DECB4A', level="level_2")
+#     mouse_3 = Mouse(mouse_id='0007DEC04C', level="level_2")
+# 
+#     # Create an experiment
+#     experiment = Experiment(exp_name = 'exp1', mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_df={1: level_1, 2: level_2})
+#     # Run trials
+#     # experiment.run_trial(mouse_1)
+#     # experiment.run_trial(mouse_2)
+#     #
+#     # # Save results to a file
+#     # experiment.save_results('experiment_results.json')
+# 
+#     print("Experiment completed and results saved.")
+#     print("control it from goggle remote!")
+#     print("rasp_commit!")
