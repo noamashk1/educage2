@@ -1,2 +1,5 @@
 Level Name,Stimulus Path,Probability,Value,Index
-1,C:/Users/noam4/OneDrive/Desktop/educage2/educage2/pythonProject1/exp1,1,go,1
+1,C:/Users/noam4/OneDrive/Desktop/educage2/educage2/pythonProject1/finite_state_machine.py,50,no-go,6
+1,C:/Users/noam4/OneDrive/Desktop/educage2/educage2/pythonProject1/level_table2.py,50,go,5
+2,C:/Users/noam4/OneDrive/Desktop/educage2/educage2/pythonProject1/General_fanctions.py,50,no-go,7
+2,C:/Users/noam4/OneDrive/Desktop/educage2/educage2/pythonProject1/level_table2.py,50,catch,8
