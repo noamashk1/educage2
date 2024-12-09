@@ -3,9 +3,9 @@ from tkinter import simpledialog, messagebox, ttk
 from tkinter import scrolledtext
 import serial
 import threading
-import General_functions_1
+import General_functions
 import pandas as pd
-from mouse_1 import Mouse
+from mouse import Mouse
 # Main application
 class MainApp:
     def __init__(self, master, GUI):
@@ -112,7 +112,7 @@ class MainApp:
         self.parameter_window = tk.Toplevel(self.master)
         self.parameter_window.title("mice table")
         
-        General_functions_1.center_the_window(self.parameter_window,'500x300')
+        General_functions.center_the_window(self.parameter_window,'500x300')
 
         
         # Data Display Box for serial readings

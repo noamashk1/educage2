@@ -1,6 +1,6 @@
 import level
 class Mouse:
-    def __init__(self, mouse_id: str, level: level):
+    def __init__(self, mouse_id: str, level: str):
         self.id = mouse_id
         self.level = level
         # self.performance_data = []
