@@ -185,13 +185,14 @@ class MainApp:
             label_font = ("Arial", 10)
             entry_font = ("Arial", 10)
             # Populate the table
+            self.option_vars = []
             for i, item in enumerate(self.mice_list):
                 # Create a label for each list item
                 label = tk.Label(self.miceTableFrame, text=item, font=label_font, borderwidth=0)
                 label.grid(row=i + 1, column=0, sticky="nsew", padx=5, pady=2)
 
                 option_var = tk.StringVar(value=str(self.main_GUI.levels_list[0]))  # Default value
-                OptionMenu = ttk.OptionMenu(self.miceTableFrame, option_var, *self.main_GUI.levels_list)
+                OptionMenu = ttk.OptionMenu(self.miceTableFrame, option_var,self.main_GUI.levels_list[0], *self.main_GUI.levels_list)
                 OptionMenu.grid(row=i + 1, column=1, sticky="nsew", padx=5, pady=2)
 
                 # Store the StringVar in a list for later access

@@ -72,6 +72,8 @@ class TkinterApp:
         # Create a Frame to hold the Treeview and Scrollbars
         self.tree_frame = tk.Frame(self.left_frame_top, width=600)
         self.tree_frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
+        self.tree_frame.config(width=600, height=200)
+        self.tree_frame.pack_propagate(False)
 
         # Prepare the Treeview in the tree frame
         self.tree = ttk.Treeview(self.tree_frame, columns=("Level Name","Stimulus Path", "Probability", "Value", "Index"), show='headings', height=5)
@@ -83,11 +85,12 @@ class TkinterApp:
 
 
         # Set the width of the columns
-        self.tree.column("Level Name",  width=50)
-        self.tree.column("Stimulus Path",  width=50)
-        self.tree.column("Probability",  width=50)
-        self.tree.column("Value", width=50)
-        self.tree.column("Index",  width=50)
+        self.set_fixed_column_widths()
+#         self.tree.column("Level Name",  width=50)
+#         self.tree.column("Stimulus Path",  width=50)
+#         self.tree.column("Probability",  width=50)
+#         self.tree.column("Value", width=50)
+#         self.tree.column("Index",  width=50)
 
         # Create vertical scrollbar
         self.vsb = ttk.Scrollbar(self.tree_frame, orient="vertical", command=self.tree.yview)
@@ -135,7 +138,7 @@ class TkinterApp:
         for item in self.tree.get_children():
             item_values = self.tree.item(item)["values"]
             values.append(item_values[column_index])
-        self.levels_list = list(set(values))
+        self.levels_list = sorted(list(set(values)))
         print("levels list:"+ str(self.levels_list))
 
     def load_table(self, file_path = None):
@@ -176,6 +179,7 @@ class TkinterApp:
                 messagebox.showerror("Error", "Unsupported file type.")
             self.update_level_list()
             self.set_levels_df()
+            self.set_fixed_column_widths()
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load file: {e}")
 
@@ -217,6 +221,14 @@ class TkinterApp:
             self.experiment.set_levels_df(self.levels_df)
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.set_parameters(parameters)
+    
+    def set_fixed_column_widths(self):
+        # Define fixed widths for the columns
+        self.tree.column("Level Name", width=50)
+        self.tree.column("Stimulus Path", width=200)
+        self.tree.column("Probability", width=50)
+        self.tree.column("Value", width=50)
+        self.tree.column("Index", width=50)
 
 
 # # Main code to run the app
