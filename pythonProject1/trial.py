@@ -1,7 +1,9 @@
 from datetime import datetime
 import csv
+import random
 class Trial:
-    def __init__(self):
+    def __init__(self,fsm):
+        self.fsm = fsm
         self.current_mouse = None
         self.current_exp_parameters = None
         self.performance_data = None
@@ -10,15 +12,14 @@ class Trial:
 
     def update_current_mouse(self, new_mouse: 'Mouse'):
         self.current_mouse = new_mouse
-
-    def record_performance(self,txt_file_name):
-        pass
-    #     def log_parameters(self, **trial_params):
-        # This writes the given parameters to the text file
-        with open(self.txt_file_name, 'a') as file:
-            for key, value in trial_params.items():
-                file.write(f"{key}: {value}\n")
-            file.write("-" * 30 + "\n")
+    # def record_performance(self,txt_file_name):
+    #     pass
+    # #     def log_parameters(self, **trial_params):
+    #     # This writes the given parameters to the text file
+    #     with open(self.txt_file_name, 'a') as file:
+    #         for key, value in trial_params.items():
+    #             file.write(f"{key}: {value}\n")
+    #         file.write("-" * 30 + "\n")
 
     def save_trial(self):
         pass
@@ -27,7 +28,14 @@ class Trial:
         self.score = score
 
     def calculate_stim(self): #determine if the trial is go\nogo\catch using random
-        pass
+        level_name = self.current_mouse.get_level()
+        level_rows = self.fsm.levels_df.loc[self.fsm.levels_df['Level Name'] == level_name]
+        probabilities = level_rows["Probability"].tolist()
+        indices = level_rows["Index"].tolist()
+        total_probability = sum(probabilities)
+        normalized_probabilities = [p / total_probability for p in probabilities]
+        chosen_index = random.choices(indices, weights=normalized_probabilities, k=1)[0]
+        return self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
 
     def end_trial(self): # the trial is over - go to save it
         pass

@@ -53,7 +53,7 @@ class Experiment:
 #             file.write("-" * 30 + "\n")
 
 
-            
+
     def run_experiment(self):
         # Check periodically if parameters have been set
         if self.exp_params is None:

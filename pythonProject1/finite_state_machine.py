@@ -112,6 +112,10 @@ class TrialState(State):
         #time.sleep(5)
 
     def tdt_as_stim(self):
+        stim_df_row = self.fsm.current_trial.calculate_stim()
+        print(stim_df_row)
+        stim_path = stim_df_row.loc[0, 'Stimulus Path']
+
         try:
             # Start PWM
             pwm.start(50)  # Start PWM with 50% duty cycle
@@ -158,12 +162,12 @@ class FiniteStateMachine:
 #         self.current_trial = Trial()
 #         self.state = IdleState(self)
 
-    def __init__(self,exp_params, mice_dict,levels_dict,txt_file_name):
+    def __init__(self,exp_params, mice_dict,levels_df,txt_file_name):
         self.exp_params = exp_params
-        self.levels_dict = levels_dict
+        self.levels_df = levels_df
         self.mice_dict =  mice_dict
         self.txt_file_name = txt_file_name
-        self.current_trial = Trial()
+        self.current_trial = Trial(self)
         self.state = IdleState(self)
         
 #     def __init__(self,exp):
