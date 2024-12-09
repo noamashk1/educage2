@@ -219,6 +219,7 @@ class TkinterApp:
             }
             # Set parameters in the Experiment class
             self.experiment.set_levels_df(self.levels_df)
+            self.mice_table.set_mice_as_dict()
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.set_parameters(parameters)
     

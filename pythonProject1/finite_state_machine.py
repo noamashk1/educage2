@@ -52,7 +52,8 @@ class IdleState(State):
         mouse_id = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port
         if self.recognize_mouse(mouse_id):
             self.fsm.current_trial.update_current_mouse(self.fsm.mice_dict[mouse_id])
-            print(self.fsm.mice_dict[mouse_id])
+            print("mouse: "+self.fsm.mice_dict[mouse_id]. get_id())
+            print("Level: "+self.fsm.mice_dict[mouse_id]. get_level())
             self.on_event('in_port')
 
     def on_event(self, event):
@@ -114,7 +115,8 @@ class TrialState(State):
     def tdt_as_stim(self):
         stim_df_row = self.fsm.current_trial.calculate_stim()
         print(stim_df_row)
-        stim_path = stim_df_row.loc[0, 'Stimulus Path']
+        stim_path = stim_df_row.iloc[0]['Stimulus Path']
+        print(stim_path)
 
         try:
             # Start PWM
