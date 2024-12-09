@@ -1,10 +1,6 @@
 date,start time,end time,trial number,mouse ID,level,"go
 o-go",stim,score
-2024-12-05,15:55:17,15:55:22,0007B80FBC,<level.Level object at 0x7637cf88>,"go
+2024-12-09,10:16:19,10:16:24,0007B80FBC,L2,"go
 o-go",stim,score
-2024-12-05,15:55:31,15:55:36,0007B80FBC,<level.Level object at 0x7637cf88>,"go
-o-go",stim,score
-2024-12-05,15:55:40,15:55:45,0007B80FBC,<level.Level object at 0x7637cf88>,"go
-o-go",stim,score
-2024-12-05,15:55:53,15:55:58,0007B80FBC,<level.Level object at 0x7637cf88>,"go
+2024-12-09,10:16:36,10:16:42,0007B80FBC,L2,"go
 o-go",stim,score

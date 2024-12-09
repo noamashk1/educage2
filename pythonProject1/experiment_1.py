@@ -10,6 +10,7 @@ from finite_state_machine import FiniteStateMachine
 from stimulus import Stimulus
 import tkinter as tk
 import threading
+import GUI_sctions
 
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
@@ -20,9 +21,10 @@ class Experiment:
         self.results = []
         self.txt_file_name = exp_name
         self.new_txt_file(self.txt_file_name)
-
+        #self.root = root
         self.root = tk.Tk()
         #self.GUI = App(self.root,self)
+        self.GUI = GUI_sctions.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         self.run_experiment()
         self.root.mainloop()
 
@@ -80,46 +82,46 @@ class Experiment:
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
         print("Experiment started with parameters:", self.exp_params)
-        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_dict, self.txt_file_name)
+        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_df, self.txt_file_name)
         self.fsm = fsm
         print("FSM created:", self.fsm)
 
-    def pause_experiment(self):
-        pass
-
-    def resume_experiment(self):
-        pass
-
-    def finish_experiment(self):
-        pass
-    def run_trial(self, mouse: Mouse):
-        parameters = mouse.level.get_parameters()
-
-        # Example stimulus interaction (simply mocked for demonstration)
-        stimulus = Stimulus(stimulus_id=1, stimulus_type='light', duration=2.0)
-        stimulus.play()
-
-        # Simulated response (In a real scenario, this would come from the user's input)
-        response = 'correct'  # Replace this with actual response capturing.
-
-        reward_system = RewardAndPunishmentSystem()
-        reward_type = reward_system.evaluate_response(response)
-
-        # Record the result
-        trial_data = {
-            'mouse_id': mouse.id,
-            'level': mouse.level.level_id,
-            'response': response,
-            'outcome': reward_type
-        }
-        mouse.record_performance(trial_data)
-        self.results.append(trial_data)
-
-        # Deliver reward or punishment
-        if reward_type == 'reward':
-            reward_system.deliver_reward()
-        else:
-            reward_system.impose_punishment()
+#     def pause_experiment(self):
+#         pass
+# 
+#     def resume_experiment(self):
+#         pass
+# 
+#     def finish_experiment(self):
+#         pass
+#     def run_trial(self, mouse: Mouse):
+#         parameters = mouse.level.get_parameters()
+# 
+#         # Example stimulus interaction (simply mocked for demonstration)
+#         stimulus = Stimulus(stimulus_id=1, stimulus_type='light', duration=2.0)
+#         stimulus.play()
+# 
+#         # Simulated response (In a real scenario, this would come from the user's input)
+#         response = 'correct'  # Replace this with actual response capturing.
+# 
+#         reward_system = RewardAndPunishmentSystem()
+#         reward_type = reward_system.evaluate_response(response)
+# 
+#         # Record the result
+#         trial_data = {
+#             'mouse_id': mouse.id,
+#             'level': mouse.level.level_id,
+#             'response': response,
+#             'outcome': reward_type
+#         }
+#         mouse.record_performance(trial_data)
+#         self.results.append(trial_data)
+# 
+#         # Deliver reward or punishment
+#         if reward_type == 'reward':
+#             reward_system.deliver_reward()
+#         else:
+#             reward_system.impose_punishment()
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)
@@ -131,7 +133,7 @@ class Experiment:
 
 
  # Example usage:
-# if __name__ == "__main__":
+if __name__ == "__main__":
 # 
 #     # Create levels
 #     level_1 = Level(level_id=1, parameters={'stimuli': ['noise1', 'sound'], 'reaction_time': '2s'})
@@ -143,7 +145,7 @@ class Experiment:
 #     mouse_3 = Mouse(mouse_id='0007DEC04C', level="level_2")
 # 
 #     # Create an experiment
-#     experiment = Experiment(exp_name = 'exp1', mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_df={1: level_1, 2: level_2})
+     experiment = Experiment(exp_name = 'exp1')#, mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_df={1: level_1, 2: level_2})
 #     # Run trials
 #     # experiment.run_trial(mouse_1)
 #     # experiment.run_trial(mouse_2)

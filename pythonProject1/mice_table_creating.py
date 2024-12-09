@@ -5,6 +5,7 @@ import serial
 import threading
 import General_functions_1
 import pandas as pd
+from mouse_1 import Mouse
 # Main application
 class MainApp:
     def __init__(self, master, GUI):
@@ -18,6 +19,7 @@ class MainApp:
         self.mice_list = None
         self.mice_dict = None
         self.option_vars = []
+        self.stop_event = threading.Event()
         # Create a LabelFrame to act as a container for the table
         #self.frame = tk.LabelFrame(master, text="Mice List", font=("Arial", 12, "bold"), padx=10, pady=10)
         #self.frame.pack(padx=10, pady=10, fill="both", expand=True)
@@ -48,7 +50,7 @@ class MainApp:
             try:
                 # Setup Serial Connection (adjust COM4 and 9600 to your needs)
                 ser = serial.Serial(port='/dev/ttyUSB0',baudrate=9600,timeout=0.01)#timeout=1  # Change '/dev/ttyS0' to the detected port
-                while True:
+                while not self.stop_event.is_set():#True:
                     if ser.in_waiting > 0:
                         line = ser.readline().decode('utf-8').strip()
                         display_data(line)
@@ -92,6 +94,7 @@ class MainApp:
             self.unique_data_display.config(state=tk.DISABLED)
 
         def save_and_close():
+            self.stop_event.set()
             text_content = self.unique_data_display.get("1.0", tk.END).strip()
             
             # Split the content by lines
@@ -109,7 +112,7 @@ class MainApp:
         self.parameter_window = tk.Toplevel(self.master)
         self.parameter_window.title("mice table")
         
-        General_fanctions.center_the_window(self.parameter_window,'500x300')
+        General_functions_1.center_the_window(self.parameter_window,'500x300')
 
         
         # Data Display Box for serial readings
@@ -212,7 +215,8 @@ class MainApp:
             mouse_name = mouse_label.cget("text")  # Get the text of the label
 
             # Add to dictionary: mouse name as key and selected level as value
-            data[mouse_name] = selected_level
+            #data[mouse_name] = selected_level
+            data[mouse_name] = Mouse(mouse_name,selected_level)
         self.mice_dict = data
         print(data)  # Display the dictionary
 

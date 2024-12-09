@@ -6,15 +6,16 @@ import csv
 import mice_table_creating
 import levels_table_creating
 import parameters_GUI
-import experiment_1
+#import experiment_1
 
 class TkinterApp:
-    def __init__(self, root, exp_name = "exp_name"):
+    def __init__(self, root,exp, exp_name):
         self.root = root
         self.root.title("Educage")
-        self.experiment = experiment_1.Experiment(exp_name)
+        #self.experiment = experiment_1.Experiment(exp_name, self.root)
         self.levels_list = []
         self.levels_df = None
+        self.experiment = exp
 
         # Set the window dimensions
         w = 1200
@@ -218,8 +219,8 @@ class TkinterApp:
             self.experiment.set_parameters(parameters)
 
 
-# Main code to run the app
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = TkinterApp(root)
-    root.mainloop()
+# # Main code to run the app
+# if __name__ == "__main__":
+#     root = tk.Tk()
+#     app = TkinterApp(root)
+#     root.mainloop()

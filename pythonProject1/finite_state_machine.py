@@ -52,6 +52,7 @@ class IdleState(State):
         mouse_id = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port
         if self.recognize_mouse(mouse_id):
             self.fsm.current_trial.update_current_mouse(self.fsm.mice_dict[mouse_id])
+            print(self.fsm.mice_dict[mouse_id])
             self.on_event('in_port')
 
     def on_event(self, event):
