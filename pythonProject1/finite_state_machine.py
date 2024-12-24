@@ -93,7 +93,9 @@ class InPortState(State):
 class TrialState(State):
     def __init__(self, fsm):
         super().__init__("trial", fsm)
+        self.got_response = None
         self.fsm.current_trial.start_time = datetime.now().strftime('%H:%M:%S')  # Get current time
+        self.fsm.current_trial.calculate_stim()
         self.stop_threads = False
         # stim_thread = threading.Thread(target = self.valve_as_stim)
         stim_thread = threading.Thread(target=self.tdt_as_stim)
@@ -103,6 +105,8 @@ class TrialState(State):
         stim_thread.join()
         self.stop_threads = True
         input_thread.join()
+        self.fsm.current_trial.score = self.evaluate_response()
+        print("score: "+self.fsm.current_trial.score)
         self.on_event('trial_over')
         
 
@@ -113,7 +117,7 @@ class TrialState(State):
         #time.sleep(5)
 
     def tdt_as_stim(self):
-        stim_df_row = self.fsm.current_trial.calculate_stim()
+        stim_df_row = self.fsm.current_trial.current_stim
         print(stim_df_row)
         stim_path = stim_df_row.iloc[0]['Stimulus Path']
         print(stim_path)
@@ -133,20 +137,20 @@ class TrialState(State):
 
     def receive_input(self, stop):
         counter = 0
-        print('wating for licks..')
-        got_response = False
-        while not stop() and not got_response:
+        print('waiting for licks..')
+        self.got_response = False
+        while not stop() and not self.got_response:
             if GPIO.input(lick_pin) == GPIO.HIGH:
                 counter += 1
                 print(f"Received input: lick!")
                 if counter >= int(self.fsm.exp_params["lick_threshold"]):
                     self.valve_as_stim()
-                    got_response = True
+                    self.got_response = True
                     print('threshold has been reached!')
             time.sleep(0.08)
-        if got_response == False:
-            print('no response recived')
-        print('input thread stoping')
+        if self.got_response == False:
+            print('no response received')
+        print('input thread stopping')
         print('num of licks: ' + str(counter))
 
     def on_event(self, event):
@@ -155,6 +159,24 @@ class TrialState(State):
             self.fsm.current_trial.write_trial_to_csv(self.fsm.txt_file_name)
             print("Transitioning from trial to idel")
             self.fsm.state = IdleState(self.fsm)
+            
+    def evaluate_response(self):
+        value = self.fsm.current_trial.current_stim.iloc[0]['Value']
+        if value == 'go':
+            if self.got_response == True:
+                return 'hit'
+            elif self.got_response == False:
+                return 'miss'
+        if value == 'no-go':
+            if self.got_response == True:
+                return 'fa'
+            elif self.got_response == False:
+                return 'cr'
+        if value == 'catch':
+            if self.got_response == True:
+                return 'catch - response'
+            elif self.got_response == False:
+                return 'catch - no response'
 
 class FiniteStateMachine:
 #     def __init__(self,exp_params, mice_dict,levels_dict):

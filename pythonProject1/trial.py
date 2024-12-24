@@ -5,6 +5,7 @@ class Trial:
     def __init__(self,fsm):
         self.fsm = fsm
         self.current_mouse = None
+        self.current_stim = None
         self.current_exp_parameters = None
         self.performance_data = None
         self.score = None
@@ -35,7 +36,7 @@ class Trial:
         total_probability = sum(probabilities)
         normalized_probabilities = [p / total_probability for p in probabilities]
         chosen_index = random.choices(indices, weights=normalized_probabilities, k=1)[0]
-        return self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
+        self.current_stim = self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
 
     def end_trial(self): # the trial is over - go to save it
         pass
