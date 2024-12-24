@@ -6,8 +6,9 @@ class Trial:
         self.fsm = fsm
         self.current_mouse = None
         self.current_stim = None
+        self.current_value = None #go\no-go\catch
+        self.current_stim_path = None
         self.current_exp_parameters = None
-        self.performance_data = None
         self.score = None
         self.start_time = None 
 
@@ -36,7 +37,9 @@ class Trial:
         total_probability = sum(probabilities)
         normalized_probabilities = [p / total_probability for p in probabilities]
         chosen_index = random.choices(indices, weights=normalized_probabilities, k=1)[0]
-        self.current_stim = self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
+        self.current_stim_df = self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
+        self.current_value = self.current_stim_df.iloc[0]['Value']
+        self.current_stim_path = self.current_stim_df.iloc[0]['Stimulus Path']
 
     def end_trial(self): # the trial is over - go to save it
         pass
@@ -53,7 +56,7 @@ class Trial:
         current_datetime = datetime.now()
         date = current_datetime.strftime('%Y-%m-%d')  # Get current date
         end_time = current_datetime.strftime('%H:%M:%S')  # Get current time
-        trial_data = [date, self.start_time, end_time, self.current_mouse.id, self.current_mouse.level, 'go\no-go','stim', 'score' ]
+        trial_data = [date, self.start_time, end_time, self.current_mouse.id, self.current_mouse.level, self.current_value,self.current_stim_path, self.score ]
         with open(txt_file_name, mode='a', newline='') as file:
             writer = csv.writer(file)
             # Check if the file is empty to write the header

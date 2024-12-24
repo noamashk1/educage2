@@ -117,9 +117,7 @@ class TrialState(State):
         #time.sleep(5)
 
     def tdt_as_stim(self):
-        stim_df_row = self.fsm.current_trial.current_stim
-        print(stim_df_row)
-        stim_path = stim_df_row.iloc[0]['Stimulus Path']
+        stim_path = self.fsm.current_trial.current_stim_path
         print(stim_path)
 
         try:
@@ -161,7 +159,7 @@ class TrialState(State):
             self.fsm.state = IdleState(self.fsm)
             
     def evaluate_response(self):
-        value = self.fsm.current_trial.current_stim.iloc[0]['Value']
+        value = self.fsm.current_trial.current_value
         if value == 'go':
             if self.got_response == True:
                 return 'hit'
