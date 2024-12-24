@@ -12,6 +12,11 @@ import tkinter as tk
 import threading
 import GUI_sctions
 
+###
+# git add .
+# git commit -m ""
+# git push
+###
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
         self.exp_params = None#ExpParameters(self)
