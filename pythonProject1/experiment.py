@@ -13,6 +13,7 @@ import threading
 import GUI_sctions
 
 ###
+# cd /home/educage/git_educage2/educage2/pythonProject1
 # git add .
 # git commit -m ""
 # git push
