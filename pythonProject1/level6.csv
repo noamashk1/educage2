@@ -1,0 +1,5 @@
+Level Name,Stimulus Path,Probability,Value,Index
+L11,/home/educage/git_educage2/educage2/pythonProject1/level.py,50,no-go,11
+L11,/home/educage/git_educage2/educage2/pythonProject1/exp_parameters.py,50,go,22
+L22,/home/educage/git_educage2/educage2/pythonProject1/exp_parameters.py,90,catch,33
+L22,/home/educage/git_educage2/educage2/pythonProject1/data_analysis.py,10,no-go,44

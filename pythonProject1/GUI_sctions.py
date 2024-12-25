@@ -129,7 +129,7 @@ class TkinterApp:
         self.load_table(level_definition_app.save_path)
         self.update_level_list()
         self.set_levels_df()
-        print(1)
+        
 
     def update_level_list(self):
         column_index = 0  # Index of the "level_name" column
@@ -180,8 +180,14 @@ class TkinterApp:
             self.update_level_list()
             self.set_levels_df()
             self.set_fixed_column_widths()
+            self.clear_frame(self.left_frame_middle)                              ############## restart the mice if already chosen #####################
+            self.mice_table = mice_table_creating.MainApp(self.left_frame_middle, self) ############## restart the mice if already chosen #####################
         except Exception as e:
             messagebox.showerror("Error", f"Failed to load file: {e}")
+            
+    def clear_frame(self, frame):
+        for widget in frame.winfo_children():
+            widget.destroy()
 
     def set_levels_df(self):
         # Retrieve the contents of the Treeview

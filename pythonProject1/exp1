@@ -1,7 +1,0 @@
-date,start time,end time,trial number,mouse ID,level,"go
-o-go",stim,score
-2024-12-24,16:19:08,16:19:13,0007B80FBC,L1,catch,/home/educage/git_educage2/educage2/pythonProject1/experiment.py,catch - no response
-2024-12-24,16:19:19,16:19:24,0007B80FBC,L1,go,/home/educage/git_educage2/educage2/pythonProject1/levels_table_creating.py,hit
-2024-12-24,16:19:32,16:19:37,0007B80FBC,L1,catch,/home/educage/git_educage2/educage2/pythonProject1/experiment.py,catch - no response
-2024-12-24,16:19:41,16:19:46,0007B80FBC,L1,no-go,/home/educage/git_educage2/educage2/pythonProject1/data_analysis.py,cr
-2024-12-24,16:19:53,16:19:58,0007B80FBC,L1,go,/home/educage/git_educage2/educage2/pythonProject1/levels_table_creating.py,hit
