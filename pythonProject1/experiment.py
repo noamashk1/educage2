@@ -12,6 +12,7 @@ import tkinter as tk
 from tkinter import simpledialog
 import threading
 import GUI_sections
+import live_window
 
 ###
 # cd /home/educage/git_educage2/educage2/pythonProject1
@@ -32,6 +33,7 @@ class Experiment:
         
         self.exp_params = None#ExpParameters(self)
         self.fsm = None
+        self.live_w = None
         self.levels_df = levels_df
         self.mice_dict = mice_dict#self.create_mice(mice_dict)
         self.results = []
@@ -41,6 +43,7 @@ class Experiment:
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         self.run_experiment()
         self.root.mainloop()
+        
 
     def set_parameters(self, parameters):
         """This method is called by App when the OK button is pressed."""
@@ -67,7 +70,6 @@ class Experiment:
 #             file.write("-" * 30 + "\n")
 
 
-
     def run_experiment(self):
         # Check periodically if parameters have been set
         if self.exp_params is None:
@@ -82,9 +84,31 @@ class Experiment:
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
         print("Experiment started with parameters:", self.exp_params)
-        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_df, self.txt_file_name)
+        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_df, self.txt_file_name, self.live_w)
         self.fsm = fsm
         print("FSM created:", self.fsm)
+        
+    def run_live_window(self):
+        self.root.after(0, self.open_live_window)
+        #self.open_live_window()
+        
+    def open_live_window(self):
+        if self.live_w is None:
+            self.live_w = live_window.LiveWindow()
+
+#     def open_live_window(self):
+#         if self.live_w is None:
+#             try:
+#                 print("Attempting to create LiveWindow...")
+#                 self.live_w = live_window.LiveWindow()  # Assuming LiveWindow is defined correctly
+#                 print("LiveWindow created successfully.")
+#                 print(f"self.live_w: {self.live_w}")  # Check that live_w is properly assigned
+#             except Exception as e:
+#                 print(f"An error occurred while creating LiveWindow: {e}")
+# 
+#         print("Reached the end of open_live_window function.")
+        
+    
 
 #     def pause_experiment(self):
 #         pass

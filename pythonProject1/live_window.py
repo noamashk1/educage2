@@ -4,22 +4,25 @@ import tkinter as tk
 class LiveWindow:
     def __init__(self):
         # Create the main window
-        self.root = tk.Tk()
+        self.root = tk.Toplevel()
         self.root.title("Live Window")
-        self.root.geometry("300x480")  # Set the window dimensions to 400x600 pixels
+        self.root.geometry("300x530")  # Set the window dimensions to 400x600 pixels
+#         self.root = tk.Tk()
+#         self.root.title("Live Window")
+#         self.root.geometry("300x480")  # Set the window dimensions to 400x600 pixels
 
         # Create title label
         title_label = tk.Label(self.root, text="Live Window", font=("Arial", 16))
         title_label.pack(pady=(10, 5), anchor='w')  # Left align title with some padding
 
         # Subtitle for FSM states
-        fsm_label = tk.Label(self.root, text="fsm states:", font=("Arial", 14))
+        fsm_label = tk.Label(self.root, text="Current state:", font=("Arial", 14))
         fsm_label.pack(anchor='w', padx=(10, 5), pady=(10, 5))  # Left align subtitle with padding
 
         # Create indicator lights for FSM states
-        self.idle_light = self.create_indicator("Idle")
-        self.in_port_light = self.create_indicator("In Port")
-        self.trial_light = self.create_indicator("Trial")
+        self.idle_bulb = self.create_indicator("Idle")
+        self.in_port_bulb = self.create_indicator("In Port")
+        self.trial_bulb = self.create_indicator("Trial")
 
         # Subtitle for status
         status_label = tk.Label(self.root, text="status:", font=("Arial", 14))
@@ -27,14 +30,20 @@ class LiveWindow:
 
         # Label for last RFID with frame
         self.create_labeled_frame("last RFID:")
+        
+        # Label for the level of the last RFID 
+        self.create_labeled_frame("level:")
 
-        # Create indicator lights for additional status
-        self.lick_light = self.create_indicator("Lick")
-        self.ir_light = self.create_indicator("IR")
-        self.stimulus_light = self.create_indicator("Stimulus")
+        # Create indicator bulbs for additional status
+        self.lick_bulb = self.create_indicator("Lick")
+        self.ir_bulb = self.create_indicator("IR")
+        self.stimulus_bulb = self.create_indicator("Stimulus")
 
         # Label for score with frame
-        self.create_labeled_frame("Score:")
+        self.create_labeled_frame("trial value:")
+        
+        # Label for score with frame
+        self.create_labeled_frame("score:")
 
         # Frame for buttons to center them
         button_frame = tk.Frame(self.root)
@@ -51,7 +60,7 @@ class LiveWindow:
         end_button.pack(side='left', padx=5)
 
         # Start the GUI event loop
-        self.root.mainloop()
+        #self.root.mainloop()
 
     def create_indicator(self, name):
         frame = tk.Frame(self.root)
@@ -80,37 +89,74 @@ class LiveWindow:
         label.pack(side='left', padx=(5, 0))  # Left align the label
 
         # Create label for the value with a background color for visibility
-        value_label = tk.Label(frame, text="", font=("Arial", 12), bg="lightgray", width=10)
+        value_label = tk.Label(frame, text="", font=("Arial", 12), bg="lightgray", width=20)
         value_label.pack(side='left', padx=(5, 5))  # Add space after the value label
 
         # Store reference to the value label
         if label_text == "last RFID:":
             self.last_rfid_value = value_label  # Store reference to the last RFID label
-        else:
-            self.score_value = value_label  # Store reference to the score label
+        elif label_text == "level:":
+            self.level_value = value_label  
+        elif label_text == "trial value:":
+            self.trial_value = value_label  
+        elif label_text == "score:":
+            self.score_value = value_label  
 
-    def toggle_indicator(self, canvas):
+
+#     def toggle_indicator(self, canvas):
+#         # Check current state and toggle the indicator light
+#         current_color = canvas.itemcget(self.indicator_circle, "fill")  # Get current fill color
+#         new_color = "gray" if current_color == "green" else "green"  # Toggle the state
+#         canvas.itemconfig(self.indicator_circle, fill=new_color)  # Change circle color
+        
+    def toggle_indicator(self, bulb_name, turn_to):
         # Check current state and toggle the indicator light
-        current_color = canvas.itemcget(self.indicator_circle, "fill")  # Get current fill color
-        new_color = "gray" if current_color == "green" else "green"  # Toggle the state
-        canvas.itemconfig(self.indicator_circle, fill=new_color)  # Change circle color
+        if turn_to == "on":
+            fill = "green"
+        elif turn_to == "off":
+            fill = "gray"
+        if bulb_name =="Idle":
+            self.idle_bulb.itemconfig(self.indicator_circle, fill=fill)  
+        elif bulb_name =="port":
+            self.in_port_bulb.itemconfig(self.indicator_circle, fill=fill)
+        elif bulb_name =="trial":
+            self.trial_bulb.itemconfig(self.indicator_circle, fill=fill)
+        elif bulb_name =="IR":
+            self.ir_bulb.itemconfig(self.indicator_circle, fill=fill)
+        elif bulb_name =="lick":
+            self.lick_bulb.itemconfig(self.indicator_circle, fill=fill)
+        elif bulb_name =="stim":
+            self.stimulus_bulb.itemconfig(self.indicator_circle, fill=fill)
+
+        
+    def deactivate_states_indicators(self, state_name):
+        self.idle_bulb.itemconfig(self.indicator_circle, fill="gray")  
+        self.in_port_bulb.itemconfig(self.indicator_circle, fill="gray") 
+        self.trial_bulb.itemconfig(self.indicator_circle, fill="gray")
+        if state_name =="Idle":
+            self.idle_bulb.itemconfig(self.indicator_circle, fill="green")  
+        elif state_name =="port":
+            self.in_port_bulb.itemconfig(self.indicator_circle, fill="green") 
+        else:
+            self.trial_bulb.itemconfig(self.indicator_circle, fill="green")
+            
 
     def pause_experiment(self):
-        self.toggle_indicator(self.lick_light)  # Toggle Lick light
-        self.toggle_indicator(self.ir_light)  # Toggle IR light
-        self.toggle_indicator(self.stimulus_light)  # Toggle Stimulus light
+#         self.toggle_indicator(self.lick_light)  # Toggle Lick light
+#         self.toggle_indicator(self.ir_light)  # Toggle IR light
+#         self.toggle_indicator(self.stimulus_light)  # Toggle Stimulus light
         print("Experiment paused")
 
     def continue_experiment(self):
-        self.toggle_indicator(self.idle_light)  # Toggle Idle light
-        self.toggle_indicator(self.in_port_light)  # Toggle In Port light
-        self.toggle_indicator(self.trial_light)  # Toggle Trial light
+#         self.toggle_indicator(self.idle_light)  # Toggle Idle light
+#         self.toggle_indicator(self.in_port_light)  # Toggle In Port light
+#         self.toggle_indicator(self.trial_light)  # Toggle Trial light
 
         print("Experiment continued")
 
     def end_experiment(self):
         print("Experiment ended")
-        self.toggle_indicator(self.trial_light)  # Toggle Trial light
+#         self.toggle_indicator(self.trial_light)  # Toggle Trial light
         #self.root.destroy()  # Close the window
 
     def update_last_rfid(self, rfid):
@@ -118,7 +164,13 @@ class LiveWindow:
 
     def update_score(self, score):
         self.score_value.config(text=str(score))  # Update score label
+        
+    def update_level(self, level):
+        self.level_value.config(text=str(level))  # Update score label
+        
+    def update_trial_value(self, trial_value):
+        self.trial_value.config(text=str(trial_value))  # Update score label
 
 # Example usage
-live_window = LiveWindow()
+#live_window = LiveWindow()
 

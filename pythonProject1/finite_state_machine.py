@@ -33,6 +33,7 @@ class State:
     def __init__(self, name, fsm):
         self.name = name
         self.fsm = fsm
+        self.fsm.live_window.deactivate_states_indicators(name)
 
     def on_event(self, event):
         pass
@@ -43,6 +44,10 @@ class IdleState(State):
         super().__init__("Idle", fsm)
         ser.flushInput()  # clear the data from the serial
         self.fsm.current_trial.clear_trial()
+        self.fsm.live_window.update_last_rfid('')
+        self.fsm.live_window.update_level('')
+        self.fsm.live_window.update_score('')
+        self.fsm.live_window.update_trial_value('')
         self.wait_for_event()
 
     def wait_for_event(self):
@@ -52,8 +57,11 @@ class IdleState(State):
         mouse_id = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port
         if self.recognize_mouse(mouse_id):
             self.fsm.current_trial.update_current_mouse(self.fsm.mice_dict[mouse_id])
-            print("mouse: "+self.fsm.mice_dict[mouse_id]. get_id())
-            print("Level: "+self.fsm.mice_dict[mouse_id]. get_level())
+            print("mouse: "+self.fsm.mice_dict[mouse_id].get_id())
+            print("Level: "+self.fsm.mice_dict[mouse_id].get_level())
+            self.fsm.live_window.update_last_rfid(mouse_id)
+            self.fsm.live_window.update_level(self.fsm.mice_dict[mouse_id].get_level())
+#             self.fsm.live_window.update_score('')
             self.on_event('in_port')
 
     def on_event(self, event):
@@ -78,6 +86,9 @@ class InPortState(State):
     def wait_for_event(self):
         while GPIO.input(IR_pin) != GPIO.HIGH: # Waiting for IR rays to break
             time.sleep(0.09)
+        self.fsm.live_window.toggle_indicator("IR","on")
+        time.sleep(0.1)
+        self.fsm.live_window.toggle_indicator("IR","off")
         print("The mouse entered!")
         if self.fsm.exp_params["start_trial_time"] is not None:
             time.sleep(int(self.fsm.exp_params["start_trial_time"]))
@@ -96,6 +107,7 @@ class TrialState(State):
         self.got_response = None
         self.fsm.current_trial.start_time = datetime.now().strftime('%H:%M:%S')  # Get current time
         self.fsm.current_trial.calculate_stim()
+        self.fsm.live_window.update_trial_value(self.fsm.current_trial.current_value)
         self.stop_threads = False
         # stim_thread = threading.Thread(target = self.valve_as_stim)
         stim_thread = threading.Thread(target=self.tdt_as_stim)
@@ -107,6 +119,7 @@ class TrialState(State):
         input_thread.join()
         self.fsm.current_trial.score = self.evaluate_response()
         print("score: "+self.fsm.current_trial.score)
+        self.fsm.live_window.update_score(self.fsm.current_trial.score)
         self.on_event('trial_over')
         
 
@@ -125,8 +138,9 @@ class TrialState(State):
             pwm.start(50)  # Start PWM with 50% duty cycle
 
             # Let the PWM signal play for 2 seconds
+            self.fsm.live_window.toggle_indicator("stim","on")
             time.sleep(2)
-
+            self.fsm.live_window.toggle_indicator("stim","off")
         finally:
             # Clean up GPIO
             pwm.stop()
@@ -139,7 +153,10 @@ class TrialState(State):
         self.got_response = False
         while not stop() and not self.got_response:
             if GPIO.input(lick_pin) == GPIO.HIGH:
+                self.fsm.live_window.toggle_indicator("lick","on")
                 counter += 1
+                time.sleep(0.08) ### maybe this if problematic- mayby the mouse licking is very fast
+                self.fsm.live_window.toggle_indicator("lick","off")
                 print(f"Received input: lick!")
                 if counter >= int(self.fsm.exp_params["lick_threshold"]):
                     self.valve_as_stim()
@@ -156,6 +173,12 @@ class TrialState(State):
             print("record data...")
             self.fsm.current_trial.write_trial_to_csv(self.fsm.txt_file_name)
             print("Transitioning from trial to idel")
+            if self.fsm.exp_params['ITI_time'] == None:
+                while ser.in_waiting > 0: # wait until the mouse exit the port
+                    ser.flushInput()  # Flush input buffer
+                    time.sleep(0.05)
+            else:
+                time.sleep(int(self.fsm.exp_params['ITI_time']))
             self.fsm.state = IdleState(self.fsm)
             
     def evaluate_response(self):
@@ -184,12 +207,13 @@ class FiniteStateMachine:
 #         self.current_trial = Trial()
 #         self.state = IdleState(self)
 
-    def __init__(self,exp_params, mice_dict,levels_df,txt_file_name):
+    def __init__(self,exp_params, mice_dict,levels_df,txt_file_name,live_window):
         self.exp_params = exp_params
         self.levels_df = levels_df
         self.mice_dict =  mice_dict
         self.txt_file_name = txt_file_name
         self.current_trial = Trial(self)
+        self.live_window = live_window
         self.state = IdleState(self)
         
 #     def __init__(self,exp):

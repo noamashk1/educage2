@@ -7,6 +7,8 @@ import mice_table_creating
 import levels_table_creating
 import parameters_GUI
 import live_window
+import threading
+import time
 
 class TkinterApp:
     def __init__(self, root,exp, exp_name):
@@ -227,8 +229,9 @@ class TkinterApp:
             self.experiment.set_levels_df(self.levels_df)
             self.mice_table.set_mice_as_dict()
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
+            self.experiment.run_live_window()
             self.experiment.set_parameters(parameters)
-            self.live_window = live_window.LiveWindow()
+            
     
     def set_fixed_column_widths(self):
         # Define fixed widths for the columns
