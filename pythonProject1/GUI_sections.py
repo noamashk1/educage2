@@ -214,8 +214,8 @@ class TkinterApp:
 
             """Retrieve all user-selected parameters from the GUI."""
             parameters = {
-                "display_option": self.parameters_btns.display_option.get(),
-                "bin_size": self.parameters_btns.bin_size_entry.get() if self.parameters_btns.display_option.get() == '3' else None,
+                "lick_time": self.parameters_btns.lick_time_display_option.get(),
+                "lick_time_bin_size": self.parameters_btns.lick_time_bin_size_entry.get() if self.parameters_btns.lick_time_display_option.get() == '3' else None,
                 # Add other options similarly, following the widget structure
                 # For example:
                 "start_trial_option": self.parameters_btns.display_option2.get(),

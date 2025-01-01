@@ -21,57 +21,57 @@ class ParametersApp:
         self.font_style = tkFont.Font(family="Helvetica", size=13)
 #####################################################################################
         # Variable to track selected display option
-        self.display_option = tk.StringVar(value='1')  # Default to 1
+        self.lick_time_display_option = tk.StringVar(value='1')  # Default to 1
 
-        # Radiobuttons frame
-        self.radiobuttons_frame = tk.Frame(root)
-        self.radiobuttons_frame.pack(pady=10)
-        self.custom_input_label = tk.Label(self.radiobuttons_frame, text=" When to start counting the licks:", font=self.font_style)
-        self.custom_input_label.pack(anchor=tk.W)
+        # lick_time (when to start counting licks) Radiobuttons frame
+        self.lick_time_radiobuttons_frame = tk.Frame(root)
+        self.lick_time_radiobuttons_frame.pack(pady=10)
+        self.lick_time_custom_input_label = tk.Label(self.lick_time_radiobuttons_frame, text=" When to start counting the licks:", font=self.font_style)
+        self.lick_time_custom_input_label.pack(anchor=tk.W)
         # Radiobuttons with command to trigger display of entry field
-        tk.Radiobutton(self.radiobuttons_frame, text="With stim", variable=self.display_option, value='1',
-                       font=self.font_style, command=self.show_entry_field).pack(anchor=tk.W)
-        tk.Radiobutton(self.radiobuttons_frame, text="After stim", variable=self.display_option, value='2',
-                       font=self.font_style, command=self.show_entry_field).pack(anchor=tk.W)
+        tk.Radiobutton(self.lick_time_radiobuttons_frame, text="With stim", variable=self.lick_time_display_option, value='1',
+                       font=self.font_style, command=self.lick_time_show_entry_field).pack(anchor=tk.W)
+        tk.Radiobutton(self.lick_time_radiobuttons_frame, text="After stim", variable=self.lick_time_display_option, value='2',
+                       font=self.font_style, command=self.lick_time_show_entry_field).pack(anchor=tk.W)
 
         # Radiobutton with associated entry field
-        self.bin_size_frame = tk.Frame(self.radiobuttons_frame)
-        self.bin_size_radiobutton = tk.Radiobutton(self.bin_size_frame, text="By time",
-                                                   variable=self.display_option, value='3',
-                                                   font=self.font_style, command=self.show_entry_field)
-        self.bin_size_radiobutton.pack(side=tk.LEFT) #
+        self.lick_time_bin_size_frame = tk.Frame(self.lick_time_radiobuttons_frame)
+        self.lick_time_bin_size_radiobutton = tk.Radiobutton(self.lick_time_bin_size_frame, text="By time",
+                                                   variable=self.lick_time_display_option, value='3',
+                                                   font=self.font_style, command=self.lick_time_show_entry_field)
+        self.lick_time_bin_size_radiobutton.pack(side=tk.LEFT) #
 
         # Entry field for custom bin size (initially hidden)
-        self.bin_size_entry = tk.Entry(self.bin_size_frame, font=self.font_style, width=5)
-        self.bin_size_entry.pack(side=tk.LEFT, padx=5)
-        self.bin_size_entry.pack_forget()  # Hide initially
-        self.bin_size_frame.pack(anchor=tk.W)
+        self.lick_time_bin_size_entry = tk.Entry(self.lick_time_bin_size_frame, font=self.font_style, width=5)
+        self.lick_time_bin_size_entry.pack(side=tk.LEFT, padx=5)
+        self.lick_time_bin_size_entry.pack_forget()  # Hide initially
+        self.lick_time_bin_size_frame.pack(anchor=tk.W)
 
 ###################################################################
 
-        self.display_option2 = tk.StringVar(value='1')  # Default to 1
+        self.start_trial_display_option = tk.StringVar(value='1')  # Default to 1
 
         # Radiobuttons frame
-        self.radiobuttons_frame2 = tk.Frame(root)
-        self.radiobuttons_frame2.pack(pady=10)
-        self.custom_input_label2 = tk.Label(self.radiobuttons_frame2, text="Start trial:", font=self.font_style)
-        self.custom_input_label2.pack(anchor=tk.W)
+        self.start_trial_radiobuttons_frame = tk.Frame(root)
+        self.start_trial_radiobuttons_frame.pack(pady=10)
+        self.start_trial_custom_input_label = tk.Label(self.start_trial_radiobuttons_frame, text="Start trial:", font=self.font_style)
+        self.start_trial_custom_input_label.pack(anchor=tk.W)
         # Radiobuttons with command to trigger display of entry field
-        tk.Radiobutton(self.radiobuttons_frame2, text="Immediately", variable=self.display_option2, value='1',
-                       font=self.font_style, command=self.show_entry_field2).pack(anchor=tk.W)
+        tk.Radiobutton(self.start_trial_radiobuttons_frame, text="Immediately", variable=self.start_trial_display_option, value='1',
+                       font=self.font_style, command=self.start_trial_show_entry_field).pack(anchor=tk.W)
 
         # Radiobutton with associated entry field
-        self.bin_size_frame2 = tk.Frame(self.radiobuttons_frame2)
-        self.bin_size_radiobutton2 = tk.Radiobutton(self.bin_size_frame2, text="By time",
-                                                   variable=self.display_option2, value='2',
-                                                   font=self.font_style, command=self.show_entry_field2)
-        self.bin_size_radiobutton2.pack(side=tk.LEFT)
+        self.start_trial_bin_size_frame = tk.Frame(self.start_trial_radiobuttons_frame)
+        self.start_trial_bin_size_radiobutton = tk.Radiobutton(self.start_trial_bin_size_frame, text="By time",
+                                                   variable=self.start_trial_display_option, value='2',
+                                                   font=self.font_style, command=self.start_trial_show_entry_field)
+        self.start_trial_bin_size_radiobutton.pack(side=tk.LEFT)
 
         # Entry field for custom bin size (initially hidden)
-        self.bin_size_entry2 = tk.Entry(self.bin_size_frame2, font=self.font_style, width=5)
-        self.bin_size_entry2.pack(side=tk.LEFT, padx=5)
-        self.bin_size_entry2.pack_forget()  # Hide initially
-        self.bin_size_frame2.pack(anchor=tk.W)
+        self.start_trial_bin_size_entry = tk.Entry(self.start_trial_bin_size_frame, font=self.font_style, width=5)
+        self.start_trial_bin_size_entry.pack(side=tk.LEFT, padx=5)
+        self.start_trial_bin_size_entry.pack_forget()  # Hide initially
+        self.start_trial_bin_size_frame.pack(anchor=tk.W)
 
  ##################################################################
         self.IR_no_RFID_frame = tk.Frame(root)
@@ -135,19 +135,19 @@ class ParametersApp:
         # self.ok_button.pack(pady=20)
     
 ###################################################################
-    def show_entry_field(self):
+    def lick_time_show_entry_field(self):
         """Show entry field only when 'By Bin Size' is selected."""
-        if self.display_option.get() == '3':  # Show entry if "By Bin Size" is selected
-            self.bin_size_entry.pack(side=tk.LEFT, padx=5)
+        if self.lick_time_display_option.get() == '3':  # Show entry if "By Bin Size" is selected
+            self.lick_time_bin_size_entry.pack(side=tk.LEFT, padx=5)
         else:  # Hide entry for other options
-            self.bin_size_entry.pack_forget()
+            self.lick_time_bin_size_entry.pack_forget()
 
-    def show_entry_field2(self):
+    def start_trial_show_entry_field(self):
         """Show entry field only when 'By Bin Size' is selected."""
-        if self.display_option2.get() == '2':  # Show entry if "By Bin Size" is selected
-            self.bin_size_entry2.pack(side=tk.LEFT, padx=5)
+        if self.start_trial_display_option.get() == '2':  # Show entry if "By Bin Size" is selected
+            self.start_trial_bin_size_entry.pack(side=tk.LEFT, padx=5)
         else:  # Hide entry for other options
-            self.bin_size_entry2.pack_forget()
+            self.start_trial_bin_size_entry.pack_forget()
             
     def ITI_show_entry_field(self):
         """Show entry field only when 'By Bin Size' is selected."""
