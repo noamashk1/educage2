@@ -1,0 +1,4 @@
+date,start time,end time,trial number,mouse ID,level,"go
+o-go",stim,score
+2025-01-01,09:31:00,09:31:05,0007B80FBC,L1,no-go,/home/educage/git_educage2/educage2/pythonProject1/data_analysis.py,cr
+2025-01-01,09:31:08,09:31:13,0007B80FBC,L1,catch,/home/educage/git_educage2/educage2/pythonProject1/experiment.py,catch - response

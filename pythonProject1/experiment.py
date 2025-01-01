@@ -9,6 +9,7 @@ from mouse import Mouse
 from finite_state_machine import FiniteStateMachine
 from stimulus import Stimulus
 import tkinter as tk
+from tkinter import simpledialog
 import threading
 import GUI_sctions
 
@@ -20,6 +21,15 @@ import GUI_sctions
 ###
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
+        
+#         root = tk.Tk()
+#         root.withdraw()  # Hide the root window
+# 
+#         # Show dialog box to get the experiment name
+#         self.txt_file_name = simpledialog.askstring("Input", "Please enter the experiment name:")
+#         root.destroy()
+#         
+        
         self.exp_params = None#ExpParameters(self)
         self.fsm = None
         self.levels_df = levels_df
@@ -27,9 +37,7 @@ class Experiment:
         self.results = []
         self.txt_file_name = exp_name
         self.new_txt_file(self.txt_file_name)
-        #self.root = root
         self.root = tk.Tk()
-        #self.GUI = App(self.root,self)
         self.GUI = GUI_sctions.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         self.run_experiment()
         self.root.mainloop()
