@@ -6,7 +6,7 @@ import csv
 import mice_table_creating
 import levels_table_creating
 import parameters_GUI
-#import experiment_1
+import live_window
 
 class TkinterApp:
     def __init__(self, root,exp, exp_name):
@@ -25,8 +25,8 @@ class TkinterApp:
         # Create LabelFrames for the layout
         self.left_frame_top = tk.LabelFrame(root, text="Levels list", font=("Helvetica", 12, "bold"), padx=10, pady=10)
         self.left_frame_middle = tk.LabelFrame(root, text="Mice list", font=("Helvetica", 12, "bold"), padx=10, pady=10)
-        self.left_frame_bottom = tk.LabelFrame(root, text="Parameters", font=("Helvetica", 12, "bold"), padx=10, pady=10)
-        self.right_frame = tk.LabelFrame(root, text="Live window", font=("Helvetica", 12, "bold"), padx=10, pady=10)
+        self.left_frame_bottom = tk.LabelFrame(root, text="option", font=("Helvetica", 12, "bold"), padx=10, pady=10)
+        self.right_frame = tk.LabelFrame(root, text="Parameters", font=("Helvetica", 12, "bold"), padx=10, pady=10)
 
         # Set the desired dimensions
         self.left_frame_top.config(width=w*(3/5), height=h/3)
@@ -228,6 +228,7 @@ class TkinterApp:
             self.mice_table.set_mice_as_dict()
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.set_parameters(parameters)
+            self.live_window = live_window.LiveWindow()
     
     def set_fixed_column_widths(self):
         # Define fixed widths for the columns

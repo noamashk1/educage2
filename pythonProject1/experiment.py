@@ -11,7 +11,7 @@ from stimulus import Stimulus
 import tkinter as tk
 from tkinter import simpledialog
 import threading
-import GUI_sctions
+import GUI_sections
 
 ###
 # cd /home/educage/git_educage2/educage2/pythonProject1
@@ -38,7 +38,7 @@ class Experiment:
         self.txt_file_name = exp_name
         self.new_txt_file(self.txt_file_name)
         self.root = tk.Tk()
-        self.GUI = GUI_sctions.TkinterApp(self.root, self, exp_name = self.txt_file_name)
+        self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         self.run_experiment()
         self.root.mainloop()
 

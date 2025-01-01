@@ -10,7 +10,7 @@ from finite_state_machine import FiniteStateMachine
 from stimulus import Stimulus
 import tkinter as tk
 import threading
-import GUI_sctions
+import GUI_sections
 
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
