@@ -216,14 +216,13 @@ class TkinterApp:
             parameters = {
                 "lick_time": self.parameters_btns.lick_time_display_option.get(),
                 "lick_time_bin_size": self.parameters_btns.lick_time_bin_size_entry.get() if self.parameters_btns.lick_time_display_option.get() == '3' else None,
-                # Add other options similarly, following the widget structure
-                # For example:
-                "start_trial_option": self.parameters_btns.display_option2.get(),
-                "start_trial_time": self.parameters_btns.bin_size_entry2.get() if self.parameters_btns.display_option2.get() == '2' else None,
+                "start_trial_option": self.parameters_btns.start_trial_display_option.get(),
+                "start_trial_time": self.parameters_btns.start_trial_bin_size_entry.get() if self.parameters_btns.start_trial_display_option.get() == '2' else None,
                 "IR_no_RFID_option": self.parameters_btns.option_var.get(),
                 "lick_threshold": self.parameters_btns.licks_entry.get(),
                 "ITI": self.parameters_btns.ITI_display_option.get(),
                 "ITI_time": self.parameters_btns.ITI_bin_size_entry.get() if self.parameters_btns.ITI_display_option.get() == '2' else None,
+                "stimulus_length":2, ########## maybe need to make it for the user choosing
             }
             # Set parameters in the Experiment class
             self.experiment.set_levels_df(self.levels_df)

@@ -139,15 +139,23 @@ class TrialState(State):
 
             # Let the PWM signal play for 2 seconds
             self.fsm.live_window.toggle_indicator("stim","on")
-            time.sleep(2)
-            self.fsm.live_window.toggle_indicator("stim","off")
+            time.sleep(int(self.fsm.exp_params["stimulus_length"]))
         finally:
             # Clean up GPIO
             pwm.stop()
+            self.fsm.live_window.toggle_indicator("stim","off")
             time.sleep(3)
             print('output stoping')
 
     def receive_input(self, stop):
+        # when to start counting the licks
+        if self.fsm.exp_params["lick_time_bin_size"] != None: # if the user choose "by time"
+            time.sleep(int(self.fsm.exp_params["lick_time_bin_size"]))
+        elif self.fsm.exp_params["lick_time"] == "1": # "with stim"
+            pass
+        elif self.fsm.exp_params["lick_time"] == "2": # "after stim"
+            time.sleep(int(self.fsm.exp_params["stimulus_length"]))
+    
         counter = 0
         print('waiting for licks..')
         self.got_response = False
