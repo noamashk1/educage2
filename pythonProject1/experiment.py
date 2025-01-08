@@ -92,16 +92,6 @@ class Experiment:
             self.live_w = live_window.LiveWindow()
 
 
-#     def pause_experiment(self):
-#         pass
-# 
-#     def resume_experiment(self):
-#         pass
-# 
-#     def finish_experiment(self):
-#         pass
-
-
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)
 
