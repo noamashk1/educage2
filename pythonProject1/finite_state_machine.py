@@ -162,6 +162,7 @@ class TrialState(State):
         while not stop() and not self.got_response:
             if GPIO.input(lick_pin) == GPIO.HIGH:
                 self.fsm.live_window.toggle_indicator("lick","on")
+                self.fsm.current_trial.add_lick_time()
                 counter += 1
                 time.sleep(0.08) ### maybe this if problematic- mayby the mouse licking is very fast
                 self.fsm.live_window.toggle_indicator("lick","off")
@@ -178,15 +179,15 @@ class TrialState(State):
 
     def on_event(self, event):
         if event == 'trial_over':
-            print("record data...")
+            time.sleep(0.5) # wait for showing the score on the live window before it is pass to the next trial
             self.fsm.current_trial.write_trial_to_csv(self.fsm.txt_file_name)
-            print("Transitioning from trial to idel")
             if self.fsm.exp_params['ITI_time'] == None:
                 while ser.in_waiting > 0: # wait until the mouse exit the port
                     ser.flushInput()  # Flush input buffer
                     time.sleep(0.05)
             else:
                 time.sleep(int(self.fsm.exp_params['ITI_time']))
+            print("Transitioning from trial to idel")
             self.fsm.state = IdleState(self.fsm)
             
     def evaluate_response(self):
