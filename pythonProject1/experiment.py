@@ -23,12 +23,12 @@ import live_window
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
         
-#         root = tk.Tk()
-#         root.withdraw()  # Hide the root window
-# 
-#         # Show dialog box to get the experiment name
-#         self.txt_file_name = simpledialog.askstring("Input", "Please enter the experiment name:")
-#         root.destroy()
+        root = tk.Tk()
+        root.withdraw()  # Hide the root window
+
+        # Show dialog box to get the experiment name
+        self.txt_file_name = simpledialog.askstring("Input", "Please enter the experiment name:")
+        root.destroy()
 #         
         
         self.exp_params = None#ExpParameters(self)
@@ -37,12 +37,14 @@ class Experiment:
         self.levels_df = levels_df
         self.mice_dict = mice_dict#self.create_mice(mice_dict)
         self.results = []
+        self.stim_length = 2  ########## maybe need to make it for the user choosing
         self.txt_file_name = exp_name
         self.new_txt_file(self.txt_file_name)
         self.root = tk.Tk()
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         self.run_experiment()
         self.root.mainloop()
+        self.root.destroy()
         
 
     def set_parameters(self, parameters):
@@ -61,13 +63,6 @@ class Experiment:
     def new_txt_file(self, filename):
         with open(self.txt_file_name, 'w') as file:
             pass
-
-#     def log_parameters(self, **trial_params):
-#         # This writes the given parameters to the text file
-#         with open(self.txt_file_name, 'a') as file:
-#             for key, value in trial_params.items():
-#                 file.write(f"{key}: {value}\n")
-#             file.write("-" * 30 + "\n")
 
 
     def run_experiment(self):
@@ -96,19 +91,6 @@ class Experiment:
         if self.live_w is None:
             self.live_w = live_window.LiveWindow()
 
-#     def open_live_window(self):
-#         if self.live_w is None:
-#             try:
-#                 print("Attempting to create LiveWindow...")
-#                 self.live_w = live_window.LiveWindow()  # Assuming LiveWindow is defined correctly
-#                 print("LiveWindow created successfully.")
-#                 print(f"self.live_w: {self.live_w}")  # Check that live_w is properly assigned
-#             except Exception as e:
-#                 print(f"An error occurred while creating LiveWindow: {e}")
-# 
-#         print("Reached the end of open_live_window function.")
-        
-    
 
 #     def pause_experiment(self):
 #         pass
@@ -118,34 +100,7 @@ class Experiment:
 # 
 #     def finish_experiment(self):
 #         pass
-#     def run_trial(self, mouse: Mouse):
-#         parameters = mouse.level.get_parameters()
-# 
-#         # Example stimulus interaction (simply mocked for demonstration)
-#         stimulus = Stimulus(stimulus_id=1, stimulus_type='light', duration=2.0)
-#         stimulus.play()
-# 
-#         # Simulated response (In a real scenario, this would come from the user's input)
-#         response = 'correct'  # Replace this with actual response capturing.
-# 
-#         reward_system = RewardAndPunishmentSystem()
-#         reward_type = reward_system.evaluate_response(response)
-# 
-#         # Record the result
-#         trial_data = {
-#             'mouse_id': mouse.id,
-#             'level': mouse.level.level_id,
-#             'response': response,
-#             'outcome': reward_type
-#         }
-#         mouse.record_performance(trial_data)
-#         self.results.append(trial_data)
-# 
-#         # Deliver reward or punishment
-#         if reward_type == 'reward':
-#             reward_system.deliver_reward()
-#         else:
-#             reward_system.impose_punishment()
+
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)
@@ -158,25 +113,7 @@ class Experiment:
 
  # Example usage:
 if __name__ == "__main__":
-# 
-#     # Create levels
-#     level_1 = Level(level_id=1, parameters={'stimuli': ['noise1', 'sound'], 'reaction_time': '2s'})
-#     level_2 = Level(level_id=2, parameters={'stimuli': ['noise2', 'visual'], 'reaction_time': '1s'})
-# 
-#     # Create mice
-#     mouse_1 = Mouse(mouse_id='0007B80FBC', level= "level_1")
-#     mouse_2 = Mouse(mouse_id='0007DECB4A', level="level_2")
-#     mouse_3 = Mouse(mouse_id='0007DEC04C', level="level_2")
-# 
+
 #     # Create an experiment
      experiment = Experiment(exp_name = 'exp1')#, mice_dict={mouse_1.get_id():mouse_1, mouse_2.get_id():mouse_2}, levels_df={1: level_1, 2: level_2})
-#     # Run trials
-#     # experiment.run_trial(mouse_1)
-#     # experiment.run_trial(mouse_2)
-#     #
-#     # # Save results to a file
-#     # experiment.save_results('experiment_results.json')
-# 
-#     print("Experiment completed and results saved.")
-#     print("control it from goggle remote!")
-#     print("rasp_commit!")
+

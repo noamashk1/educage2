@@ -51,7 +51,8 @@ class IdleState(State):
         self.wait_for_event()
 
     def wait_for_event(self):
-        while ser.in_waiting <= 0:
+        
+        while ser.in_waiting <= 0 or self.fsm.live_window.pause:
             ser.flushInput()  # Flush input buffer
             time.sleep(0.05)
         mouse_id = ser.readline().decode('utf-8').rstrip()  # Read the data from the serial port

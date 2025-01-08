@@ -1,4 +1,5 @@
 import tkinter as tk
+import sys
 
 
 class LiveWindow:
@@ -7,6 +8,8 @@ class LiveWindow:
         self.root = tk.Toplevel()
         self.root.title("Live Window")
         self.root.geometry("300x530")  # Set the window dimensions to 400x600 pixels
+        
+        self.pause = False
 #         self.root = tk.Tk()
 #         self.root.title("Live Window")
 #         self.root.geometry("300x480")  # Set the window dimensions to 400x600 pixels
@@ -142,22 +145,19 @@ class LiveWindow:
             
 
     def pause_experiment(self):
-#         self.toggle_indicator(self.lick_light)  # Toggle Lick light
-#         self.toggle_indicator(self.ir_light)  # Toggle IR light
-#         self.toggle_indicator(self.stimulus_light)  # Toggle Stimulus light
+        self.pause = True
         print("Experiment paused")
 
     def continue_experiment(self):
-#         self.toggle_indicator(self.idle_light)  # Toggle Idle light
-#         self.toggle_indicator(self.in_port_light)  # Toggle In Port light
-#         self.toggle_indicator(self.trial_light)  # Toggle Trial light
-
+        self.pause = False
         print("Experiment continued")
 
     def end_experiment(self):
         print("Experiment ended")
 #         self.toggle_indicator(self.trial_light)  # Toggle Trial light
-        #self.root.destroy()  # Close the window
+#         self.root.destroy()  # Close the window
+#         sys.exit()
+        self.root.quit()
 
     def update_last_rfid(self, rfid):
         self.last_rfid_value.config(text=rfid)  # Update last RFID label
