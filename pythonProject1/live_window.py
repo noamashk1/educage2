@@ -3,8 +3,9 @@ import sys
 
 
 class LiveWindow:
-    def __init__(self):
+    def __init__(self):#,
         # Create the main window
+        print('live_window constructor')
         self.root = tk.Toplevel()
         self.root.title("Live Window")
         self.root.geometry("300x530")  # Set the window dimensions to 400x600 pixels
@@ -49,18 +50,19 @@ class LiveWindow:
         self.create_labeled_frame("score:")
 
         # Frame for buttons to center them
-        button_frame = tk.Frame(self.root)
-        button_frame.pack(pady=20)  # Center the button frame vertically with padding
+        self.button_frame = tk.Frame(self.root)
+        self.button_frame.pack(pady=20)  # Center the button frame vertically with padding
 
         # Create buttons
-        pause_button = tk.Button(button_frame, text="Pause", command=self.pause_experiment)
-        pause_button.pack(side='left', padx=5)
+        self.pause_button = tk.Button(self.button_frame, text="Pause", command=self.pause_experiment)
+        self.pause_button.pack(side='left', padx=5)
 
-        continue_button = tk.Button(button_frame, text="Continue", command=self.continue_experiment)
-        continue_button.pack(side='left', padx=5)
+        self.continue_button = tk.Button(self.button_frame, text="Continue", command=self.continue_experiment)
+        self.continue_button.pack(side='left', padx=5)
+        self.continue_button.config(state=tk.DISABLED)
 
-        end_button = tk.Button(button_frame, text="End Experiment", command=self.end_experiment)
-        end_button.pack(side='left', padx=5)
+        self.end_button = tk.Button(self.button_frame, text="End Experiment", command=self.end_experiment)
+        self.end_button.pack(side='left', padx=5)
 
         # Start the GUI event loop
         #self.root.mainloop()
@@ -146,10 +148,16 @@ class LiveWindow:
 
     def pause_experiment(self):
         self.pause = True
+#         self.main_GUI.able_parameters_buttons()
+        self.continue_button.config(state=tk.NORMAL)
+        self.pause_button.config(state=tk.DISABLED)
         print("Experiment paused")
 
     def continue_experiment(self):
         self.pause = False
+#         self.main_GUI.disable_parameters_buttons()
+        self.pause_button.config(state=tk.NORMAL)
+        self.continue_button.config(state=tk.DISABLED)
         print("Experiment continued")
 
     def end_experiment(self):

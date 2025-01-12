@@ -23,13 +23,13 @@ import live_window
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
         
-        root = tk.Tk()
-        root.withdraw()  # Hide the root window
-
-        # Show dialog box to get the experiment name
-        self.txt_file_name = simpledialog.askstring("Input", "Please enter the experiment name:")
-        root.destroy()
-#         
+#         root = tk.Tk()
+#         root.withdraw()  # Hide the root window
+# 
+#         # Show dialog box to get the experiment name
+#         self.txt_file_name = simpledialog.askstring("Input", "Please enter the experiment name:")
+#         root.destroy()
+# #         
         
         self.exp_params = None#ExpParameters(self)
         self.fsm = None
@@ -78,8 +78,8 @@ class Experiment:
 
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
-        print("Experiment started with parameters:", self.exp_params)
-        fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_df, self.txt_file_name, self.live_w)
+#         fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_df, self.txt_file_name, self.live_w)
+        fsm = FiniteStateMachine(self)
         self.fsm = fsm
         print("FSM created:", self.fsm)
         
@@ -89,7 +89,11 @@ class Experiment:
         
     def open_live_window(self):
         if self.live_w is None:
-            self.live_w = live_window.LiveWindow()
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+            self.live_w = live_window.LiveWindow()#self.GUI
+            print(self.live_w)
+            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+            #self.live_w = live_window.LiveWindow()
 
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):

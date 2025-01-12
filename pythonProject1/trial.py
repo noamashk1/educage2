@@ -34,13 +34,15 @@ class Trial:
 
     def calculate_stim(self): #determine if the trial is go\nogo\catch using random
         level_name = self.current_mouse.get_level()
-        level_rows = self.fsm.levels_df.loc[self.fsm.levels_df['Level Name'] == level_name]
+#         level_rows = self.fsm.levels_df.loc[self.fsm.levels_df['Level Name'] == level_name]
+        level_rows = self.fsm.exp.levels_df.loc[self.fsm.exp.levels_df['Level Name'] == level_name]
         probabilities = level_rows["Probability"].tolist()
         indices = level_rows["Index"].tolist()
         total_probability = sum(probabilities)
         normalized_probabilities = [p / total_probability for p in probabilities]
         chosen_index = random.choices(indices, weights=normalized_probabilities, k=1)[0]
-        self.current_stim_df = self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
+#         self.current_stim_df = self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
+        self.current_stim_df = self.fsm.exp.levels_df.loc[(self.fsm.exp.levels_df['Level Name'] == level_name)&(self.fsm.exp.levels_df['Index'] == chosen_index)]
         self.current_value = self.current_stim_df.iloc[0]['Value']
         self.current_stim_path = self.current_stim_df.iloc[0]['Stimulus Path']
         self.current_stim_index = self.current_stim_df.iloc[0]['Index']

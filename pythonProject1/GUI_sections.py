@@ -67,8 +67,8 @@ class TkinterApp:
         self.ok_button.pack(pady=20)
 
         ############# remove ######
-        self.btnLoadLvl = tk.Button(self.left_frame_bottom, text="Load Levels", command=self.set_levels_df)
-        self.btnLoadLvl.grid(row=0, column=0, padx=10, pady=10)
+        self.btnRemove = tk.Button(self.left_frame_bottom, text="Load", command=self.set_levels_df) 
+        self.btnRemove.grid(row=0, column=0, padx=10, pady=10)
 
 
         # Create a Frame to hold the Treeview and Scrollbars
@@ -231,6 +231,17 @@ class TkinterApp:
             self.experiment.run_live_window()
             self.experiment.set_parameters(parameters)
             
+#             self.disable_parameters_buttons()
+
+#     def disable_parameters_buttons(self):
+#         self.btnLoadLvl.config(state=tk.DISABLED)
+#         self.btnCreateLvl.config(state=tk.DISABLED)
+#         self.mice_table.get_parameter_button.config(state=tk.DISABLED)
+#             
+#     def able_parameters_buttons(self):
+#         self.btnLoadLvl.config(state=tk.NORMAL)
+#         self.btnCreateLvl.config(state=tk.NORMAL)
+#         self.mice_table.get_parameter_button.config(state=tk.NORMAL)
     
     def set_fixed_column_widths(self):
         # Define fixed widths for the columns
