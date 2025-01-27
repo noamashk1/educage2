@@ -1,7 +1,7 @@
 Level Name,Stimulus Path,Probability,Value,Index
-L1,/home/educage/git_educage2/educage2/pythonProject1/experiment.py,20,catch,1
-L1,/home/educage/git_educage2/educage2/pythonProject1/data_analysis.py,20,no-go,2
-L1,/home/educage/git_educage2/educage2/pythonProject1/levels_table_creating.py,20,go,3
-L2,/home/educage/git_educage2/educage2/pythonProject1/levels_table_creating.py,80,go,4
-L2,/home/educage/git_educage2/educage2/pythonProject1/level.py,10,no-go,5
-L2,/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py,10,catch,6
+L1,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_400.wav,45,go,1
+L1,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_1000.wav,45,no-go,2
+L1,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_1000.wav,10,catch,3
+L2,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_600.wav,45,go,4
+L2,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_800.wav,45,no-go,5
+L2,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_1000.wav,10,catch,6

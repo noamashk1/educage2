@@ -5,6 +5,7 @@ import asyncio
 import threading
 from trial import Trial
 from datetime import datetime
+import pygame
 
 valve_pin = 23
 IR_pin = 25
@@ -133,17 +134,31 @@ class TrialState(State):
         GPIO.output(valve_pin, GPIO.LOW)
         
     def give_punishment(self):
-        GPIO.output(valve_pin, GPIO.HIGH)
-        time.sleep(0.1)
-        GPIO.output(valve_pin, GPIO.LOW)
-        time.sleep(0.1)
-        GPIO.output(valve_pin, GPIO.HIGH)
-        time.sleep(0.1)
-        GPIO.output(valve_pin, GPIO.LOW)
-        time.sleep(0.1)
-        GPIO.output(valve_pin, GPIO.HIGH)
-        time.sleep(0.1)
-        GPIO.output(valve_pin, GPIO.LOW)
+#         GPIO.output(valve_pin, GPIO.HIGH)
+#         time.sleep(0.1)
+#         GPIO.output(valve_pin, GPIO.LOW)
+#         time.sleep(0.1)
+#         GPIO.output(valve_pin, GPIO.HIGH)
+#         time.sleep(0.1)
+#         GPIO.output(valve_pin, GPIO.LOW)
+#         time.sleep(0.1)
+#         GPIO.output(valve_pin, GPIO.HIGH)
+#         time.sleep(0.1)
+#         GPIO.output(valve_pin, GPIO.LOW)
+        try:
+            pygame.mixer.init()
+            sound = pygame.mixer.Sound('/home/educage/git_educage2/educage2/pythonProject1/white_noise')  # Use a .wav file
+            sound.play()
+            
+            while pygame.mixer.get_busy(): # To keep the program running while the sound plays
+                pygame.time.delay(100)
+                
+        finally:
+            # Clean up GPIO
+            self.fsm.exp.live_w.toggle_indicator("stim","off")
+            time.sleep(2) # time with no stimulus- that the mouse still can lick
+            print('output stoping')
+
         
     def valve_as_stim(self):
         GPIO.output(valve_pin, GPIO.HIGH)
@@ -155,18 +170,32 @@ class TrialState(State):
         stim_path = self.fsm.current_trial.current_stim_path
         print(stim_path)
 
+#         try:
+#             # Start PWM
+#             pwm.start(50)  # Start PWM with 50% duty cycle
+# 
+#             # Let the PWM signal play for 2 seconds
+#             self.fsm.exp.live_w.toggle_indicator("stim","on")
+#             time.sleep(int(self.fsm.exp.exp_params["stimulus_length"]))
+#         finally:
+#             # Clean up GPIO
+#             pwm.stop()
+#             self.fsm.exp.live_w.toggle_indicator("stim","off")
+#             time.sleep(2) # time with no stimulus- that the mouse still can lick
+#             print('output stoping')
+            
         try:
-            # Start PWM
-            pwm.start(50)  # Start PWM with 50% duty cycle
-
-            # Let the PWM signal play for 2 seconds
-            self.fsm.exp.live_w.toggle_indicator("stim","on")
-            time.sleep(int(self.fsm.exp.exp_params["stimulus_length"]))
+            pygame.mixer.init()
+            sound = pygame.mixer.Sound(stim_path)  # Use a .wav file
+            sound.play()
+            
+            while pygame.mixer.get_busy(): # To keep the program running while the sound plays
+                pygame.time.delay(100)
+                
         finally:
             # Clean up GPIO
-            pwm.stop()
             self.fsm.exp.live_w.toggle_indicator("stim","off")
-            time.sleep(3)
+            time.sleep(2) # time with no stimulus- that the mouse still can lick
             print('output stoping')
 
 #     def receive_input(self, stop):
