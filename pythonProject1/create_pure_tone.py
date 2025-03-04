@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.io.wavfile import write
-import pygame
+# import pygame
+import numpy as np
+import sounddevice as sd
 
 def generate_white_noise(duration, Fs, voltage, filename):
     """
@@ -45,11 +47,9 @@ def generate_white_noise(duration, Fs, voltage, filename):
         pygame.time.delay(100)
 
     return 
-
-
-def create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs, filename):
+def create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs):
     """
-    Creates a vector of a ramped sine wave with the input parameters and saves it as a WAV file.
+    Creates and plays a vector of a ramped sine wave with the input parameters.
 
     Parameters:
     freq       - frequency in kHz
@@ -57,8 +57,7 @@ def create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs, filename):
     tone_dur   - duration of tone in seconds
     ramp_dur   - duration of ramp in seconds
     Fs         - sample rate in Hz
-    filename   - name of the output WAV file
-    
+
     Returns:
     tone_shape - A numpy array containing the generated tone
     """
@@ -66,52 +65,38 @@ def create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs, filename):
     # Create ramp
     ramp_length = int(tone_dur * Fs)
     ramp = np.ones(ramp_length)
-    
+
     ramp_duration_samples = int(ramp_dur * Fs)
-    
+
     ramp[:ramp_duration_samples] = np.linspace(0, 1, ramp_duration_samples)
     ramp[-ramp_duration_samples:] = np.linspace(1, 0, ramp_duration_samples)
-    
+
     # Create time vector
     t = np.arange(tone_dur * Fs)  # time vector from 0 to tone_dur (in samples)
 
     # Create tone
     tone_shape = voltage * ramp * np.sin(2 * np.pi * freq * 1000 * t / Fs)
 
-    # Convert to 16-bit signed integers for WAV file format
-    tone_shape_int16 = np.int16(tone_shape * 32767)
-
-    # Write the tone to a WAV file
-    write(filename, Fs, tone_shape_int16)
-    
-    # Initialize Pygame mixer
-    pygame.mixer.init()
-
-    # Load your sound file
-    sound = pygame.mixer.Sound(filename)  # Use a .wav file
-
-    # Play the sound
-    sound.play()
-
-    # To keep the program running while the sound plays
-    while pygame.mixer.get_busy():
-        pygame.time.delay(100)
+    # Play sound
+    sd.play(tone_shape, Fs)
+    sd.wait()  # Wait until sound finishes playing
 
     return tone_shape
 
-# Example Usage
-freq = 400  # Frequency in kHz (e.g., 440 Hz)
-voltage = 0.2  # Amplitude in volts
-tone_dur = 1  # Duration in seconds
-ramp_dur = 0.1  # Ramp duration in seconds
-Fs = 44100  # Sampling rate in Hz
-filename = 'pure_tone_400.wav'  # Name of the output WAV file
 
-tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs, filename)
+# Example Usage
+freq = 14  # Frequency in kHz (e.g., 440 Hz)
+voltage = 1  # Amplitude in volts
+tone_dur = 0.5  # Duration in seconds
+ramp_dur = 0.05  # Ramp duration in seconds
+Fs = 300000  # Sampling rate in Hz
+filename = 'pure_tone_4k.wav'  # Name of the output WAV file
+
+tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
 
 duration = 1
 noise_filename ="white_noise.wav"
-generate_white_noise(duration, Fs, voltage, noise_filename)
+# generate_white_noise(duration, Fs, voltage, noise_filename)
 
 
 

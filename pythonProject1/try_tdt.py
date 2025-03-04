@@ -31,11 +31,9 @@ ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600,
                     timeout=0.01)  # timeout=1  # Change '/dev/ttyS0' to the detected port
 
 
-
 try:
     # Start PWM
     pwm.start(50)  # Start PWM with 50% duty cycle
-
 
     time.sleep(2)
 finally:
