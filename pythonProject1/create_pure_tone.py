@@ -4,7 +4,51 @@ import pygame
 import numpy as np
 import sounddevice as sd
 
-def generate_white_noise(duration, Fs, voltage, filename):
+# def generate_white_noise(duration, Fs, voltage, filename):
+#     """
+#     Generate white noise.
+# 
+#     Parameters:
+#     duration - Duration of the noise in seconds
+#     sample_rate - Sample rate in Hz
+#     
+#     Returns:
+#     noise - A NumPy array containing the white noise samples
+#     """
+#     # Calculate the number of samples
+#     num_samples = int(duration * Fs)
+#     
+#     # Generate random samples between -1 and 1
+#     noise = np.random.uniform(-1, 1, num_samples)
+#     
+#     # Scale the noise by the voltage (amplitude) before converting to integers
+#     noise *= voltage  # Adjust the volume
+# 
+#     # Clamp the noise values to ensure they stay within the valid range
+#     noise = np.clip(noise, -1, 1)
+#     
+#     # Convert to 16-bit signed integers
+#     noise_int16 = np.int16(noise * 32767)
+#     
+#         # Write the tone to a WAV file
+#     write(filename, Fs, noise_int16)
+#     
+#     # Initialize Pygame mixer
+#     pygame.mixer.init()
+# 
+#     # Load your sound file
+#     sound = pygame.mixer.Sound(filename)  # Use a .wav file
+# 
+#     # Play the sound
+#     sound.play()
+# 
+#     # To keep the program running while the sound plays
+#     while pygame.mixer.get_busy():
+#         pygame.time.delay(100)
+# 
+#     return
+
+def generate_white_noise(duration, Fs, voltage):
     """
     Generate white noise.
 
@@ -27,26 +71,17 @@ def generate_white_noise(duration, Fs, voltage, filename):
     # Clamp the noise values to ensure they stay within the valid range
     noise = np.clip(noise, -1, 1)
     
-    # Convert to 16-bit signed integers
-    noise_int16 = np.int16(noise * 32767)
+    sd.play(noise, Fs)
+    sd.wait()  # Wait until sound finishes playing
     
-        # Write the tone to a WAV file
-    write(filename, Fs, noise_int16)
+    np.save('/home/educage/git_educage2/educage2/pythonProject1/stimulus/white_noise', noise)
+
+    return noise
     
-    # Initialize Pygame mixer
-    pygame.mixer.init()
 
-    # Load your sound file
-    sound = pygame.mixer.Sound(filename)  # Use a .wav file
-
-    # Play the sound
-    sound.play()
-
-    # To keep the program running while the sound plays
-    while pygame.mixer.get_busy():
-        pygame.time.delay(100)
 
     return 
+
 def create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs):
     """
     Creates and plays a vector of a ramped sine wave with the input parameters.
@@ -86,17 +121,17 @@ def create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs):
 
 # Example Usage
 freq = 14  # Frequency in kHz (e.g., 440 Hz)
-voltage = 1  # Amplitude in volts
+voltage = 2  # Amplitude in volts
 tone_dur = 0.5  # Duration in seconds
 ramp_dur = 0.05  # Ramp duration in seconds
 Fs = 300000  # Sampling rate in Hz
 filename = 'pure_tone_4k.wav'  # Name of the output WAV file
 
-tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
+# tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
 
 duration = 1
 noise_filename ="white_noise.wav"
-generate_white_noise(duration, Fs, voltage, noise_filename)
+generate_white_noise(duration, Fs, voltage)
 
 
 

@@ -1,11 +1,3 @@
 Level Name,Stimulus Path,Probability,Value,Index
-disc2paris,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_600.wav,25,go,1
-disc2paris,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_1000.wav,25,go,2
-disc2paris,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_400.wav,25,no-go,7
-disc2paris,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_800.wav,25,no-go,8
-disc3pairs,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_400.wav,15,go,1
-disc3pairs,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_600.wav,15,go,2
-disc3pairs,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_1000.wav,15,go,3
-disc3pairs,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_800.wav,15,no-go,6
-disc3pairs,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_800.wav,15,no-go,7
-disc3pairs,/home/educage/git_educage2/educage2/pythonProject1/pure_tone_800.wav,15,no-go,8
+L1,/home/educage/git_educage2/educage2/pythonProject1/stimulus/12KHz.npy,50,go,1
+L1,/home/educage/git_educage2/educage2/pythonProject1/stimulus/13KHz.npy,50,no-go,2

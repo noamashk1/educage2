@@ -5,7 +5,9 @@ import asyncio
 import threading
 from trial import Trial
 from datetime import datetime
-import pygame
+# import pygame
+import numpy as np
+import sounddevice as sd
 
 valve_pin = 23
 IR_pin = 25
@@ -145,13 +147,18 @@ class TrialState(State):
 #         GPIO.output(valve_pin, GPIO.HIGH)
 #         time.sleep(0.1)
 #         GPIO.output(valve_pin, GPIO.LOW)
+#         try:
+#             pygame.mixer.init()
+#             sound = pygame.mixer.Sound('/home/educage/git_educage2/educage2/pythonProject1/white_noise')  # Use a .wav file
+#             sound.play()
+#             
+#             while pygame.mixer.get_busy(): # To keep the program running while the sound plays
+#                 pygame.time.delay(100)
         try:
-            pygame.mixer.init()
-            sound = pygame.mixer.Sound('/home/educage/git_educage2/educage2/pythonProject1/white_noise')  # Use a .wav file
-            sound.play()
-            
-            while pygame.mixer.get_busy(): # To keep the program running while the sound plays
-                pygame.time.delay(100)
+            noise = np.load('/home/educage/git_educage2/educage2/pythonProject1/stimulus/white_noise.npy')  # Use a .wav file
+            sd.play(noise,len(noise))
+            sd.wait()
+ 
                 
         finally:
             # Clean up GPIO
@@ -184,14 +191,26 @@ class TrialState(State):
 #             time.sleep(2) # time with no stimulus- that the mouse still can lick
 #             print('output stoping')
             
+#         try:
+#             pygame.mixer.init()
+#             sound = pygame.mixer.Sound(stim_path)  # Use a .wav file
+#             sound.play()
+#             
+#             while pygame.mixer.get_busy(): # To keep the program running while the sound plays
+#                 pygame.time.delay(100)
+#                 
+#         finally:
+#             # Clean up GPIO
+#             self.fsm.exp.live_w.toggle_indicator("stim","off")
+#             time.sleep(2) # time with no stimulus- that the mouse still can lick
+#             print('output stoping')
+
         try:
-            pygame.mixer.init()
-            sound = pygame.mixer.Sound(stim_path)  # Use a .wav file
-            sound.play()
+            tone_shape = np.load(stim_path)
+            sd.play(tone_shape,len(tone_shape))
+            sd.wait()
             
-            while pygame.mixer.get_busy(): # To keep the program running while the sound plays
-                pygame.time.delay(100)
-                
+
         finally:
             # Clean up GPIO
             self.fsm.exp.live_w.toggle_indicator("stim","off")
