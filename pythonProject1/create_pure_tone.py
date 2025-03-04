@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.io.wavfile import write
-# import pygame
+import pygame
 import numpy as np
 import sounddevice as sd
 
@@ -96,7 +96,7 @@ tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
 
 duration = 1
 noise_filename ="white_noise.wav"
-# generate_white_noise(duration, Fs, voltage, noise_filename)
+generate_white_noise(duration, Fs, voltage, noise_filename)
 
 
 

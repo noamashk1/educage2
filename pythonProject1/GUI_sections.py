@@ -9,6 +9,9 @@ import parameters_GUI
 import live_window
 import threading
 import time
+import numpy as np
+import sounddevice as sd
+import os
 
 class TkinterApp:
     def __init__(self, root,exp, exp_name):
@@ -67,7 +70,7 @@ class TkinterApp:
         self.ok_button.pack(pady=20)
 
         ############# remove ######
-        self.btnRemove = tk.Button(self.left_frame_bottom, text="Load", command=self.set_levels_df) 
+        self.btnRemove = tk.Button(self.left_frame_bottom, text="stimulus generator", command=self.open_stim_generator) 
         self.btnRemove.grid(row=0, column=0, padx=10, pady=10)
 
 
@@ -113,8 +116,99 @@ class TkinterApp:
         self.left_frame_top.grid_columnconfigure(0, weight=1)  # Allow the Treeview to expand
         self.left_frame_top.grid_columnconfigure(1, weight=0)  # Button does not expand
 
+    def create_pure_tone(self, freq, voltage, tone_dur, ramp_dur, Fs):
+        """
+        Creates and plays a vector of a ramped sine wave with the input parameters.
 
+        Parameters:
+        freq       - frequency in kHz
+        voltage    - amplitude of wave before attenuation in volts
+        tone_dur   - duration of tone in seconds
+        ramp_dur   - duration of ramp in seconds
+        Fs         - sample rate in Hz
 
+        Returns:
+        tone_shape - A numpy array containing the generated tone
+        """
+
+        # Create ramp
+        ramp_length = int(tone_dur * Fs)
+        ramp = np.ones(ramp_length)
+
+        ramp_duration_samples = int(ramp_dur * Fs)
+
+        ramp[:ramp_duration_samples] = np.linspace(0, 1, ramp_duration_samples)
+        ramp[-ramp_duration_samples:] = np.linspace(1, 0, ramp_duration_samples)
+
+        # Create time vector
+        t = np.arange(tone_dur * Fs)  # time vector from 0 to tone_dur (in samples)
+
+        # Create tone
+        tone_shape = voltage * ramp * np.sin(2 * np.pi * freq * 1000 * t / Fs)
+
+        # Play sound
+        sd.play(tone_shape, Fs)
+        sd.wait()  # Wait until sound finishes playing
+
+        return tone_shape
+
+    def open_stim_generator(self):
+        # Create a new window
+        stim_window = tk.Toplevel(self.root)
+        stim_window.title("Stim Generator")
+        
+        # Labels and Entry fields for parameters
+        params = {
+            "Frequency (KHz)": 12,       # Default value
+            "Voltage": 1,                # Default value
+            "Tone Duration (s)": 0.5,     # Default value
+            "Ramp Duration (s)": 0.05,    # Default value
+            "Sampling Rate (Hz)": 300000  # Default value
+        }
+
+        entries = {}
+
+        for idx, (label, default_value) in enumerate(params.items()):
+            ttk.Label(stim_window, text=label).grid(row=idx, column=0, padx=5, pady=5, sticky="w")
+            entry = ttk.Entry(stim_window)
+            entry.insert(0, str(default_value))  # Insert default values
+            entry.grid(row=idx, column=1, padx=5, pady=5)
+            entries[label] = entry
+
+        # Function to get values and call create_pure_tone
+        def submit():
+            try:
+                freq = float(entries["Frequency (KHz)"].get())
+                voltage = float(entries["Voltage"].get())
+                tone_dur = float(entries["Tone Duration (s)"].get())
+                ramp_dur = float(entries["Ramp Duration (s)"].get())
+                Fs = int(entries["Sampling Rate (Hz)"].get())
+                tone_shape = self.create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
+                
+                                
+                filename = filedialog.asksaveasfilename(
+                    initialdir="./stimulus",
+                    title="Save Stimulus File",
+                    filetypes=[("NumPy files", "*.npy")],
+                    defaultextension=".npy"
+                )
+                
+                if filename:  # If user didn't cancel
+                    os.makedirs("stimulus", exist_ok=True)  # Ensure folder exists
+                    np.save(filename, tone_shape)  # Save as .npy file
+                    messagebox.showinfo("Success", f"Stimulus saved as: {filename}")
+
+                
+                stim_window.destroy()  # Close window after submission
+            except ValueError:
+                error_label.config(text="Invalid input! Please enter numeric values.", foreground="red")
+            # OK Button
+        ttk.Button(stim_window, text="OK", command=submit).grid(row=len(params), column=0, columnspan=2, pady=10)
+
+        # Error label
+        error_label = ttk.Label(stim_window, text="", foreground="red")
+        error_label.grid(row=len(params) + 1, column=0, columnspan=2)
+                
     def create_level_table(self):
         #root = tk.Tk()
         levels_window = tk.Toplevel(self.root)
