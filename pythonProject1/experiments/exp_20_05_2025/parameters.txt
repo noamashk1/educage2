@@ -30,3 +30,197 @@ ITI_time: None
 stimulus_length: 2
 
 ----------------------------------------
+
+--- 2025-05-20 18:04:07 ---
+
+Levels:
+Level Name                                                         Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimulus/13KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimulus/12KHz.npy           50 no-go      2
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62ea8c70>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 18:06:56 ---
+
+Levels:
+Level Name                                                         Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimulus/13KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimulus/12KHz.npy           50 no-go      2
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62ed1dd8>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 18:23:52 ---
+
+Levels:
+Level Name                                                         Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimulus/13KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimulus/12KHz.npy           50 no-go      2
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62f4cb08>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 18:26:17 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           50 no-go      2
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           70    go      3
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           30 catch      4
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62eaa4c0>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 18:35:36 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           50 no-go      2
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           70    go      3
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           30 catch      4
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62f50e50>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 18:37:11 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           50 no-go      2
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           70    go      3
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           30 catch      4
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62eb8190>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 18:46:26 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           50 no-go      2
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           70    go      3
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           30 catch      4
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62ee1e98>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-20 19:14:19 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           50    go      1
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           50 no-go      2
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/12KHz.npy           70    go      3
+        L2 /home/educage/git_educage2/educage2/pythonProject1/stimuli/13KHz.npy           30 catch      4
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x62f58c58>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 4
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------

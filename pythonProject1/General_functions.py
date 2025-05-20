@@ -52,5 +52,33 @@ def create_table(data_list, frame):
         for row in range(len(data_list) + 1):
             frame.grid_rowconfigure(row, weight=0)  # No expansion for rows to keep height small
 
+def generate_white_noise(duration, Fs, voltage):
+    """
+    Generate white noise.
 
+    Parameters:
+    duration - Duration of the noise in seconds
+    sample_rate - Sample rate in Hz
+    
+    Returns:
+    noise - A NumPy array containing the white noise samples
+    """
+    # Calculate the number of samples
+    num_samples = int(duration * Fs)
+    
+    # Generate random samples between -1 and 1
+    noise = np.random.uniform(-1, 1, num_samples)
+    
+    # Scale the noise by the voltage (amplitude) before converting to integers
+    noise *= voltage  # Adjust the volume
+
+    # Clamp the noise values to ensure they stay within the valid range
+    noise = np.clip(noise, -1, 1)
+    
+    sd.play(noise, Fs)
+    sd.wait()  # Wait until sound finishes playing
+    
+    np.save('/home/educage/git_educage2/educage2/pythonProject1/stimulus/white_noise', noise)
+
+    return noise
 

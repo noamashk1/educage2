@@ -1,19 +1,14 @@
 import json
 from typing import List, Dict, Any
-from reward_and_punishment_system import RewardAndPunishmentSystem
 import trial
 from level import Level
-import data_analysis
-#from exp_parameters import ExpParameters
 from mouse import Mouse
 from finite_state_machine import FiniteStateMachine
-from stimulus import Stimulus
 import tkinter as tk
 from tkinter import simpledialog
 import threading
 import GUI_sections
 import live_window
-
 import os
 import tkinter as tk
 from tkinter import messagebox
@@ -28,13 +23,6 @@ from datetime import datetime
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
         
-#         root = tk.Tk()
-#         root.withdraw()  # Hide the root window
-# 
-#         # Show dialog box to get the experiment name
-#         self.txt_file_name = simpledialog.askstring("Input", "Please enter the experiment name:")
-#         root.destroy()
-# #         
         
         self.exp_params = None#ExpParameters(self)
         self.fsm = None
@@ -66,26 +54,20 @@ class Experiment:
         """This method is called by App when the OK button is pressed."""
         self.levels_df = levels_df
         
-#     def new_txt_file(self, filename):
-#         with open(self.txt_file_name, 'w') as file:
-#             pass
+
     def new_txt_file(self, filename):
         # Build the path: ./experiments/filename/
         folder_path = os.path.join(os.getcwd(), "experiments", filename)
         os.makedirs(folder_path, exist_ok=True)  # Ensure the folder exists
 
-        # Full path for the text file
-        self.txt_file_path = os.path.join(folder_path,filename+".txt")  # Change "output.txt" to desired name if needed
+        self.txt_file_path = os.path.join(folder_path,filename+".txt")  
 
-        # Create the file
         with open(self.txt_file_path, 'w') as file:
             pass
-
 
     def run_experiment(self):
         # Check periodically if parameters have been set
         if self.exp_params is None:
-            #print("Waiting for parameters...")
             self.root.after(100,lambda: self.run_experiment())  # Check again after 100ms
         else:
             print("Parameters received.")
@@ -95,23 +77,16 @@ class Experiment:
 
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
-#         fsm = FiniteStateMachine(self.exp_params, self.mice_dict, self.levels_df, self.txt_file_name, self.live_w)
         fsm = FiniteStateMachine(self)
         self.fsm = fsm
         print("FSM created:", self.fsm)
         
     def run_live_window(self):
         self.root.after(0, self.open_live_window)
-        #self.open_live_window()
         
     def open_live_window(self):
         if self.live_w is None:
-            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
             self.live_w = live_window.LiveWindow()#self.GUI
-            print(self.live_w)
-            print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-            #self.live_w = live_window.LiveWindow()
-
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)
@@ -120,9 +95,6 @@ class Experiment:
         with open(filename, 'w') as f:
             json.dump(self.results, f, indent=4)
 
-
-
- # Example usage:
 if __name__ == "__main__":
     
     created_folder_name = None

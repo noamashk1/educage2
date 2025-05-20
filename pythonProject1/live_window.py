@@ -3,7 +3,7 @@ import sys
 
 
 class LiveWindow:
-    def __init__(self):#,
+    def __init__(self):
         # Create the main window
         print('live_window constructor')
         self.root = tk.Toplevel()
@@ -11,10 +11,6 @@ class LiveWindow:
         self.root.geometry("300x530")  # Set the window dimensions to 400x600 pixels
         
         self.pause = False
-#         self.root = tk.Tk()
-#         self.root.title("Live Window")
-#         self.root.geometry("300x480")  # Set the window dimensions to 400x600 pixels
-
         # Create title label
         title_label = tk.Label(self.root, text="Live Window", font=("Arial", 16))
         title_label.pack(pady=(10, 5), anchor='w')  # Left align title with some padding
@@ -64,8 +60,6 @@ class LiveWindow:
         self.end_button = tk.Button(self.button_frame, text="End Experiment", command=self.end_experiment)
         self.end_button.pack(side='left', padx=5)
 
-        # Start the GUI event loop
-        #self.root.mainloop()
 
     def create_indicator(self, name):
         frame = tk.Frame(self.root)
@@ -107,12 +101,6 @@ class LiveWindow:
         elif label_text == "score:":
             self.score_value = value_label  
 
-
-#     def toggle_indicator(self, canvas):
-#         # Check current state and toggle the indicator light
-#         current_color = canvas.itemcget(self.indicator_circle, "fill")  # Get current fill color
-#         new_color = "gray" if current_color == "green" else "green"  # Toggle the state
-#         canvas.itemconfig(self.indicator_circle, fill=new_color)  # Change circle color
         
     def toggle_indicator(self, bulb_name, turn_to):
         # Check current state and toggle the indicator light
@@ -162,9 +150,6 @@ class LiveWindow:
 
     def end_experiment(self):
         print("Experiment ended")
-#         self.toggle_indicator(self.trial_light)  # Toggle Trial light
-#         self.root.destroy()  # Close the window
-#         sys.exit()
         self.root.quit()
 
     def update_last_rfid(self, rfid):

@@ -17,14 +17,6 @@ class Trial:
 
     def update_current_mouse(self, new_mouse: 'Mouse'):
         self.current_mouse = new_mouse
-    # def record_performance(self,txt_file_name):
-    #     pass
-    # #     def log_parameters(self, **trial_params):
-    #     # This writes the given parameters to the text file
-    #     with open(self.txt_file_name, 'a') as file:
-    #         for key, value in trial_params.items():
-    #             file.write(f"{key}: {value}\n")
-    #         file.write("-" * 30 + "\n")
 
     def save_trial(self):
         pass
@@ -34,14 +26,12 @@ class Trial:
 
     def calculate_stim(self): #determine if the trial is go\nogo\catch using random
         level_name = self.current_mouse.get_level()
-#         level_rows = self.fsm.levels_df.loc[self.fsm.levels_df['Level Name'] == level_name]
         level_rows = self.fsm.exp.levels_df.loc[self.fsm.exp.levels_df['Level Name'] == level_name]
         probabilities = level_rows["Probability"].tolist()
         indices = level_rows["Index"].tolist()
         total_probability = sum(probabilities)
         normalized_probabilities = [p / total_probability for p in probabilities]
         chosen_index = random.choices(indices, weights=normalized_probabilities, k=1)[0]
-#         self.current_stim_df = self.fsm.levels_df.loc[(self.fsm.levels_df['Level Name'] == level_name)&(self.fsm.levels_df['Index'] == chosen_index)]
         self.current_stim_df = self.fsm.exp.levels_df.loc[(self.fsm.exp.levels_df['Level Name'] == level_name)&(self.fsm.exp.levels_df['Index'] == chosen_index)]
         self.current_value = self.current_stim_df.iloc[0]['Value']
         self.current_stim_path = self.current_stim_df.iloc[0]['Stimulus Path']
@@ -79,23 +69,5 @@ class Trial:
                 writer.writerow(header)  # Write the header
             writer.writerow(trial_data)
 
-# Example trial results
-# for trial_num in range(1, 6):  # Simulating 5 trials
-#     trial_result = [trial_num, 1000, 5, 2, 0.1, 44100]  # Example data for one trial
-#     write_trial_to_csv(trial_result)
-#     print(f"Trial {trial_num} results written to 'experiment_trials.csv'")
-#     
-    
-"""זה לק שנמצא כרגע במחלקת מערכת עונש ותגמול"""
-    # def evaluate_response(self, response):
-    #     if response.lower() == 'correct':
-    #         return 'reward'
-    #     else:
-    #         return 'punishment'
-    #
-    # def deliver_reward(self):
-    #     print("Delivering reward.")
-    #
-    # def impose_punishment(self):
-    #     print("Imposing punishment.")
+
 

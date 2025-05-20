@@ -31,7 +31,7 @@ class TkinterApp:
         # Create LabelFrames for the layout
         self.left_frame_top = tk.LabelFrame(root, text="Levels list", font=("Helvetica", 12, "bold"), padx=10, pady=10)
         self.left_frame_middle = tk.LabelFrame(root, text="Mice list", font=("Helvetica", 12, "bold"), padx=10, pady=10)
-        self.left_frame_bottom = tk.LabelFrame(root, text="option", font=("Helvetica", 12, "bold"), padx=10, pady=10)
+        self.left_frame_bottom = tk.LabelFrame(root, text="stimuli generation", font=("Helvetica", 12, "bold"), padx=10, pady=10)
         self.right_frame = tk.LabelFrame(root, text="Parameters", font=("Helvetica", 12, "bold"), padx=10, pady=10)
 
         # Set the desired dimensions
@@ -70,9 +70,9 @@ class TkinterApp:
         self.ok_button = tk.Button(self.right_frame, text="OK", command=self.get_parameters)
         self.ok_button.pack(pady=20)
 
-        ############# remove ######
-        self.btnRemove = tk.Button(self.left_frame_bottom, text="stimuli generator", command=self.open_stim_generator) 
-        self.btnRemove.grid(row=0, column=0, padx=10, pady=10)
+        ############# stimuli generator ######
+        self.btnStimGenerator = tk.Button(self.left_frame_bottom, text="stimuli generator", command=self.open_stim_generator) 
+        self.btnStimGenerator.grid(row=0, column=0, padx=10, pady=10)
 
 
         # Create a Frame to hold the Treeview and Scrollbars
@@ -92,11 +92,6 @@ class TkinterApp:
 
         # Set the width of the columns
         self.set_fixed_column_widths()
-#         self.tree.column("Level Name",  width=50)
-#         self.tree.column("Stimulus Path",  width=50)
-#         self.tree.column("Probability",  width=50)
-#         self.tree.column("Value", width=50)
-#         self.tree.column("Index",  width=50)
 
         # Create vertical scrollbar
         self.vsb = ttk.Scrollbar(self.tree_frame, orient="vertical", command=self.tree.yview)
@@ -212,10 +207,8 @@ class TkinterApp:
         error_label.grid(row=len(params) + 1, column=0, columnspan=2)
                 
     def create_level_table(self):
-        #root = tk.Tk()
         levels_window = tk.Toplevel(self.root)
         level_definition_app = levels_table_creating.LevelDefinitionApp(levels_window)
-        #levels_window = level_table2.LevelDefinitionApp(root)
         self.root.wait_window(levels_window)
         if level_definition_app.save_path:  # Ensure save_path is defined
             self.load_table(level_definition_app.save_path)
@@ -335,19 +328,6 @@ class TkinterApp:
             self.experiment.set_parameters(parameters)
             self.save_parameters_txt()
             
-#             self.disable_parameters_buttons()
-
-#     def disable_parameters_buttons(self):
-#         self.btnLoadLvl.config(state=tk.DISABLED)
-#         self.btnCreateLvl.config(state=tk.DISABLED)
-#         self.mice_table.get_parameter_button.config(state=tk.DISABLED)
-#             
-#     def able_parameters_buttons(self):
-#         self.btnLoadLvl.config(state=tk.NORMAL)
-#         self.btnCreateLvl.config(state=tk.NORMAL)
-#         self.mice_table.get_parameter_button.config(state=tk.NORMAL)
-    
-
 
     def save_parameters_txt(self):
         # Get the folder where the parameters file should be saved
@@ -384,10 +364,3 @@ class TkinterApp:
         self.tree.column("Probability", width=50)
         self.tree.column("Value", width=50)
         self.tree.column("Index", width=50)
-
-
-# # Main code to run the app
-# if __name__ == "__main__":
-#     root = tk.Tk()
-#     app = TkinterApp(root)
-#     root.mainloop()
