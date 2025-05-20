@@ -12,6 +12,7 @@ import time
 import numpy as np
 import sounddevice as sd
 import os
+from datetime import datetime
 
 class TkinterApp:
     def __init__(self, root,exp, exp_name):
@@ -70,7 +71,7 @@ class TkinterApp:
         self.ok_button.pack(pady=20)
 
         ############# remove ######
-        self.btnRemove = tk.Button(self.left_frame_bottom, text="stimulus generator", command=self.open_stim_generator) 
+        self.btnRemove = tk.Button(self.left_frame_bottom, text="stimuli generator", command=self.open_stim_generator) 
         self.btnRemove.grid(row=0, column=0, padx=10, pady=10)
 
 
@@ -151,6 +152,7 @@ class TkinterApp:
         sd.wait()  # Wait until sound finishes playing
 
         return tone_shape
+    
 
     def open_stim_generator(self):
         # Create a new window
@@ -185,16 +187,16 @@ class TkinterApp:
                 Fs = int(entries["Sampling Rate (Hz)"].get())
                 tone_shape = self.create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
                 
-                                
+                os.makedirs("stimuli", exist_ok=True)  # Ensure folder exists      
                 filename = filedialog.asksaveasfilename(
-                    initialdir="./stimulus",
+                    initialdir="./stimuli",
                     title="Save Stimulus File",
                     filetypes=[("NumPy files", "*.npy")],
                     defaultextension=".npy"
                 )
                 
                 if filename:  # If user didn't cancel
-                    os.makedirs("stimulus", exist_ok=True)  # Ensure folder exists
+#                     os.makedirs("stimuli", exist_ok=True)  # Ensure folder exists
                     np.save(filename, tone_shape)  # Save as .npy file
                     messagebox.showinfo("Success", f"Stimulus saved as: {filename}")
 
@@ -239,7 +241,14 @@ class TkinterApp:
 
     def load_table(self, file_path = None):
         if file_path == None:
-            file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx")])
+#             file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx")])
+            levels_dir = os.path.join(os.getcwd(), "Levels")
+
+            # Use "Levels" if it exists; otherwise, use current directory
+            default_dir = levels_dir if os.path.exists(levels_dir) else os.getcwd()
+
+            # Open the file dialog
+            file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv"), ("Excel files", "*.xlsx")],initialdir=default_dir,title="Open Levels File")
         if not file_path:
             return  # User canceled the dialog
         try:
@@ -324,6 +333,7 @@ class TkinterApp:
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.run_live_window()
             self.experiment.set_parameters(parameters)
+            self.save_parameters_txt()
             
 #             self.disable_parameters_buttons()
 
@@ -336,6 +346,36 @@ class TkinterApp:
 #         self.btnLoadLvl.config(state=tk.NORMAL)
 #         self.btnCreateLvl.config(state=tk.NORMAL)
 #         self.mice_table.get_parameter_button.config(state=tk.NORMAL)
+    
+
+
+    def save_parameters_txt(self):
+        # Get the folder where the parameters file should be saved
+        folder_path = os.path.dirname(self.experiment.txt_file_path)
+        parameters_file_path = os.path.join(folder_path, "parameters.txt")
+
+        # Open the file in append mode
+        with open(parameters_file_path, 'a') as file:
+            # Write date and time
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            file.write(f"\n--- {timestamp} ---\n")
+
+            # Write Levels
+            file.write("\nLevels:\n")
+            file.write(self.experiment.levels_df.to_string(index=False))  # Don't include DataFrame index
+            file.write("\n")
+
+            # Write Mice
+            file.write("\nMice:\n")
+            for key, value in self.experiment.mice_dict.items():
+                file.write(f"{key}: {value}\n")
+
+            # Write Parameters
+            file.write("\nParameters:\n")
+            for key, value in self.experiment.exp_params.items():
+                file.write(f"{key}: {value}\n")
+
+            file.write("\n" + "-"*40 + "\n")
     
     def set_fixed_column_widths(self):
         # Define fixed widths for the columns

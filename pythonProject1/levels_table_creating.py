@@ -3,6 +3,7 @@ from tkinter import messagebox, filedialog
 from tkinter import ttk  # Make sure to import ttk for the Combobox
 import csv  # To handle CSV writing
 from tkinter import filedialog  # To open the file dialog for saving files
+import os
 
 
 class LevelDefinitionApp:
@@ -121,9 +122,21 @@ class LevelDefinitionApp:
             data_to_save.append([level_name, stimulus_path,probability,value,index])#[stimulus_name, filename_label.cget("text"), probability_selection])
 
         if all_filled:
-            # Prompt user to choose location to save the CSV file
-            file_path = filedialog.asksaveasfilename(defaultextension=".csv", 
-                                                       filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
+#             # Prompt user to choose location to save the CSV file
+#             file_path = filedialog.asksaveasfilename(defaultextension=".csv", 
+#                                                        filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
+
+            levels_dir = os.path.join(os.getcwd(), "Levels")
+            os.makedirs(levels_dir, exist_ok=True)  # Create it if it doesn't exist
+
+            # Open the file dialog in the "Levels" folder
+            file_path = filedialog.asksaveasfilename(
+                defaultextension=".csv",
+                filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+                initialdir=levels_dir,  # Set default directory
+                title="Save Levels File"
+            )
+
             if file_path:  # If valid path is provided
                 # Write to CSV
                 with open(file_path, mode='w', newline='') as file:
@@ -183,8 +196,15 @@ class LevelDefinitionApp:
         
     def load_stimulus_file(self, entry, label):
         # Open file dialog to select a stimulus file
-        file_path = filedialog.askopenfilename(title="Select Stimulus File",
-                                                filetypes=(("All Files", "*.*"),))
+        stimuli_dir = os.path.join(os.getcwd(), "stimuli")
+        default_dir = stimuli_dir if os.path.exists(stimuli_dir) else os.getcwd()
+        file_path = filedialog.askopenfilename(
+        filetypes=(("All Files", "*.*"),),
+        initialdir=default_dir,
+        title="Select Stimulus File"
+    )
+#          file_path = filedialog.askopenfilename(title="Select Stimulus File",
+#                                                  filetypes=(("All Files", "*.*"),))
         if file_path:  # If a file was selected
             entry.delete(0, tk.END)  # Clear the current entry
             entry.insert(0, file_path)  # Insert the selected file path

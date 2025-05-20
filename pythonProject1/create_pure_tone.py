@@ -127,11 +127,11 @@ ramp_dur = 0.05  # Ramp duration in seconds
 Fs = 300000  # Sampling rate in Hz
 filename = 'pure_tone_4k.wav'  # Name of the output WAV file
 
-# tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
+tone = create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
 
-duration = 1
-noise_filename ="white_noise.wav"
-generate_white_noise(duration, Fs, voltage)
+# duration = 1
+# noise_filename ="white_noise.wav"
+# generate_white_noise(duration, Fs, voltage)
 
 
 

@@ -1,5 +1,0 @@
-Level Name,Stimulus Path,Probability,Value,Index
-L1,/home/educage/git_educage2/educage2/pythonProject1/level5.csv,50,no-go,1
-L1,/home/educage/git_educage2/educage2/pythonProject1/exp_parameters.py,50,go,2
-L2,/home/educage/git_educage2/educage2/pythonProject1/exp_parameters.py,30,go,3
-L2,/home/educage/git_educage2/educage2/pythonProject1/level6.csv,90,catch,4

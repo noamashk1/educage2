@@ -280,7 +280,7 @@ class TrialState(State):
     def on_event(self, event):
         if event == 'trial_over':
             time.sleep(0.5) # wait for showing the score on the live window before it is pass to the next trial
-            self.fsm.current_trial.write_trial_to_csv(self.fsm.exp.txt_file_name)
+            self.fsm.current_trial.write_trial_to_csv(self.fsm.exp.txt_file_path)
             if self.fsm.exp.exp_params['ITI_time'] == None:
                 while ser.in_waiting > 0: # wait until the mouse exit the port
                     ser.flushInput()  # Flush input buffer
