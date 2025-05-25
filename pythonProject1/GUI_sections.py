@@ -126,7 +126,16 @@ class TkinterApp:
         Returns:
         tone_shape - A numpy array containing the generated tone
         """
-
+        
+        # Warn the user if voltage is too high
+        if voltage > 0.6:
+            root = tk.Tk()
+            root.withdraw()  # Hide the main Tkinter window
+            messagebox.showwarning(
+                "Warning: High Voltage",
+                "Voltage above 0.6V may cause distortion and affect the tone quality."
+            )
+            root.destroy()
         # Create ramp
         ramp_length = int(tone_dur * Fs)
         ramp = np.ones(ramp_length)
@@ -156,8 +165,8 @@ class TkinterApp:
         
         # Labels and Entry fields for parameters
         params = {
-            "Frequency (KHz)": 12,       # Default value
-            "Voltage": 1,                # Default value
+            "Frequency (KHz)": 15,       # Default value
+            "Voltage": 0.5,                # Default value
             "Tone Duration (s)": 0.5,     # Default value
             "Ramp Duration (s)": 0.05,    # Default value
             "Sampling Rate (Hz)": 300000  # Default value
