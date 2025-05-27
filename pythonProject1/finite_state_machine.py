@@ -155,7 +155,8 @@ class TrialState(State):
 
         finally:
             self.fsm.exp.live_w.toggle_indicator("stim","off")
-            time.sleep(2) # time with no stimulus- that the mouse still can lick
+            #time.sleep(2) # time with no stimulus- that the mouse still can lick
+            time.sleep(int(self.fsm.exp.exp_params["time_to_lick_after_stim"]))# time with no stimulus- that the mouse still can lick
             print('output stoping')
 
     def receive_input(self, stop):
@@ -193,9 +194,11 @@ class TrialState(State):
             time.sleep(0.5) # wait for showing the score on the live window before it is pass to the next trial
             self.fsm.current_trial.write_trial_to_csv(self.fsm.exp.txt_file_path)
             if self.fsm.exp.exp_params['ITI_time'] == None:
-                while ser.in_waiting > 0: # wait until the mouse exit the port
-                    ser.flushInput()  # Flush input buffer
-                    time.sleep(0.05)
+                while GPIO.input(IR_pin) == GPIO.HIGH: # Waiting for IR rays to not break
+                    time.sleep(0.09)
+#                 while ser.in_waiting > 0: # wait until the mouse exit the port
+#                     ser.flushInput()  # Flush input buffer
+#                     time.sleep(0.05)
             else:
                 time.sleep(int(self.fsm.exp.exp_params['ITI_time']))
             print("Transitioning from trial to idel")

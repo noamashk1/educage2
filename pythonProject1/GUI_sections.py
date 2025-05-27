@@ -325,6 +325,7 @@ class TkinterApp:
                 "start_trial_time": self.parameters_btns.start_trial_bin_size_entry.get() if self.parameters_btns.start_trial_display_option.get() == '2' else None,
                 "IR_no_RFID_option": self.parameters_btns.option_var.get(),
                 "lick_threshold": self.parameters_btns.licks_entry.get(),
+                "time_to_lick_after_stim": self.parameters_btns.time_licks_entry.get(),
                 "ITI": self.parameters_btns.ITI_display_option.get(),
                 "ITI_time": self.parameters_btns.ITI_bin_size_entry.get() if self.parameters_btns.ITI_display_option.get() == '2' else None,
                 "stimulus_length": self.experiment.stim_length,

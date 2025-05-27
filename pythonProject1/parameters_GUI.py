@@ -90,11 +90,19 @@ class ParametersApp:
         self.num_licks_label = tk.Label(self.num_licks_frame, text="num of licks as response:", font=self.font_style)
         self.num_licks_label.pack(side=tk.LEFT)
         self.licks_entry = tk.Entry(self.num_licks_frame, font=self.font_style, width=5)
-        self.licks_entry.insert(0,"4")
+        self.licks_entry.insert(0,"5")
         self.licks_entry.pack(side=tk.LEFT, padx=10)
         self.num_licks_frame.pack(anchor=tk.W,pady=10)
 
 #####################################################################
+        
+        self.time_licks_frame = tk.Frame(root)
+        self.time_licks_label = tk.Label(self.time_licks_frame, text="time to count licks after the stimulus:", font=self.font_style)
+        self.time_licks_label.pack(side=tk.LEFT)
+        self.time_licks_entry = tk.Entry(self.time_licks_frame, font=self.font_style, width=5)
+        self.time_licks_entry.insert(0,"2")
+        self.time_licks_entry.pack(side=tk.LEFT, padx=10)
+        self.time_licks_frame.pack(anchor=tk.W,pady=10)
 
         # Entry field for custom bin size (initially hidden)
 #         self.ITI_frame = tk.Frame(root)
@@ -156,25 +164,26 @@ class ParametersApp:
         else:  # Hide entry for other options
             self.ITI_bin_size_entry.pack_forget()
 
-    def get_parameters(self):
-
-        """Retrieve all user-selected parameters from the GUI."""
-        parameters = {
-            "display_option": self.display_option.get(),
-            "bin_size": self.bin_size_entry.get() if self.display_option.get() == '3' else None,
-            # Add other options similarly, following the widget structure
-            # For example:
-            "start_trial_option": self.display_option2.get(),
-            "start_trial_time": self.bin_size_entry2.get() if self.display_option2.get() == '2' else None,
-            "IR_no_RFID_option": self.option_var.get(),
-            "lick_threshold": self.licks_entry.get(),
-            "ITI": self.ITI_display_option.get(),
-            "ITI_time": self.ITI_bin_size_entry.get() if self.ITI_display_option.get() == '2' else None,
-        }
-        # Set parameters in the Experiment class
-        self.experiment.set_parameters(parameters)
-        return parameters
-
+#     def get_parameters(self):
+# 
+#         """Retrieve all user-selected parameters from the GUI."""
+#         parameters = {
+#             "display_option": self.display_option.get(),
+#             "bin_size": self.bin_size_entry.get() if self.display_option.get() == '3' else None,
+#             # Add other options similarly, following the widget structure
+#             # For example:
+#             "start_trial_option": self.display_option2.get(),
+#             "start_trial_time": self.bin_size_entry2.get() if self.display_option2.get() == '2' else None,
+#             "IR_no_RFID_option": self.option_var.get(),
+#             "lick_threshold": self.licks_entry.get(),
+#             "time_to_lick_after_stim": self.time_licks_entry.get(),
+#             "ITI": self.ITI_display_option.get(),
+#             "ITI_time": self.ITI_bin_size_entry.get() if self.ITI_display_option.get() == '2' else None,
+#         }
+#         # Set parameters in the Experiment class
+#         self.experiment.set_parameters(parameters)
+#         return parameters
+############################################
     # def run_analysis(self):
     #     """Run analysis using all selected parameters."""
     #     params = self.get_parameters()
