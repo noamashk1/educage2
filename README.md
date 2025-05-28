@@ -52,13 +52,13 @@ _or_
 
 ---
 
-## Installation ⚙️
+## Manuals ⚙️
+For the full manual file, click [here]().
 
 ### Requirements
 - Python 3.6–3.12  
 - Tkinter  
-- Pandas, Plotly, NumPy  
-- TDT drivers (if using hardware)
+- Pandas, matplotlib, NumPy  
 
 ### Installation
 
@@ -67,20 +67,34 @@ cd educage
 pip install -r requirements.txt
 python main.py
 
----
-
 ### How to Use 🖱️
 
-1. Launch the GUI: python main.py
-2. Enter experiment parameters (e.g., Mouse ID, session type, number of trials).  
+1. Launch the GUI: python experiment.py
+2. Enter experiment parameters (e.g., Mice IDs, Levels).  
 3. Start the session and monitor progress via the built-in graphs.  
-4. Data is saved automatically to the `/data` folder in CSV format.  
+4. Data is saved automatically to the `/experiments` folder in txt format.  
 5. Use the built-in visualizations to explore:
    - 🟦 Score distributions (bar chart)  
-   - 📈 d-prime over time (line plot with sliding window of 20 trials)
+   - 📈 d-prime over time (line plot with sliding window)
 
 ---
 
+### Acknowledgements 🙏
+
+- Developed at **Prof. Adi Mizrachi's Lab**, **ELSC**
+- Thanks to:
+  - All the mice who participated in testing 🐭  
+  - Benne and Or  
+  - Chat GPT ❤️  
+
+---
+
+> 🐛 Found a bug? 🌟 Got an idea? 💬 Have questions?
+> 
+> *Educage is a work in progress. Feedback, forks, and ideas are always welcome!*
+> 
+
+<!-- This is a hidden comment that won't be displayed 
 ### Contributing 🤝
 
 We welcome contributions of all kinds:
@@ -98,16 +112,5 @@ We welcome contributions of all kinds:
 This project is licensed under the **MIT License**.  
 See the [`LICENSE`](LICENSE) file for full details.
 
----
 
-### Acknowledgements 🙏
-
-- Developed at **[Your Lab Name]**, **[University Name]**
-- Thanks to:
-  - All the mice who participated in testing 🐭  
-  - [Your PI or colleagues you want to mention]  
-  - The open-source community ❤️  
-
----
-
-> *Educage is a work in progress. Feedback, forks, and ideas are always welcome!*
+--- -->
