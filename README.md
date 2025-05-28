@@ -1,5 +1,5 @@
 # Educage 🧠🐭  
-**Effortless Behavioral Experiments for Mice**
+**Behavioral Experiments for Mice**
 
 ---
 
@@ -17,10 +17,10 @@ Whether you're training mice in auditory discrimination tasks or running custom 
 
 - 🧠 **User-friendly GUI** for setting up and running experiments  
 - 🐭 **Compatible with standard behavioral cages** (e.g., with sound delivery, water reward, and sensors)  
-- 📊 **Automated data collection** in CSV format  
+- 📊 **Automated data collection** in txt format  
 - 📈 **Built-in plotting** of behavioral metrics like d-prime and score distributions  
 - 🧪 **Easily customizable** for different paradigms  
-- 🔌 **Hardware integration** (e.g., TDT system)  
+- 🔌 **Hardware integration** (e.g., Raspberrypi, TDT system)  
 
 ---
 
@@ -61,8 +61,53 @@ _or_
 - TDT drivers (if using hardware)
 
 ### Installation
-```bash
+
 git clone https://github.com/YOUR_USERNAME/educage.git
 cd educage
 pip install -r requirements.txt
 python main.py
+
+---
+
+### How to Use 🖱️
+
+1. Launch the GUI: python main.py
+2. Enter experiment parameters (e.g., Mouse ID, session type, number of trials).  
+3. Start the session and monitor progress via the built-in graphs.  
+4. Data is saved automatically to the `/data` folder in CSV format.  
+5. Use the built-in visualizations to explore:
+   - 🟦 Score distributions (bar chart)  
+   - 📈 d-prime over time (line plot with sliding window of 20 trials)
+
+---
+
+### Contributing 🤝
+
+We welcome contributions of all kinds:
+
+- 🐛 Found a bug? Open an issue  
+- 🌟 Got an idea? Start a discussion or pull request  
+- 💬 Have questions? We'd love to hear from you  
+
+> Please follow our [contribution guidelines](CONTRIBUTING.md) *(coming soon)*.
+
+---
+
+### License 📄
+
+This project is licensed under the **MIT License**.  
+See the [`LICENSE`](LICENSE) file for full details.
+
+---
+
+### Acknowledgements 🙏
+
+- Developed at **[Your Lab Name]**, **[University Name]**
+- Thanks to:
+  - All the mice who participated in testing 🐭  
+  - [Your PI or colleagues you want to mention]  
+  - The open-source community ❤️  
+
+---
+
+> *Educage is a work in progress. Feedback, forks, and ideas are always welcome!*
