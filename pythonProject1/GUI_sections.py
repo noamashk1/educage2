@@ -13,6 +13,8 @@ import numpy as np
 import sounddevice as sd
 import os
 from datetime import datetime
+from data_analysis import DataAnalysis
+
 
 class TkinterApp:
     def __init__(self, root,exp, exp_name):
@@ -31,7 +33,7 @@ class TkinterApp:
         # Create LabelFrames for the layout
         self.left_frame_top = tk.LabelFrame(root, text="Levels list", font=("Helvetica", 12, "bold"), padx=10, pady=10)
         self.left_frame_middle = tk.LabelFrame(root, text="Mice list", font=("Helvetica", 12, "bold"), padx=10, pady=10)
-        self.left_frame_bottom = tk.LabelFrame(root, text="stimuli generation", font=("Helvetica", 12, "bold"), padx=10, pady=10)
+        self.left_frame_bottom = tk.LabelFrame(root, text="Tools", font=("Helvetica", 12, "bold"), padx=10, pady=10)
         self.right_frame = tk.LabelFrame(root, text="Parameters", font=("Helvetica", 12, "bold"), padx=10, pady=10)
 
         # Set the desired dimensions
@@ -73,6 +75,8 @@ class TkinterApp:
         ############# stimuli generator ######
         self.btnStimGenerator = tk.Button(self.left_frame_bottom, text="stimuli generator", command=self.open_stim_generator) 
         self.btnStimGenerator.grid(row=0, column=0, padx=10, pady=10)
+        self.btnDataAnalysis = tk.Button(self.left_frame_bottom, text="Data Analysis",command=self.open_data_analysis_window)
+        self.btnDataAnalysis.grid(row=0, column=1, padx=10, pady=10)
 
 
         # Create a Frame to hold the Treeview and Scrollbars
@@ -374,3 +378,7 @@ class TkinterApp:
         self.tree.column("Probability", width=50)
         self.tree.column("Value", width=50)
         self.tree.column("Index", width=50)
+
+    def open_data_analysis_window(self):
+        analysis_root = tk.Toplevel()
+        DataAnalysis(analysis_root)

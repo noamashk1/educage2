@@ -67,3 +67,164 @@ ITI_time: None
 stimulus_length: 2
 
 ----------------------------------------
+
+--- 2025-05-29 15:42:48 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5f503e80>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 2
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-29 15:46:00 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5f889a48>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 2
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-29 15:46:27 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5dc14a78>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 1
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-29 16:16:45 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5f8d0af0>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 1
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-29 16:22:44 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5f8d0e50>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 1
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-29 16:23:20 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5f8efb50>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 1
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
+
+--- 2025-05-29 17:00:18 ---
+
+Levels:
+ Level Name                                                       Stimulus Path  Probability Value  Index
+habituation /home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHz.npy          100    go      1
+
+Mice:
+0007DEC04C: <mouse.Mouse object at 0x5f85dda8>
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 2
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------
