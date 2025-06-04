@@ -123,7 +123,7 @@ if __name__ == "__main__":
             os.makedirs(full_path)
 
         created_folder_name = folder_name
-        messagebox.showinfo("Success", f"Folder ready:\n{full_path}")
+        #messagebox.showinfo("Success", f"Folder ready:\n{full_path}")
         root.destroy()
 
     # Create the GUI window

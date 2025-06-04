@@ -1,0 +1,3 @@
+date,start time,end time,mouse ID,level,"go
+o-go",stim index,stim name,score,licks_time
+2025-06-04,15:51:54,15:52:00,0007DEC04C,L1,no-go,2,17KHz.npy,fa,"['15:51:56', '15:51:56', '15:51:56', '15:51:56', '15:51:56', '15:51:56']"

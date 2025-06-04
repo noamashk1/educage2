@@ -105,27 +105,62 @@ class IdleState(State):
             return False
 
 
+# class InPortState(State):
+#     def __init__(self, fsm):
+#         super().__init__("port", fsm)
+#         threading.Thread(target=self.wait_for_event, daemon=True).start()
+# 
+#     def wait_for_event(self):
+#         while GPIO.input(IR_pin) != GPIO.HIGH:
+#             time.sleep(0.09)
+#         self.fsm.exp.live_w.toggle_indicator("IR", "on")
+#         time.sleep(0.1)
+#         self.fsm.exp.live_w.toggle_indicator("IR", "off")
+#         print("The mouse entered!")
+#         if self.fsm.exp.exp_params["start_trial_time"] is not None:
+#             time.sleep(int(self.fsm.exp.exp_params["start_trial_time"]))
+#             print("sleep before start trial")
+#         self.on_event('IR_stim')
+# 
+#     def on_event(self, event):
+#         if event == 'IR_stim':
+#             print("Transitioning from in_port to trial")
+#             self.fsm.state = TrialState(self.fsm)
+
 class InPortState(State):
     def __init__(self, fsm):
         super().__init__("port", fsm)
         threading.Thread(target=self.wait_for_event, daemon=True).start()
 
     def wait_for_event(self):
+        timeout_seconds = 15  # timeout
+        start_time = time.time()
+
         while GPIO.input(IR_pin) != GPIO.HIGH:
+            if time.time() - start_time > timeout_seconds:
+                print("Timeout in InPortState: returning to IdleState")
+                self.on_event("timeout")
+                return
             time.sleep(0.09)
+
         self.fsm.exp.live_w.toggle_indicator("IR", "on")
         time.sleep(0.1)
         self.fsm.exp.live_w.toggle_indicator("IR", "off")
         print("The mouse entered!")
+
         if self.fsm.exp.exp_params["start_trial_time"] is not None:
             time.sleep(int(self.fsm.exp.exp_params["start_trial_time"]))
-            print("sleep before start trial")
+            print("Sleep before start trial")
+
         self.on_event('IR_stim')
 
     def on_event(self, event):
         if event == 'IR_stim':
-            print("Transitioning from in_port to trial")
+            print("Transitioning from InPort to Trial")
             self.fsm.state = TrialState(self.fsm)
+        elif event == 'timeout':
+            print("Transitioning from InPort to Idle due to timeout")
+            self.fsm.state = IdleState(self.fsm)
 
 class TrialState(State):
     def __init__(self, fsm):

@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import simpledialog, messagebox, ttk
 from tkinter import scrolledtext
+from tkinter import filedialog
 import serial
 import threading
 import General_functions
 import pandas as pd
 from mouse import Mouse
+import os
 # Main application
 class MainApp:
     def __init__(self, master, GUI):
@@ -27,7 +29,42 @@ class MainApp:
         # Button to open the new parameter window
         self.get_parameter_button = tk.Button(self.miceBtnsFrame, text="Update mice table", command=self.open_parameter_window)
         self.get_parameter_button.pack(pady=10)
+        self.load_mice_button = tk.Button(self.miceBtnsFrame, text="Load mice table", command=self.load_mice_list_from_file)
+        self.load_mice_button.pack(pady=10)
 
+    def load_mice_list_from_file(self):
+#         if len(self.main_GUI.levels_list) == 0:
+#             messagebox.showerror("Error", "You must first set levels for the experiment.")
+#             return
+#         file_path = filedialog.askopenfilename(
+#             title="Select Mice List TXT File",
+#             filetypes=[("Text Files", "*.txt")])
+        # Get the parent directory of the current working directory
+        #parent_dir = os.path.dirname(os.getcwd())
+        parent_dir = os.getcwd()
+        # Construct the default path to the "experiments" folder
+        default_dir = os.path.join(parent_dir, "experiments")
+        
+        # Open file dialog, starting in the "experiments" folder if it exists
+        initial_dir = default_dir if os.path.exists(default_dir) else parent_dir
+        file_path = filedialog.askopenfilename(
+            initialdir=initial_dir,
+            title="Select Mice List File",
+            filetypes=(("Text Files", "*.txt"), ("All Files", "*.*"))
+        )
+        if not file_path:
+            return  
+
+        try:
+            with open(file_path, "r") as file:
+                lines = file.read().strip().splitlines()
+                cleaned_lines = [line.strip() for line in lines if line.strip()]
+                self.mice_list = cleaned_lines
+                self.create_mice_table()
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load mice list from TXT:\n{e}")
+ 
+    
     def set_new_mice_list(self,data_list):
         self.mice_list = data_list
         self.create_mice_table()

@@ -341,8 +341,21 @@ class TkinterApp:
             self.experiment.run_live_window()
             self.experiment.set_parameters(parameters)
             self.save_parameters_txt()
+            self.save_mice_list_txt()
             
+    def save_mice_list_txt(self):
+        folder_path = os.path.dirname(self.experiment.txt_file_path)
+        mice_list_file_path = os.path.join(folder_path, "last_mice_list.txt")
+        try:
+            mice_names = list(self.experiment.mice_dict.keys())
 
+            with open(mice_list_file_path, "w") as file:
+                for name in mice_names:
+                    file.write(name + "\n")
+        except Exception as e:
+            print(f"[ERROR] Failed to save mice list: {e}")
+            
+            
     def save_parameters_txt(self):
         # Get the folder where the parameters file should be saved
         folder_path = os.path.dirname(self.experiment.txt_file_path)
