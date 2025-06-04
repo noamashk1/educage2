@@ -43,13 +43,26 @@ class IdleState(State):
         self.fsm.exp.live_w.update_score('')
         self.fsm.exp.live_w.update_trial_value('')
 
-        # הפעלת wait_for_event ברקע, לא ב־__init__
         threading.Thread(target=self.wait_for_event, daemon=True).start()
-
+        
     def wait_for_event(self):
+        minutes_passed = 0
+        last_log_time = time.time()
+
         while True:
+            
+            if time.time() - last_log_time > 60:
+                minutes_passed += 1
+                last_log_time = time.time()
+                print(f"[IdleState] Waiting for RFID... {minutes_passed} minutes passed")
+
             if ser.in_waiting > 0 and not self.fsm.exp.live_w.pause:
-                mouse_id = ser.readline().decode('utf-8').rstrip()
+                try:
+                    mouse_id = ser.readline().decode('utf-8').rstrip()
+                except Exception as e:
+                    print(f"[IdleState] Error reading RFID: {e}")
+                    continue
+
                 if self.recognize_mouse(mouse_id):
                     self.fsm.current_trial.update_current_mouse(self.fsm.exp.mice_dict[mouse_id])
                     print("mouse: " + self.fsm.exp.mice_dict[mouse_id].get_id())
@@ -57,10 +70,26 @@ class IdleState(State):
                     self.fsm.exp.live_w.update_last_rfid(mouse_id)
                     self.fsm.exp.live_w.update_level(self.fsm.exp.mice_dict[mouse_id].get_level())
                     self.on_event('in_port')
-                    break
+                    break  
             else:
-                ser.flushInput()  # Flush input buffer
+                ser.flushInput()
                 time.sleep(0.05)
+
+#     def wait_for_event(self):
+#         while True:
+#             if ser.in_waiting > 0 and not self.fsm.exp.live_w.pause:
+#                 mouse_id = ser.readline().decode('utf-8').rstrip()
+#                 if self.recognize_mouse(mouse_id):
+#                     self.fsm.current_trial.update_current_mouse(self.fsm.exp.mice_dict[mouse_id])
+#                     print("mouse: " + self.fsm.exp.mice_dict[mouse_id].get_id())
+#                     print("Level: " + self.fsm.exp.mice_dict[mouse_id].get_level())
+#                     self.fsm.exp.live_w.update_last_rfid(mouse_id)
+#                     self.fsm.exp.live_w.update_level(self.fsm.exp.mice_dict[mouse_id].get_level())
+#                     self.on_event('in_port')
+#                     break
+#             else:
+#                 ser.flushInput()  # Flush input buffer
+#                 time.sleep(0.05)
 
     def on_event(self, event):
         if event == 'in_port':
@@ -205,6 +234,23 @@ class TrialState(State):
             return 'fa' if self.got_response else 'cr'
         elif value == 'catch':
             return 'catch - response' if self.got_response else 'catch - no response'
+        
+class FiniteStateMachine:
+
+    def __init__(self, experiment=None):
+        self.exp = experiment
+        self.current_trial = Trial(self)
+        self.state = IdleState(self)
+
+    def on_event(self, event):
+        self.state.on_event(event)
+
+    def get_state(self):
+        return self.state.name
+
+
+if __name__ == "__main__":
+    fsm = FiniteStateMachine()
 # class TrialState(State):
 #     def __init__(self, fsm):
 #         super().__init__("trial", fsm)
@@ -323,20 +369,5 @@ class TrialState(State):
 #                 return 'catch - no response'
 
 
-class FiniteStateMachine:
 
-    def __init__(self, experiment=None):
-        self.exp = experiment
-        self.current_trial = Trial(self)
-        self.state = IdleState(self)
-
-    def on_event(self, event):
-        self.state.on_event(event)
-
-    def get_state(self):
-        return self.state.name
-
-
-if __name__ == "__main__":
-    fsm = FiniteStateMachine()
 
