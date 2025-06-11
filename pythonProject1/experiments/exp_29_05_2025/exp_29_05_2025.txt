@@ -1,3 +1,0 @@
-date,start time,end time,mouse ID,level,"go
-o-go",stim index,stim name,score,licks_time
-2025-05-29,17:00:22,17:00:25,0007DEC04C,habituation,go,1,7KHz.npy,miss,[]

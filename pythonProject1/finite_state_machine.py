@@ -7,9 +7,9 @@ from datetime import datetime
 import numpy as np
 import sounddevice as sd
 
-valve_pin = 23
-IR_pin = 25
-lick_pin = 24
+valve_pin = 5#23
+IR_pin = 22#25
+lick_pin = 17#24
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -198,7 +198,7 @@ class TrialState(State):
 
     def give_reward(self):
         GPIO.output(valve_pin, GPIO.HIGH)
-        time.sleep(0.1)
+        time.sleep(0.02)
         GPIO.output(valve_pin, GPIO.LOW)
 
     def give_punishment(self):
@@ -256,6 +256,7 @@ class TrialState(State):
             if self.fsm.exp.exp_params['ITI_time'] is None:
                 while GPIO.input(IR_pin) == GPIO.HIGH:
                     time.sleep(0.09)
+                time.sleep(1) # wait one sec after exit- before pass to the next trial
             else:
                 time.sleep(int(self.fsm.exp.exp_params['ITI_time']))
             print("Transitioning from trial to idle")
