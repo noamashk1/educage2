@@ -135,3 +135,27 @@ ITI_time: None
 stimulus_length: 2
 
 ----------------------------------------
+
+--- 2025-07-14 12:55:16 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        L1 /home/educage/git_educage2/educage2/pythonProject1/stimuli/16KHz.npy           20 no-go      1
+
+Mice:
+ID: , Level:L1
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 5
+time_to_lick_after_stim: 2
+open_valve_duration: 0.1
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+
+----------------------------------------

@@ -56,7 +56,7 @@ class Trial:
         self.licks_time.append(current_datetime.strftime('%H:%M:%S'))
 # Function to write trial results
     def write_trial_to_csv(self, txt_file_name):
-        header = ['date', 'start time', 'end time', 'mouse ID', 'level', 'go\no-go','stim index', 'stim name','score', 'licks_time'] # Define the header if the file does not exist yet
+        header = ['date', 'start time', 'end time', 'mouse ID', 'level', r'go\no-go','stim index', 'stim name','score', 'licks_time'] # Define the header if the file does not exist yet
         current_datetime = datetime.now()
         date = current_datetime.strftime('%Y-%m-%d')  # Get current date
         end_time = current_datetime.strftime('%H:%M:%S')  # Get current time
