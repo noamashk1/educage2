@@ -97,12 +97,22 @@ class ParametersApp:
 #####################################################################
         
         self.time_licks_frame = tk.Frame(root)
-        self.time_licks_label = tk.Label(self.time_licks_frame, text="time to count licks after the stimulus:", font=self.font_style)
+        self.time_licks_label = tk.Label(self.time_licks_frame, text="time to count licks after the stimulus (sec):", font=self.font_style)
         self.time_licks_label.pack(side=tk.LEFT)
         self.time_licks_entry = tk.Entry(self.time_licks_frame, font=self.font_style, width=5)
         self.time_licks_entry.insert(0,"2")
         self.time_licks_entry.pack(side=tk.LEFT, padx=10)
         self.time_licks_frame.pack(anchor=tk.W,pady=10)
+        
+#####################################################################
+        
+        self.time_open_valve_frame = tk.Frame(root)
+        self.time_open_valve_label = tk.Label(self.time_open_valve_frame, text="open valve duration (sec):", font=self.font_style)
+        self.time_open_valve_label.pack(side=tk.LEFT)
+        self.time_open_valve_entry = tk.Entry(self.time_open_valve_frame, font=self.font_style, width=5)
+        self.time_open_valve_entry.insert(0,"0.1")
+        self.time_open_valve_entry.pack(side=tk.LEFT, padx=10)
+        self.time_open_valve_frame.pack(anchor=tk.W,pady=10)
 
         # Entry field for custom bin size (initially hidden)
 #         self.ITI_frame = tk.Frame(root)

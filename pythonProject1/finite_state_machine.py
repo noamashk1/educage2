@@ -7,7 +7,7 @@ from datetime import datetime
 import numpy as np
 import sounddevice as sd
 
-valve_pin = 5#23
+valve_pin = 4#23
 IR_pin = 22#25
 lick_pin = 17#24
 
@@ -198,7 +198,8 @@ class TrialState(State):
 
     def give_reward(self):
         GPIO.output(valve_pin, GPIO.HIGH)
-        time.sleep(0.02)
+        #time.sleep(0.03)
+        time.sleep(float(self.fsm.exp.exp_params["open_valve_duration"]))
         GPIO.output(valve_pin, GPIO.LOW)
 
     def give_punishment(self):

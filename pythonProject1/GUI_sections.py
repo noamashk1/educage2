@@ -330,6 +330,7 @@ class TkinterApp:
                 "IR_no_RFID_option": self.parameters_btns.option_var.get(),
                 "lick_threshold": self.parameters_btns.licks_entry.get(),
                 "time_to_lick_after_stim": self.parameters_btns.time_licks_entry.get(),
+                "open_valve_duration": self.parameters_btns.time_open_valve_entry.get(),
                 "ITI": self.parameters_btns.ITI_display_option.get(),
                 "ITI_time": self.parameters_btns.ITI_bin_size_entry.get() if self.parameters_btns.ITI_display_option.get() == '2' else None,
                 "stimulus_length": self.experiment.stim_length,
@@ -375,7 +376,7 @@ class TkinterApp:
             # Write Mice
             file.write("\nMice:\n")
             for key, value in self.experiment.mice_dict.items():
-                file.write(f"{key}: {value}\n")
+                file.write(f"ID: {key}, Level:"+ value.get_level()+"\n")
 
             # Write Parameters
             file.write("\nParameters:\n")

@@ -14,11 +14,13 @@ import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
 
-###
+###  use those commands on terminal to push changes to git
+
 # cd /home/educage/git_educage2/educage2/pythonProject1
 # git add .
 # git commit -m ""
 # git push
+
 ###
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
