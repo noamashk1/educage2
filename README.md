@@ -1,6 +1,5 @@
 # Educage 🧠🐭  
-**Behavioral Experiments for Mice**
-
+**Behavioral Experiments for Mice!**
 ---
 
 ## Overview
@@ -25,6 +24,11 @@ Whether you're training mice in auditory discrimination tasks or running custom 
 ---
 
 ## Demo 🎥
+
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/0554fb2f-a245-421d-97b8-6bd4a7973e61" width="600" height="280">
+</p>
+
 
 > **Short video / GIF of the Educage in action goes here**
 
