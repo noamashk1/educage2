@@ -110,7 +110,7 @@ class ParametersApp:
         self.time_open_valve_label = tk.Label(self.time_open_valve_frame, text="open valve duration (sec):", font=self.font_style)
         self.time_open_valve_label.pack(side=tk.LEFT)
         self.time_open_valve_entry = tk.Entry(self.time_open_valve_frame, font=self.font_style, width=5)
-        self.time_open_valve_entry.insert(0,"0.1")
+        self.time_open_valve_entry.insert(0,"0.01")
         self.time_open_valve_entry.pack(side=tk.LEFT, padx=10)
         self.time_open_valve_frame.pack(anchor=tk.W,pady=10)
 
