@@ -209,8 +209,8 @@ class TrialState(State):
             sd.wait()
         finally:
             self.fsm.exp.live_w.toggle_indicator("stim", "off")
-            time.sleep(2)
-
+            time.sleep(5) #timeout as punishment
+            
     def tdt_as_stim(self):
         stim_path = self.fsm.current_trial.current_stim_path
         print(stim_path)
