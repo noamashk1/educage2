@@ -1,4 +1,7 @@
+import numpy as np
+import sounddevice as sd
 import tkinter as tk
+
 def center_the_window(window,size=None):
     # Implicitly set dimensions for example purposes
     if size is not None:
@@ -81,4 +84,37 @@ def generate_white_noise(duration, Fs, voltage):
     np.save('/home/educage/git_educage2/educage2/pythonProject1/stimulus/white_noise', noise)
 
     return noise
+
+def generate_white_noise_npz(duration, Fs, voltage, save_path='/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz'):
+    """
+    Generate and play white noise, then save it along with its sample rate.
+
+    Parameters:
+    duration (float): Duration of the noise in seconds
+    Fs (int): Sampling rate in Hz
+    voltage (float): Amplitude scaling factor (between 0 and 1)
+    save_path (str): Path to save the noise and sample rate
+    """
+    # Calculate the number of samples
+    num_samples = int(duration * Fs)
+    
+    # Generate random white noise in range [-1, 1]
+    noise = np.random.uniform(-1, 1, num_samples)
+    
+    # Scale the noise by voltage
+    noise *= voltage
+    
+    # Clip to ensure values remain in [-1, 1]
+    noise = np.clip(noise, -1, 1)
+    
+    # Play the sound
+    sd.play(noise, samplerate=Fs)
+    sd.wait()
+
+    # Save noise and sample rate together
+    np.savez(save_path, noise=noise, Fs=Fs)
+
+    return noise
+
+#generate_white_noise_npz(duration=1, Fs=44100, voltage=0.8)
 

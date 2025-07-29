@@ -20,7 +20,10 @@ from datetime import datetime
 # git add .
 # git commit -m ""
 # git push
-
+# 
+# corrupted size vs. prev_size while consolidating
+# 
+# Process ended with exit code -6.
 ###
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):

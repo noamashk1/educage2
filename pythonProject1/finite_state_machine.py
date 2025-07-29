@@ -212,14 +212,27 @@ class TrialState(State):
         time.sleep(float(self.fsm.exp.exp_params["open_valve_duration"]))
         GPIO.output(valve_pin, GPIO.LOW)
 
-    def give_punishment(self):
+#     def give_punishment(self):
+#         try:
+#             noise = np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npy')  
+#             sd.play(noise, len(noise))
+#             sd.wait()
+#         finally:
+#             self.fsm.exp.live_w.toggle_indicator("stim", "off")
+#             time.sleep(5) #timeout as punishment
+#             
+    def give_punishment(self): #after changing to .npz
         try:
-            noise = np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npy')  
-            sd.play(noise, len(noise))
+            data = np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz')
+            noise = data['noise']
+            Fs = int(data['Fs'])
+            sd.play(noise, samplerate=Fs)
             sd.wait()
         finally:
             self.fsm.exp.live_w.toggle_indicator("stim", "off")
             time.sleep(5) #timeout as punishment
+#             
+
             
 #     def tdt_as_stim(self):
 #         stim_path = self.fsm.current_trial.current_stim_path
