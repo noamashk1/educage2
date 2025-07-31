@@ -312,14 +312,14 @@ class TrialState(State):
                     self.got_response = True
                     print('threshold reached')
 
-                    self.fsm.current_trial.score = self.evaluate_response()
-                    print(f"Immediate evaluation: {self.fsm.current_trial.score}")
-
-                    if self.fsm.current_trial.score == 'hit':
-                        self.give_reward()
-                    elif self.fsm.current_trial.score == 'fa':
-                        self.give_punishment()
-                    self.fsm.exp.live_w.update_score(self.fsm.current_trial.score)
+#                     self.fsm.current_trial.score = self.evaluate_response()
+#                     print(f"Immediate evaluation: {self.fsm.current_trial.score}")
+# 
+#                     if self.fsm.current_trial.score == 'hit':
+#                         self.give_reward()
+#                     elif self.fsm.current_trial.score == 'fa':
+#                         self.give_punishment()
+#                     self.fsm.exp.live_w.update_score(self.fsm.current_trial.score)
                     break
 
             time.sleep(0.08)
