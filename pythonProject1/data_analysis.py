@@ -98,6 +98,7 @@ class DataAnalysis:
         new_window.title(f"Graphs for Mouse {selected_id}")
 
         score_counts = mouse_data['score'].value_counts().reindex(['HIT', 'FA', 'MISS', 'CR'], fill_value=0)
+        print(score_counts)
 
         fig, axs = plt.subplots(2, 1, figsize=(8, 8))
         fig.tight_layout(pad=3.0)
