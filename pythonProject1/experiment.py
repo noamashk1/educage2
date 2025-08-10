@@ -23,7 +23,18 @@ from datetime import datetime
 # 
 # corrupted size vs. prev_size while consolidating
 # 
-# Process ended with exit code -6.
+# # Process ended with exit code -6.
+# [IdleState] Waiting for RFID... 172 minutes passed
+# [IdleState] Waiting for RFID... 173 minutes passed
+# 00082ED4D6' does not exist in the mouse dictionary.
+# [IdleState] Waiting for RFID... 174 minutes passed
+# [IdleState] Waiting for RFID... 175 minutes passed
+# [IdleState] Waiting for RFID... 176 minutes passed
+# [IdleState] Waiting for RFID... 177 minutes passed
+# 00082ECFD2' does not exist in the mouse dictionary.
+# [IdleState] Waiting for RFID... 178 minutes passed
+# [IdleState] Waiting for RFID... 179 minutes passed
+# 00082ECFD2' does not exist in the mouse dictionary.
 ###
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):
