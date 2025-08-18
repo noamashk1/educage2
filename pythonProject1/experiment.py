@@ -23,18 +23,50 @@ from datetime import datetime
 # 
 # corrupted size vs. prev_size while consolidating
 # 
-# # Process ended with exit code -6.
-# [IdleState] Waiting for RFID... 172 minutes passed
-# [IdleState] Waiting for RFID... 173 minutes passed
-# 00082ED4D6' does not exist in the mouse dictionary.
-# [IdleState] Waiting for RFID... 174 minutes passed
-# [IdleState] Waiting for RFID... 175 minutes passed
-# [IdleState] Waiting for RFID... 176 minutes passed
-# [IdleState] Waiting for RFID... 177 minutes passed
-# 00082ECFD2' does not exist in the mouse dictionary.
-# [IdleState] Waiting for RFID... 178 minutes passed
-# [IdleState] Waiting for RFID... 179 minutes passed
-# 00082ECFD2' does not exist in the mouse dictionary.
+# Expression 'paTimedOut' failed in 'src/os/unix/pa_unix_util.c', line: 387
+# Expression 'PaUnixThread_New( &stream->thread, &CallbackThreadFunc, stream, 1., stream->rtSched )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2998
+# Exception in thread Thread-24763:
+# Traceback (most recent call last):
+#   File "/usr/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+#     self.run()
+#   File "/usr/lib/python3.9/threading.py", line 892, in run
+#     self._target(*self._args, **self._kwargs)
+#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 315, in tdt_as_stim
+#     sd.play(stim_array, samplerate=sample_rate, blocking=True)
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 178, in play
+#     ctx.start_stream(OutputStream, samplerate, ctx.output_channels,
+# Expression 'paTimedOut' failed in 'src/os/unix/pa_unix_util.c', line: 387
+# ALSA lib pcm.c:8545:(snd_pcm_recover) underrun occurred
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2632, in start_stream
+#     self.stream.start()
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 1124, in start
+#     _check(err, 'Error starting stream')
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2796, in _check
+#     raise PortAudioError(errormsg, err)Expression 'PaUnixThread_New( &stream->thread, &CallbackThreadFunc, stream, 1., stream->rtSched )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2998
+# 
+# sounddevice.PortAudioError: Error starting stream: Wait timed out [PaErrorCode -9987]
+# score: fa
+# Exception in thread Thread-24762:
+# Traceback (most recent call last):
+#   File "/usr/lib/python3.9/threading.py", line 954, in _bootstrap_inner
+#     self.run()
+#   File "/usr/lib/python3.9/threading.py", line 892, in run
+#     self._target(*self._args, **self._kwargs)
+#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 247, in run_trial
+#     self.give_punishment()
+#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 273, in give_punishment
+#     sd.play(noise, samplerate=Fs, blocking=True)  # חוסך sd.wait()
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 178, in play
+#     ctx.start_stream(OutputStream, samplerate, ctx.output_channels,
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2632, in start_stream
+#     self.stream.start()
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 1124, in start
+#     _check(err, 'Error starting stream')
+#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2796, in _check
+#     raise PortAudioError(errormsg, err)
+# sounddevice.PortAudioError: Error starting stream: Wait timed out [PaErrorCode -9987]
+# 
+# Process ended with exit code -9.
 ###
 class Experiment:
     def __init__(self,exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None):

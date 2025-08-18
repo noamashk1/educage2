@@ -55,7 +55,7 @@ def log_memory_usage_snap(trial_number=None):
             header += f" (After trial {trial_number})"
         f.write(header + "\n")
 
-        # tracemalloc 
+        # tracemalloc - מצב זיכרון לפי קוד
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
         f.write("Top 10 memory allocations by line:\n")
@@ -128,7 +128,7 @@ class IdleState(State):
                 minutes_passed += 1
                 last_log_time = time.time()
                 print(f"[IdleState] Waiting for RFID... {minutes_passed} minutes passed")
-                
+                 
                 if minutes_passed % 5 == 0:
                     log_memory_usage("IdleState periodic check")
                     #log_thread_count("IdleState periodic check")
@@ -153,7 +153,7 @@ class IdleState(State):
                     self.on_event('in_port')
                     break
             else:
-                ser.flushInput()
+                #ser.flushInput()
                 time.sleep(0.05)
 
     def on_event(self, event):
@@ -251,6 +251,8 @@ class TrialState(State):
         gc.collect()
         log_memory_usage("After gc")
         #log_thread_count("After gc")
+        del stim_thread
+        del input_thread
         self.on_event('trial_over')
 
     def give_reward(self):
@@ -260,41 +262,71 @@ class TrialState(State):
 
     def give_punishment(self):  # after changing to .npz
         try:
-            data = np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz')
-            noise = data['noise']
-            Fs = int(data['Fs'])
-            sd.play(noise, samplerate=Fs)
-            sd.wait()
+#             data = np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz')
+#             noise = data['noise']
+#             Fs = int(data['Fs'])
+#             sd.play(noise, samplerate=Fs)
+#             sd.wait()
+            with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
+                noise = z['noise']
+                Fs = int(z['Fs'])
+                sd.play(noise, samplerate=Fs, blocking=True)  # חוסך sd.wait()
         finally:
+            sd.stop()
             self.fsm.exp.live_w.toggle_indicator("stim", "off")
             time.sleep(5)  # timeout as punishment
+            del noise
+    
 
     def tdt_as_stim(self):
         stim_path = self.fsm.current_trial.current_stim_path
         try:
-            stim_data = np.load(stim_path)
-            if isinstance(stim_data, np.lib.npyio.NpzFile):
-                stim_array = stim_data["data"]
-                sample_rate = stim_data["rate"].item()  # .item() -> int
-            else:
-                stim_array = stim_data
-                sample_rate = int(300000)
-                print("Should use NPZ file!!!! now this is the default sampling rate: 300000 !!!!!")
+#             stim_data = np.load(stim_path)
+#             if isinstance(stim_data, np.lib.npyio.NpzFile):
+#                 stim_array = stim_data["data"]
+#                 sample_rate = stim_data["rate"].item()  # .item() -> int
+#             else:
+#                 stim_array = stim_data
+#                 sample_rate = int(300000)
+#                 print("Should use NPZ file!!!! now this is the default sampling rate: 300000 !!!!!")
+
+            with np.load(stim_path, mmap_mode='r') as z:
+                stim_array = z["data"]
+                #stim_array = np.ascontiguousarray(stim_array, dtype=np.float32)
+                sample_rate = int(z["rate"].item())
 
             stim_duration = len(stim_array) / sample_rate
             print("stim_duration: " + str(stim_duration))
+#             sd.play(stim_array, len(stim_array))
+#             start_time = time.time()
+#             while time.time() - start_time < stim_duration:
+#                 if self.got_response:
+#                     print("Early response detected — stopping stimulus")
+#                     sd.stop()
+#                     return
+#                 time.sleep(0.05)
 
-            sd.play(stim_array, len(stim_array))
+#             sd.wait()
+#             time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+#             print("Stimulus done. Waiting post-stim lick window...")
 
-            start_time = time.time()
-            while time.time() - start_time < stim_duration:
-                if self.got_response:
-                    print("Early response detected — stopping stimulus")
-                    sd.stop()
-                    return
-                time.sleep(0.05)
+            sd.stop()  
+            try:
+                sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                start_time = time.time()
+                while time.time() - start_time < stim_duration:
+                    if self.got_response:
+                        print("Early response detected — stopping stimulus")
+                        sd.stop()
+                        return
+                    time.sleep(0.05)
+            finally:
+                sd.stop()
+                del stim_array 
 
-            sd.wait()
+
+            
+#             sd.wait()
             time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
             print("Stimulus done. Waiting post-stim lick window...")
 
