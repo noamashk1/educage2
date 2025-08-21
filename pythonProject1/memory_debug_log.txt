@@ -24190,3 +24190,59 @@ builtin_function_or_method: 4138
 
 Count of 'Trial' objects: 1
 --- End of snapshot ---
+
+--- Memory snapshot at 2025-08-21 10:07:30 ---
+Top 10 memory allocations by line:
+<frozen importlib._bootstrap_external>:587: size=20.4 MiB, count=226370, average=94 B
+<frozen importlib._bootstrap>:228: size=3089 KiB, count=45398, average=70 B
+/home/educage/.local/lib/python3.9/site-packages/scipy/_lib/doccer.py:69: size=743 KiB, count=247, average=3082 B
+/usr/local/lib/python3.9/dist-packages/matplotlib/_docstring.py:68: size=432 KiB, count=124, average=3565 B
+/usr/lib/python3.9/linecache.py:137: size=372 KiB, count=5084, average=75 B
+/usr/local/lib/python3.9/dist-packages/matplotlib/pyplot.py:255: size=366 KiB, count=97, average=3864 B
+/usr/lib/python3.9/re.py:210: size=339 KiB, count=229, average=1514 B
+/home/educage/.local/lib/python3.9/site-packages/pandas/util/_decorators.py:380: size=313 KiB, count=230, average=1392 B
+/home/educage/.local/lib/python3.9/site-packages/scipy/stats/_axis_nan_policy.py:626: size=277 KiB, count=53, average=5361 B
+/usr/lib/python3.9/abc.py:85: size=260 KiB, count=1527, average=175 B
+
+Top 10 most common object types:
+Traceback: 29759
+Statistic: 29759
+function: 28644
+tuple: 15583
+dict: 13863
+list: 6874
+cell: 6768
+weakref: 5910
+Parameter: 5176
+builtin_function_or_method: 4138
+
+Count of 'Trial' objects: 1
+--- End of snapshot ---
+
+--- Memory snapshot at 2025-08-21 10:17:30 ---
+Top 10 memory allocations by line:
+<frozen importlib._bootstrap_external>:587: size=20.4 MiB, count=226370, average=94 B
+<frozen importlib._bootstrap>:228: size=3089 KiB, count=45398, average=70 B
+/home/educage/.local/lib/python3.9/site-packages/scipy/_lib/doccer.py:69: size=743 KiB, count=247, average=3082 B
+/usr/local/lib/python3.9/dist-packages/matplotlib/_docstring.py:68: size=432 KiB, count=124, average=3565 B
+/usr/lib/python3.9/linecache.py:137: size=372 KiB, count=5084, average=75 B
+/usr/local/lib/python3.9/dist-packages/matplotlib/pyplot.py:255: size=366 KiB, count=97, average=3864 B
+/usr/lib/python3.9/re.py:210: size=339 KiB, count=229, average=1514 B
+/home/educage/.local/lib/python3.9/site-packages/pandas/util/_decorators.py:380: size=313 KiB, count=230, average=1392 B
+/home/educage/.local/lib/python3.9/site-packages/scipy/stats/_axis_nan_policy.py:626: size=277 KiB, count=53, average=5361 B
+/usr/lib/python3.9/abc.py:85: size=260 KiB, count=1527, average=175 B
+
+Top 10 most common object types:
+Traceback: 29759
+Statistic: 29759
+function: 28644
+dict: 13863
+tuple: 13409
+list: 6874
+cell: 6768
+weakref: 5910
+Parameter: 5176
+builtin_function_or_method: 4138
+
+Count of 'Trial' objects: 1
+--- End of snapshot ---
