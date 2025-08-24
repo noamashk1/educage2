@@ -15,7 +15,7 @@ import logging
 
 audio_lock = threading.Lock()
 valve_pin = 4  # 23
-IR_pin = 22  # 25
+IR_pin = 6  # 25
 lick_pin = 17  # 24
 
 GPIO.setwarnings(False)
@@ -261,24 +261,35 @@ class TrialState(State):
         time.sleep(float(self.fsm.exp.exp_params["open_valve_duration"]))
         GPIO.output(valve_pin, GPIO.LOW)
 
-    def give_punishment(self):  # after changing to .npz
-        with audio_lock:
-            sd.stop()
-            try:
-                with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-                    noise = z['noise'].astype(np.float32, copy=False)
-                    Fs = int(z['Fs'])
-                    sd.play(noise, samplerate=Fs)
-                    sd.wait()
+#     def give_punishment(self):  # after changing to .npz
+#         with audio_lock:
+#             sd.stop()
+#             try:
 #                 with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-#                     noise = z['noise']
+#                     noise = z['noise'].astype(np.float32, copy=False)
 #                     Fs = int(z['Fs'])
-#                     sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
-            finally:
-                sd.stop()
-                self.fsm.exp.live_w.toggle_indicator("stim", "off")
-                time.sleep(5)  # timeout as punishment
-                del noise
+#                     sd.play(noise, samplerate=Fs)
+#                     sd.wait()
+# #                 with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
+# #                     noise = z['noise']
+# #                     Fs = int(z['Fs'])
+# #                     sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
+#             finally:
+#                 sd.stop()
+#                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
+#                 time.sleep(5)  # timeout as punishment
+#                 del noise
+
+    def give_punishment(self): #after changing to .npz
+            if getattr(self.fsm, 'white_noise', None) is not None and getattr(self.fsm, 'white_noise_fs', None) is not None:
+                sd.play(self.fsm.white_noise, samplerate=self.fsm.white_noise_fs)
+                sd.wait()
+            else:
+                # if preloading failed
+                print("preloading of the noise failed!")
+            self.fsm.exp.live_w.toggle_indicator("stim", "off")
+            print("timeout - punishment")
+            time.sleep(5) #timeout as punishment
     
 
 #     def tdt_as_stim(self):
@@ -306,45 +317,82 @@ class TrialState(State):
 #                 sd.stop()
 #                 del stim_array
 
+#     def tdt_as_stim(self):
+#         with audio_lock:  # 🔒 ensure only one audio action at a time
+#             stim_path = self.fsm.current_trial.current_stim_path
+#             try:
+#                 with np.load(stim_path, mmap_mode='r') as z:
+#                     stim_array = z["data"].astype(np.float32, copy=False)
+#                     sample_rate = int(z["rate"].item())
+# 
+#                 stim_duration = len(stim_array) / sample_rate
+#                 print("stim_duration:", stim_duration)
+# 
+#                 sd.stop()
+#                 try:
+#                     sd.play(stim_array, samplerate=sample_rate, blocking=True)
+#                     start_time = time.time()
+#                     while time.time() - start_time < stim_duration:
+#                         if self.got_response:
+#                             print("Early response detected — stopping stimulus")
+#                             sd.stop()
+#                             return
+#                         time.sleep(0.05)
+#                 finally:
+#                     sd.stop()
+#                     del stim_array
+# 
+#                 time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+#                 print("Stimulus done. Waiting post-stim lick window...")
+# 
+#                 start_post = time.time()
+#                 while time.time() - start_post < time_to_lick:
+#                     if self.got_response:
+#                         print("Early response during post-stim window — skipping rest")
+#                         return
+#                     time.sleep(0.05)
+# 
+#                 print("Post-stim lick window completed.")
+# 
+#             finally:
+#                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
+
+
     def tdt_as_stim(self):
-        with audio_lock:  # 🔒 ensure only one audio action at a time
-            stim_path = self.fsm.current_trial.current_stim_path
-            try:
-                with np.load(stim_path, mmap_mode='r') as z:
-                    stim_array = z["data"].astype(np.float32, copy=False)
-                    sample_rate = int(z["rate"].item())
-
-                stim_duration = len(stim_array) / sample_rate
-                print("stim_duration:", stim_duration)
-
-                sd.stop()
-                try:
-                    sd.play(stim_array, samplerate=sample_rate, blocking=True)
-                    start_time = time.time()
-                    while time.time() - start_time < stim_duration:
-                        if self.got_response:
-                            print("Early response detected — stopping stimulus")
-                            sd.stop()
-                            return
-                        time.sleep(0.05)
-                finally:
+        stim_path = self.fsm.current_trial.current_stim_path
+        sd.stop()
+        try:
+            if stim_path == '/home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHZ.npz':
+                stim_duration = len(self.fsm.stim7) / self.fsm.stim7_fs
+                sd.play(self.fsm.stim7, samplerate=self.fsm.stim7_fs)#, blocking=True
+            elif stim_path == '/home/educage/git_educage2/educage2/pythonProject1/stimuli/14KHZ.npz':
+                stim_duration = len(self.fsm.stim14) / self.fsm.stim14_fs
+                sd.play(self.fsm.stim14, samplerate=self.fsm.stim14_fs)#, blocking=True
+            else:
+                print("error tdt stim")
+            start_time = time.time()
+            while time.time() - start_time < stim_duration:
+                if self.got_response:
+                    print("Early response detected — stopping stimulus")
                     sd.stop()
-                    del stim_array
+                    return
+                time.sleep(0.05)
+        finally:
+            sd.stop()
 
-                time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
-                print("Stimulus done. Waiting post-stim lick window...")
+        time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+        print("Stimulus done. Waiting post-stim lick window...")
 
-                start_post = time.time()
-                while time.time() - start_post < time_to_lick:
-                    if self.got_response:
-                        print("Early response during post-stim window — skipping rest")
-                        return
-                    time.sleep(0.05)
+        start_post = time.time()
+        while time.time() - start_post < time_to_lick:
+            if self.got_response:
+                print("Early response during post-stim window — skipping rest")
+                return
+            time.sleep(0.05)
 
-                print("Post-stim lick window completed.")
-
-            finally:
-                self.fsm.exp.live_w.toggle_indicator("stim", "off")
+        print("Post-stim lick window completed.")
+        self.fsm.exp.live_w.toggle_indicator("stim", "off")
+            
 
     def receive_input(self, stop):
         if self.fsm.exp.exp_params["lick_time_bin_size"] is not None:
@@ -406,7 +454,52 @@ class FiniteStateMachine:
         self.exp = experiment
         self.current_trial = Trial(self)
         self.state = IdleState(self)
-
+        self.white_noise = None
+        self.white_noise_fs = None
+        self.stim7 = None
+        self.stim7_fs = None
+        self.stim14 = None
+        self.stim14_fs = None
+        self.preload_white_noise()
+        self.preload_stim7()
+        self.preload_stim14()
+    
+    def preload_white_noise(self):
+        """Load white noise once into memory (noise array and sampling rate)."""
+        path = "/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz"
+        try:
+             data = np.load(path)
+             noise = data['noise']
+             fs = int(data['Fs'])
+             self.white_noise = noise
+             self.white_noise_fs = fs
+        except:
+            print("preloaded noise failed")
+            
+    def preload_stim7(self):
+        
+        path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/7KHZ.npz'
+        try:
+             data = np.load(path)
+             stim = data['data']
+             fs = int(data['rate'])
+             self.stim7 = stim
+             self.stim7_fs = fs
+        except:
+            print("preloaded 7 failed")
+            
+    def preload_stim14(self):
+        
+        path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/14KHZ.npz'
+        try:
+             data = np.load(path)
+             stim = data['data']
+             fs = int(data['rate'])
+             self.stim14 = stim
+             self.stim14_fs = fs
+        except:
+            print("preloaded 14 failed")
+            
     def on_event(self, event):
         self.state.on_event(event)
 
