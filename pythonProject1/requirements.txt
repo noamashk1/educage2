@@ -9,7 +9,6 @@ scipy>=1.7.0
 
 # חבילות לאודיו וצלילים
 sounddevice>=0.4.0
-pygame>=2.0.0
 
 # חבילות לחומרה (Raspberry Pi)
 RPi.GPIO>=0.7.0
@@ -23,3 +22,4 @@ objgraph>=3.5.0
 # tkinter - מותקן עם Python כברירת מחדל
 # json, os, threading, datetime - מודולים מובנים ב-Python
 # csv, random - מודולים מובנים ב-Python
+# pygame - לא בשימוש בתכנית הנוכחית (הוסר)

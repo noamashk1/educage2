@@ -41,7 +41,14 @@ class MemoryMonitor:
         """עוצר את ניטור הזיכרון"""
         self.is_monitoring = False
         if self.monitor_thread and self.monitor_thread.is_alive():
-            self.monitor_thread.join(timeout=2.0)
+            try:
+                # בדיקה אם זה ה-thread הנוכחי
+                if self.monitor_thread == threading.current_thread():
+                    print("[MemoryMonitor] Cannot join current thread, continuing...")
+                else:
+                    self.monitor_thread.join(timeout=2.0)
+            except Exception as e:
+                print(f"[MemoryMonitor] Error stopping monitoring: {e}")
         print("[MemoryMonitor] Memory monitoring stopped")
     
     def _monitor_loop(self):
@@ -86,6 +93,11 @@ class MemoryMonitor:
             
         except Exception as e:
             print(f"[MemoryMonitor] Error during memory overflow handling: {e}")
+            # נסיון לשמור מצב בסיסי
+            try:
+                self._save_basic_state()
+            except Exception as e2:
+                print(f"[MemoryMonitor] Failed to save even basic state: {e2}")
     
     def _save_current_state(self):
         """שומר את המצב הנוכחי של הניסוי"""
@@ -93,9 +105,9 @@ class MemoryMonitor:
             state = {
                 'timestamp': datetime.now().isoformat(),
                 'experiment_name': getattr(self.experiment, 'txt_file_name', 'unknown'),
-                'parameters': getattr(self.experiment, 'exp_params', {}),
+                'parameters': self._serialize_parameters(),
                 'mice_dict': self._serialize_mice_dict(),
-                'levels_df': getattr(self.experiment, 'levels_df', {}),
+                'levels_df': self._serialize_levels_df(),
                 'fsm_state': self._get_fsm_state(),
                 'gui_state': self._get_gui_state()
             }
@@ -107,6 +119,70 @@ class MemoryMonitor:
             
         except Exception as e:
             print(f"[MemoryMonitor] Error saving state: {e}")
+    
+    def _serialize_parameters(self):
+        """ממיר פרמטרים לפורמט שניתן לשמור"""
+        try:
+            params = getattr(self.experiment, 'exp_params', {})
+            if params is None:
+                return {}
+            
+            # המרה לפורמט JSON
+            serialized = {}
+            for key, value in params.items():
+                try:
+                    if isinstance(value, (str, int, float, bool, list, dict)):
+                        serialized[key] = value
+                    elif hasattr(value, 'to_dict'):  # DataFrame
+                        serialized[key] = value.to_dict()
+                    elif hasattr(value, '__dict__'):  # אובייקט
+                        serialized[key] = str(value)
+                    else:
+                        # המרה למחרוזת אם לא ניתן לשמור
+                        serialized[key] = str(value)
+                except Exception as e:
+                    print(f"[MemoryMonitor] Error serializing parameter {key}: {e}")
+                    serialized[key] = f"ERROR: {str(value)}"
+            
+            return serialized
+        except Exception as e:
+            print(f"[MemoryMonitor] Error serializing parameters: {e}")
+            return {}
+    
+    def _serialize_levels_df(self):
+        """ממיר את טבלת הרמות לפורמט שניתן לשמור"""
+        try:
+            levels_df = getattr(self.experiment, 'levels_df', {})
+            if not levels_df:
+                return {}
+            
+            serialized = {}
+            for level_num, level in levels_df.items():
+                try:
+                    if hasattr(level, '__dict__'):
+                        # המרה של אובייקט Level
+                        level_data = {}
+                        for attr, value in level.__dict__.items():
+                            if isinstance(value, (str, int, float, bool, list, dict)):
+                                level_data[attr] = value
+                            elif hasattr(value, 'to_dict'):  # DataFrame
+                                level_data[attr] = value.to_dict()
+                            else:
+                                level_data[attr] = str(value)
+                        serialized[str(level_num)] = level_data
+                    elif hasattr(level, 'to_dict'):  # DataFrame
+                        serialized[str(level_num)] = level.to_dict()
+                    else:
+                        # אם זה כבר מילון או משהו אחר
+                        serialized[str(level_num)] = str(level)
+                except Exception as e:
+                    print(f"[MemoryMonitor] Error serializing level {level_num}: {e}")
+                    serialized[str(level_num)] = f"ERROR: {str(level)}"
+            
+            return serialized
+        except Exception as e:
+            print(f"[MemoryMonitor] Error serializing levels: {e}")
+            return {}
     
     def _serialize_mice_dict(self) -> Dict[str, Any]:
         """ממיר את מילון העכברים לפורמט שניתן לשמור"""
@@ -226,6 +302,24 @@ experiment.run_experiment()
             
         except Exception as e:
             print(f"[MemoryMonitor] Error creating restart script: {e}")
+    
+    def _save_basic_state(self):
+        """שומר מצב בסיסי בלבד - רק מה שניתן לשמור בוודאות"""
+        try:
+            basic_state = {
+                'timestamp': datetime.now().isoformat(),
+                'experiment_name': getattr(self.experiment, 'txt_file_name', 'unknown'),
+                'error': 'Full state save failed, saved basic info only'
+            }
+            
+            basic_file = "basic_experiment_state.json"
+            with open(basic_file, 'w', encoding='utf-8') as f:
+                json.dump(basic_state, f, indent=2, ensure_ascii=False)
+            
+            print(f"[MemoryMonitor] Basic state saved to {basic_file}")
+            
+        except Exception as e:
+            print(f"[MemoryMonitor] Failed to save basic state: {e}")
     
     def get_memory_usage(self) -> float:
         """מחזיר את השימוש הנוכחי בזיכרון ב-MB"""
