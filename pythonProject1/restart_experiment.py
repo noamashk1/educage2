@@ -142,6 +142,15 @@ def main():
         print("Starting experiment...")
         experiment.run_experiment()
         
+        # ניסיון לפתוח live_window אם היה פתוח
+        if saved_state.get('gui_state', {}).get('live_window_open', False):
+            print("Attempting to restore live_window...")
+            try:
+                experiment.run_live_window()
+                print("Live window restored successfully")
+            except Exception as e:
+                print(f"Failed to restore live_window: {e}")
+        
     except Exception as e:
         print(f"Error during experiment restart: {e}")
         messagebox.showerror(
