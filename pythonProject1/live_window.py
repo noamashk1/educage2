@@ -1,5 +1,6 @@
 import tkinter as tk
 import sys
+import threading
 
 
 class LiveWindow:
@@ -103,35 +104,69 @@ class LiveWindow:
 
         
     def toggle_indicator(self, bulb_name, turn_to):
-        # Check current state and toggle the indicator light
-        if turn_to == "on":
-            fill = "green"
-        elif turn_to == "off":
-            fill = "gray"
-        if bulb_name =="Idle":
-            self.idle_bulb.itemconfig(self.indicator_circle, fill=fill)  
-        elif bulb_name =="port":
-            self.in_port_bulb.itemconfig(self.indicator_circle, fill=fill)
-        elif bulb_name =="trial":
-            self.trial_bulb.itemconfig(self.indicator_circle, fill=fill)
-        elif bulb_name =="IR":
-            self.ir_bulb.itemconfig(self.indicator_circle, fill=fill)
-        elif bulb_name =="lick":
-            self.lick_bulb.itemconfig(self.indicator_circle, fill=fill)
-        elif bulb_name =="stim":
-            self.stimulus_bulb.itemconfig(self.indicator_circle, fill=fill)
+        """מחליף את מצב האינדיקטור בצורה בטוחה עם threads"""
+        try:
+            if turn_to == "on":
+                fill = "green"
+            elif turn_to == "off":
+                fill = "gray"
+            else:
+                return
+            
+            # בחירת האינדיקטור הנכון
+            if bulb_name == "Idle":
+                bulb = self.idle_bulb
+            elif bulb_name == "port":
+                bulb = self.in_port_bulb
+            elif bulb_name == "trial":
+                bulb = self.trial_bulb
+            elif bulb_name == "IR":
+                bulb = self.ir_bulb
+            elif bulb_name == "lick":
+                bulb = self.lick_bulb
+            elif bulb_name == "stim":
+                bulb = self.stimulus_bulb
+            else:
+                return
+            
+            # עדכון בטוח
+            self._safe_update_indicator(bulb, fill)
+            
+        except Exception as e:
+            print(f"Error toggling indicator {bulb_name}: {e}")
+    
+    def _safe_update_indicator(self, bulb, fill):
+        """עדכון בטוח של אינדיקטור מה-main thread"""
+        try:
+            if hasattr(self, 'root') and self.root and bulb:
+                if threading.current_thread() == threading.main_thread():
+                    # זה ה-main thread - עדכון ישיר
+                    bulb.itemconfig(self.indicator_circle, fill=fill)
+                else:
+                    # זה thread אחר - עדכון דרך main thread
+                    self.root.after(0, lambda: bulb.itemconfig(self.indicator_circle, fill=fill))
+        except Exception as e:
+            print(f"Error in safe indicator update: {e}")
 
         
     def deactivate_states_indicators(self, state_name):
-        self.idle_bulb.itemconfig(self.indicator_circle, fill="gray")  
-        self.in_port_bulb.itemconfig(self.indicator_circle, fill="gray") 
-        self.trial_bulb.itemconfig(self.indicator_circle, fill="gray")
-        if state_name =="Idle":
-            self.idle_bulb.itemconfig(self.indicator_circle, fill="green")  
-        elif state_name =="port":
-            self.in_port_bulb.itemconfig(self.indicator_circle, fill="green") 
-        else:
-            self.trial_bulb.itemconfig(self.indicator_circle, fill="green")
+        """מעדכן את מצב האינדיקטורים בצורה בטוחה עם threads"""
+        try:
+            # כיבוי כל האינדיקטורים
+            self._safe_update_indicator(self.idle_bulb, "gray")
+            self._safe_update_indicator(self.in_port_bulb, "gray")
+            self._safe_update_indicator(self.trial_bulb, "gray")
+            
+            # הפעלת האינדיקטור הנכון
+            if state_name == "Idle":
+                self._safe_update_indicator(self.idle_bulb, "green")
+            elif state_name == "port":
+                self._safe_update_indicator(self.in_port_bulb, "green")
+            else:
+                self._safe_update_indicator(self.trial_bulb, "green")
+                
+        except Exception as e:
+            print(f"Error updating state indicators: {e}")
             
 
     def pause_experiment(self):
@@ -153,16 +188,54 @@ class LiveWindow:
         self.root.quit()
 
     def update_last_rfid(self, rfid):
-        self.last_rfid_value.config(text=rfid)  # Update last RFID label
+        """מעדכן את ה-RFID האחרון בצורה בטוחה עם threads"""
+        try:
+            # בדיקה שהחלון עדיין קיים
+            if hasattr(self, 'root') and self.root:
+                # בדיקה אם זה ה-main thread
+                if threading.current_thread() == threading.main_thread():
+                    # זה ה-main thread - עדכון ישיר
+                    self.last_rfid_value.config(text=rfid)
+                else:
+                    # זה thread אחר - עדכון דרך main thread
+                    self.root.after(0, lambda: self._safe_update_rfid(rfid))
+            else:
+                print("Live window root not available for RFID update")
+        except Exception as e:
+            print(f"Error updating RFID: {e}")
+    
+    def _safe_update_rfid(self, rfid):
+        """עדכון בטוח של RFID מה-main thread"""
+        try:
+            if hasattr(self, 'last_rfid_value') and self.last_rfid_value:
+                self.last_rfid_value.config(text=rfid)
+        except Exception as e:
+            print(f"Error in safe RFID update: {e}")
 
     def update_score(self, score):
-        self.score_value.config(text=str(score))  # Update score label
+        """מעדכן את התוצאה בצורה בטוחה עם threads"""
+        self._safe_update_widget(self.score_value, str(score))
         
     def update_level(self, level):
-        self.level_value.config(text=str(level))  # Update score label
+        """מעדכן את הרמה בצורה בטוחה עם threads"""
+        self._safe_update_widget(self.level_value, str(level))
         
     def update_trial_value(self, trial_value):
-        self.trial_value.config(text=str(trial_value))  # Update score label
+        """מעדכן את ערך הניסוי בצורה בטוחה עם threads"""
+        self._safe_update_widget(self.trial_value, str(trial_value))
+    
+    def _safe_update_widget(self, widget, value):
+        """עדכון בטוח של widget מה-main thread"""
+        try:
+            if hasattr(self, 'root') and self.root and widget:
+                if threading.current_thread() == threading.main_thread():
+                    # זה ה-main thread - עדכון ישיר
+                    widget.config(text=value)
+                else:
+                    # זה thread אחר - עדכון דרך main thread
+                    self.root.after(0, lambda: widget.config(text=value))
+        except Exception as e:
+            print(f"Error in safe widget update: {e}")
 
 # Example usage
 #live_window = LiveWindow()
