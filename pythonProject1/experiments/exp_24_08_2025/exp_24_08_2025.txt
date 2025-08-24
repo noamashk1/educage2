@@ -1,0 +1,5 @@
+date,start time,end time,mouse ID,level,go\no-go,stim index,stim name,score,licks_time
+2025-08-24,12:03:39.238711,12:03:42.580109,0007DECB4A,L1,go,2,7KHZ.npz,miss,[]
+2025-08-24,12:03:55.301325,12:03:58.664019,0007DECB4A,L1,go,2,7KHZ.npz,miss,[]
+2025-08-24,12:04:11.271415,12:04:14.544257,0007DECB4A,L1,no-go,3,14KHZ.npz,cr,[]
+2025-08-24,12:04:27.395143,12:04:30.710026,0007DECB4A,L1,go,2,7KHZ.npz,miss,[]
