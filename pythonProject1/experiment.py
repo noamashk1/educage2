@@ -85,7 +85,7 @@ class Experiment:
         self.new_txt_file(self.txt_file_name)
         
         # יצירת ניטור זיכרון
-        self.memory_monitor = MemoryMonitor(self, memory_threshold_mb=150)
+        self.memory_monitor = MemoryMonitor(self, memory_threshold_mb=160)
         
         self.root = tk.Tk()
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)

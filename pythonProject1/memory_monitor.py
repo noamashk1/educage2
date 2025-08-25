@@ -13,7 +13,7 @@ class MemoryMonitor:
     שומרת את המצב הנוכחי ומחזירה את המערכת למצב פעיל
     """
     
-    def __init__(self, experiment_instance, memory_threshold_mb: int = 150, check_interval: float = 15):
+    def __init__(self, experiment_instance, memory_threshold_mb: int = 160, check_interval: float = 5.0):
         self.experiment = experiment_instance
         self.memory_threshold_mb = memory_threshold_mb
         self.check_interval = check_interval
@@ -56,23 +56,10 @@ class MemoryMonitor:
         while self.is_monitoring:
             try:
                 current_memory = self._get_current_memory_mb()
-                print(f"current_memory: {current_memory:.1f}MB exceeds threshold {self.memory_threshold_mb}MB")
+                
                 if current_memory > self.memory_threshold_mb:
                     print(f"[MemoryMonitor] WARNING: Memory usage {current_memory:.1f}MB exceeds threshold {self.memory_threshold_mb}MB")
-                    # בדיקה שהתהליך עדיין פעיל
-                    if hasattr(self.experiment, 'root') and self.experiment.root:
-                        try:
-                            # בדיקה שהחלון עדיין פעיל
-                            self.experiment.root.winfo_exists()
-                            self._handle_memory_overflow()
-                        except Exception as e:
-                            print(f"[MemoryMonitor] Window no longer exists, stopping monitoring: {e}")
-                            self.is_monitoring = False
-                            break
-                    else:
-                        print("[MemoryMonitor] Experiment no longer exists, stopping monitoring")
-                        self.is_monitoring = False
-                        break
+                    self._handle_memory_overflow()
                 
                 time.sleep(self.check_interval)
                 
@@ -166,19 +153,9 @@ class MemoryMonitor:
         """ממיר את טבלת הרמות לפורמט שניתן לשמור"""
         try:
             levels_df = getattr(self.experiment, 'levels_df', {})
-            if levels_df is None or levels_df == {}:
+            if not levels_df:
                 return {}
             
-            # בדיקה אם זה DataFrame
-            if hasattr(levels_df, 'empty'):
-                # זה DataFrame - המרה לפורמט שניתן לשמור
-                try:
-                    return levels_df.to_dict('records')
-                except Exception as e:
-                    print(f"[MemoryMonitor] Error converting DataFrame to dict: {e}")
-                    return {}
-            
-            # אם זה מילון רגיל
             serialized = {}
             for level_num, level in levels_df.items():
                 try:
@@ -240,28 +217,12 @@ class MemoryMonitor:
     def _get_gui_state(self) -> Dict[str, Any]:
         """מחזיר את המצב הנוכחי של ה-GUI"""
         try:
-            gui_state = {}
-            
             if hasattr(self.experiment, 'GUI'):
-                gui_state['window_geometry'] = getattr(self.experiment.GUI, 'root', {}).geometry() if hasattr(self.experiment.GUI, 'root') else ''
-                gui_state['live_window_open'] = hasattr(self.experiment, 'live_w') and self.experiment.live_w is not None
-                
-                # שמירת מידע נוסף על live_window
-                if hasattr(self.experiment, 'live_w') and self.experiment.live_w is not None:
-                    try:
-                        live_w = self.experiment.live_w
-                        gui_state['live_window_info'] = {
-                            'is_open': True,
-                            'last_rfid': getattr(live_w, 'last_rfid_value', None),
-                            'window_geometry': getattr(live_w, 'root', {}).geometry() if hasattr(live_w, 'root') else ''
-                        }
-                    except Exception as e:
-                        print(f"[MemoryMonitor] Error getting live_window info: {e}")
-                        gui_state['live_window_info'] = {'is_open': True, 'error': str(e)}
-                else:
-                    gui_state['live_window_info'] = {'is_open': False}
-            
-            return gui_state
+                return {
+                    'window_geometry': getattr(self.experiment.GUI, 'root', {}).geometry() if hasattr(self.experiment.GUI, 'root') else '',
+                    'live_window_open': hasattr(self.experiment, 'live_w') and self.experiment.live_w is not None
+                }
+            return {}
         except Exception as e:
             print(f"[MemoryMonitor] Error getting GUI state: {e}")
             return {}
@@ -271,20 +232,9 @@ class MemoryMonitor:
         try:
             print("[MemoryMonitor] Restarting system...")
             
-            # עצירת התהליך הנוכחי בצורה בטוחה
+            # עצירת התהליך הנוכחי
             if hasattr(self.experiment, 'root') and self.experiment.root:
-                try:
-                    # ניסיון לסגור את החלונות בצורה בטוחה
-                    if hasattr(self.experiment, 'live_w') and self.experiment.live_w is not None:
-                        try:
-                            self.experiment.live_w.root.destroy()
-                        except Exception as e:
-                            print(f"[MemoryMonitor] Error closing live_window: {e}")
-                    
-                    # עצירת ה-GUI הראשי
-                    self.experiment.root.quit()
-                except Exception as e:
-                    print(f"[MemoryMonitor] Error stopping GUI: {e}")
+                self.experiment.root.quit()
             
             # הפעלה מחדש עם המצב השמור
             self._restart_experiment()
