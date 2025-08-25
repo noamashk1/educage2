@@ -15,7 +15,7 @@ import logging
 
 audio_lock = threading.Lock()
 valve_pin = 4  # 23
-IR_pin = 22  # 25
+IR_pin = 6  # 25
 lick_pin = 17  # 24
 
 GPIO.setwarnings(False)
