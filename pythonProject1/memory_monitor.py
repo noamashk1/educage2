@@ -185,7 +185,7 @@ print(f"[RestartScript] Command completed with result: {{result}}")
                 
                 # המתנה קטנה כדי לתת ל-GUI להסגר
                 time.sleep(0.2)
-                
+                print("[MemoryMonitor] pre os.exist")
                 # יציאה מהתהליך הנוכחי
                 os._exit(0)
             else:

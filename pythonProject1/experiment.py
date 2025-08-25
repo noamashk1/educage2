@@ -106,7 +106,7 @@ class Experiment:
             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # הפעלת מערכת ניטור הזיכרון
-        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=146)
+        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=145)
         self.memory_monitor.start_monitoring()
         
         # הפעלת הניסוי
