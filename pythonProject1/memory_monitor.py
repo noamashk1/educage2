@@ -153,10 +153,7 @@ print(f"[RestartScript] Command completed with result: {{result}}")
                 
                 # הפעלת הסקריפט עם subprocess במקום os.system
                 process = subprocess.Popen([sys.executable, restart_script_path], 
-                                        cwd=current_dir,
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE,
-                                        text=True)
+                                        cwd=current_dir)
                 
                 # המתנה קצרה ואז יציאה
                 time.sleep(1)
@@ -183,10 +180,9 @@ print(f"[RestartScript] Command completed with result: {{result}}")
                 except:
                     pass
                 
-                # המתנה קטנה כדי לתת ל-GUI להסגר
-                time.sleep(0.2)
-                
-                # יציאה מהתהליך הנוכחי
+                time.sleep(0.5)
+                if process.poll() is None:
+                    print("Child started successfully")
                 os._exit(0)
             else:
                 print("[MemoryMonitor] Restart script not found, cannot restart")
