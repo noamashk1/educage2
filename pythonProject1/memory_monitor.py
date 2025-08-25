@@ -6,7 +6,7 @@ import time
 import subprocess
 
 class MemoryMonitor:
-    def __init__(self, experiment, threshold_mb=150, check_interval=5):
+    def __init__(self, experiment, threshold_mb=150, check_interval=10):
         """
         מערכת ניטור זיכרון אוטומטית
         experiment: אובייקט הניסוי
@@ -111,7 +111,7 @@ print("Restarting experiment automatically...")
 print(f"Experiment name: {self.experiment.txt_file_name}")
 
 # הפעלת הניסוי מחדש עם נתיב מלא
-cmd = f"\"{sys.executable}\" \"{experiment_path}\" --restart {self.experiment.txt_file_name}"
+cmd = f'"{sys.executable}" "{experiment_path}" --restart {self.experiment.txt_file_name}'
 print("[RestartScript] Running command:", cmd)
 
 # שינוי לתיקייה הנכונה והפעלה
@@ -181,10 +181,12 @@ print(f"[RestartScript] Command completed with result: {{result}}")
                     pass
                 
                 # המתנה קטנה כדי לתת ל-GUI להסגר
-                time.sleep(0.2)
+                time.sleep(0.5)
                 print("[MemoryMonitor] pre os.exist")
+                if process.poll() is None:
+                    print("Child started successfully")
                 # יציאה מהתהליך הנוכחי
-                os._exit(0)
+                sys.exit(0)#os._exit(0)
             else:
                 print("[MemoryMonitor] Restart script not found, cannot restart")
                 

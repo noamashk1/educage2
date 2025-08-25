@@ -1,2 +1,0 @@
-date,start time,end time,mouse ID,level,go\no-go,stim index,stim name,score,licks_time
-2025-08-25,17:13:27.577244,17:13:31.451192,0007DECB4A,L1,go,2,7KHZ.npz,miss,[]

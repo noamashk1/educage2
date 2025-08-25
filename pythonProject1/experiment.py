@@ -47,27 +47,9 @@ import time
 #   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2796, in _check
 #     raise PortAudioError(errormsg, err)Expression 'PaUnixThread_New( &stream->thread, &CallbackThreadFunc, stream, 1., stream->rtSched )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2998
 # 
-# sounddevice.PortAudioError: Error starting stream: Wait timed out [PaErrorCode -9987]
-# score: fa
-# Exception in thread Thread-24762:
-# Traceback (most recent call last):
-#   File "/usr/lib/python3.9/threading.py", line 954, in _bootstrap_inner
-#     self.run()
-#   File "/usr/lib/python3.9/threading.py", line 892, in run
-#     self._target(*self._args, **self._kwargs)
-#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 247, in run_trial
-#     self.give_punishment()
-#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 273, in give_punishment
-#     sd.play(noise, samplerate=Fs, blocking=True)  # חוסך sd.wait()
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 178, in play
-#     ctx.start_stream(OutputStream, samplerate, ctx.output_channels,
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2632, in start_stream
-#     self.stream.start()
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 1124, in start
-#     _check(err, 'Error starting stream')
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2796, in _check
-#     raise PortAudioError(errormsg, err)
-# sounddevice.PortAudioError: Error starting stream: Wait timed out [PaErrorCode -9987]
+#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 101, in __init__
+#     self.fsm.exp.live_w.deactivate_states_indicators(name)
+# AttributeError: 'NoneType' object has no attribute 'deactivate_states_indicators'
 # 
 # Process ended with exit code -9.
 ###
@@ -189,12 +171,7 @@ class Experiment:
         print("[DEBUG] start_experiment called")
         
         try:
-            # יצירת FSM
-            fsm = FiniteStateMachine(self)
-            self.fsm = fsm
-            print("FSM created:", self.fsm)
-            
-            # אם זה אתחול אוטומטי, פתח את live window
+                        # אם זה אתחול אוטומטי, פתח את live window
             if self.auto_start:
                 print("Auto-start enabled - opening live window...")
                 # המתנה קצרה שהכל יתייצב
@@ -203,6 +180,13 @@ class Experiment:
                 print("[DEBUG] Live window opened successfully")
             else:
                 print("[DEBUG] Auto-start not enabled")
+                
+            # יצירת FSM
+            fsm = FiniteStateMachine(self)
+            self.fsm = fsm
+            print("FSM created:", self.fsm)
+            
+
                 
         except Exception as e:
             print(f"[DEBUG] Error in start_experiment: {e}")
