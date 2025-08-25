@@ -47,9 +47,7 @@ import time
 #   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2796, in _check
 #     raise PortAudioError(errormsg, err)Expression 'PaUnixThread_New( &stream->thread, &CallbackThreadFunc, stream, 1., stream->rtSched )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2998
 # 
-#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 101, in __init__
-#     self.fsm.exp.live_w.deactivate_states_indicators(name)
-# AttributeError: 'NoneType' object has no attribute 'deactivate_states_indicators'
+
 # 
 # Process ended with exit code -9.
 ###
@@ -171,17 +169,28 @@ class Experiment:
         print("[DEBUG] start_experiment called")
         
         try:
-                        # אם זה אתחול אוטומטי, פתח את live window
+            # אם זה אתחול אוטומטי, פתח את live window
             if self.auto_start:
                 print("Auto-start enabled - opening live window...")
                 # המתנה קצרה שהכל יתייצב
                 time.sleep(1)
-                self.run_live_window()
+                # יצירת live window באופן סינכרוני
+                self.open_live_window()
                 print("[DEBUG] Live window opened successfully")
             else:
                 print("[DEBUG] Auto-start not enabled")
                 
-            # יצירת FSM
+            # יצירת FSM רק אחרי שה-live_w נוצר
+            if self.auto_start and (self.live_w is None):
+                print("[DEBUG] WARNING: LiveWindow not available, waiting...")
+                # המתנה נוספת וניסיון נוסף
+                time.sleep(1)
+                self.open_live_window()
+                
+            if self.auto_start and (self.live_w is None):
+                print("[DEBUG] ERROR: Failed to create LiveWindow, cannot continue")
+                return
+                
             fsm = FiniteStateMachine(self)
             self.fsm = fsm
             print("FSM created:", self.fsm)
@@ -201,10 +210,22 @@ class Experiment:
         print("[DEBUG] open_live_window called")
         if self.live_w is None:
             print("[DEBUG] Creating new LiveWindow...")
-            self.live_w = live_window.LiveWindow()
-            print("[DEBUG] LiveWindow created successfully")
+            try:
+                self.live_w = live_window.LiveWindow()
+                print("[DEBUG] LiveWindow created successfully")
+                # המתנה קצרה לוודא שה-window נוצר בהצלחה
+                time.sleep(0.5)
+            except Exception as e:
+                print(f"[DEBUG] Error creating LiveWindow: {e}")
+                self.live_w = None
         else:
             print("[DEBUG] LiveWindow already exists")
+        
+        # בדיקה שה-live_w אכן נוצר
+        if self.live_w is None:
+            print("[DEBUG] WARNING: LiveWindow creation failed!")
+        else:
+            print("[DEBUG] LiveWindow is ready")
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)

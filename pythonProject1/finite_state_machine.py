@@ -416,7 +416,6 @@ class FiniteStateMachine:
 
 if __name__ == "__main__":
     fsm = FiniteStateMachine()
-
 # 
 # import serial
 # import time
@@ -819,3 +818,4 @@ if __name__ == "__main__":
 # 
 # 
 # 
+
