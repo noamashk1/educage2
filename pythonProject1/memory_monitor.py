@@ -56,7 +56,7 @@ class MemoryMonitor:
         while self.is_monitoring:
             try:
                 current_memory = self._get_current_memory_mb()
-                
+                print(f"current_memory: {current_memory:.1f}MB exceeds threshold {self.memory_threshold_mb}MB")
                 if current_memory > self.memory_threshold_mb:
                     print(f"[MemoryMonitor] WARNING: Memory usage {current_memory:.1f}MB exceeds threshold {self.memory_threshold_mb}MB")
                     # בדיקה שהתהליך עדיין פעיל
@@ -65,8 +65,6 @@ class MemoryMonitor:
                             # בדיקה שהחלון עדיין פעיל
                             self.experiment.root.winfo_exists()
                             self._handle_memory_overflow()
-                            # יציאה מהלולאה אחרי הטיפול
-                            break
                         except Exception as e:
                             print(f"[MemoryMonitor] Window no longer exists, stopping monitoring: {e}")
                             self.is_monitoring = False
@@ -127,15 +125,6 @@ class MemoryMonitor:
                 'gui_state': self._get_gui_state()
             }
             
-            # בדיקה שהמצב ניתן לשמירה
-            try:
-                # בדיקה שהמצב ניתן להמרה ל-JSON
-                json.dumps(state, ensure_ascii=False)
-            except Exception as e:
-                print(f"[MemoryMonitor] State contains non-serializable objects: {e}")
-                # ניקוי המצב מאובייקטים לא ניתנים לשמירה
-                state = self._clean_state_for_json(state)
-            
             with open(self.state_file, 'w', encoding='utf-8') as f:
                 json.dump(state, f, indent=2, ensure_ascii=False)
             
@@ -143,11 +132,6 @@ class MemoryMonitor:
             
         except Exception as e:
             print(f"[MemoryMonitor] Error saving state: {e}")
-            # נסיון לשמור מצב בסיסי
-            try:
-                self._save_basic_state()
-            except Exception as e2:
-                print(f"[MemoryMonitor] Failed to save even basic state: {e2}")
     
     def _serialize_parameters(self):
         """ממיר פרמטרים לפורמט שניתן לשמור"""
@@ -189,19 +173,10 @@ class MemoryMonitor:
             if hasattr(levels_df, 'empty'):
                 # זה DataFrame - המרה לפורמט שניתן לשמור
                 try:
-                    # ניסיון המרה בטוחה
-                    if levels_df.empty:
-                        return []
-                    else:
-                        return levels_df.to_dict('records')
+                    return levels_df.to_dict('records')
                 except Exception as e:
                     print(f"[MemoryMonitor] Error converting DataFrame to dict: {e}")
-                    # נסיון המרה פשוטה יותר
-                    try:
-                        return levels_df.values.tolist()
-                    except Exception as e2:
-                        print(f"[MemoryMonitor] Failed alternative DataFrame conversion: {e2}")
-                        return []
+                    return {}
             
             # אם זה מילון רגיל
             serialized = {}
@@ -214,18 +189,12 @@ class MemoryMonitor:
                             if isinstance(value, (str, int, float, bool, list, dict)):
                                 level_data[attr] = value
                             elif hasattr(value, 'to_dict'):  # DataFrame
-                                try:
-                                    level_data[attr] = value.to_dict()
-                                except Exception as e:
-                                    level_data[attr] = str(value)
+                                level_data[attr] = value.to_dict()
                             else:
                                 level_data[attr] = str(value)
                         serialized[str(level_num)] = level_data
                     elif hasattr(level, 'to_dict'):  # DataFrame
-                        try:
-                            serialized[str(level_num)] = level.to_dict()
-                        except Exception as e:
-                            serialized[str(level_num)] = str(level)
+                        serialized[str(level_num)] = level.to_dict()
                     else:
                         # אם זה כבר מילון או משהו אחר
                         serialized[str(level_num)] = str(level)
@@ -237,29 +206,6 @@ class MemoryMonitor:
         except Exception as e:
             print(f"[MemoryMonitor] Error serializing levels: {e}")
             return {}
-    
-    def _clean_state_for_json(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        """מנקה את המצב מאובייקטים לא ניתנים לשמירה ב-JSON"""
-        try:
-            cleaned_state = {}
-            for key, value in state.items():
-                try:
-                    if isinstance(value, (str, int, float, bool, list, dict)):
-                        cleaned_state[key] = value
-                    elif hasattr(value, '__dict__'):
-                        # אובייקט - המרה למחרוזת
-                        cleaned_state[key] = str(value)
-                    else:
-                        # אחר - המרה למחרוזת
-                        cleaned_state[key] = str(value)
-                except Exception as e:
-                    print(f"[MemoryMonitor] Error cleaning state key {key}: {e}")
-                    cleaned_state[key] = f"ERROR: {str(value)}"
-            
-            return cleaned_state
-        except Exception as e:
-            print(f"[MemoryMonitor] Error cleaning state: {e}")
-            return {'error': 'Failed to clean state', 'timestamp': datetime.now().isoformat()}
     
     def _serialize_mice_dict(self) -> Dict[str, Any]:
         """ממיר את מילון העכברים לפורמט שניתן לשמור"""
@@ -304,25 +250,9 @@ class MemoryMonitor:
                 if hasattr(self.experiment, 'live_w') and self.experiment.live_w is not None:
                     try:
                         live_w = self.experiment.live_w
-                        # המרה בטוחה של ערכי tkinter
-                        last_rfid = getattr(live_w, 'last_rfid_value', None)
-                        if last_rfid is not None:
-                            try:
-                                # ניסיון לקבל את הטקסט מהאובייקט
-                                if hasattr(last_rfid, 'cget'):
-                                    last_rfid_text = last_rfid.cget('text')
-                                elif hasattr(last_rfid, 'get'):
-                                    last_rfid_text = last_rfid.get()
-                                else:
-                                    last_rfid_text = str(last_rfid)
-                            except Exception as e:
-                                last_rfid_text = str(last_rfid)
-                        else:
-                            last_rfid_text = None
-                        
                         gui_state['live_window_info'] = {
                             'is_open': True,
-                            'last_rfid': last_rfid_text,
+                            'last_rfid': getattr(live_w, 'last_rfid_value', None),
                             'window_geometry': getattr(live_w, 'root', {}).geometry() if hasattr(live_w, 'root') else ''
                         }
                     except Exception as e:
