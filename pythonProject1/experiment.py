@@ -15,6 +15,7 @@ from tkinter import messagebox
 from datetime import datetime
 import state_io
 import memory_monitor
+import time
 
 ###  use those commands on terminal to push changes to git
 
@@ -105,7 +106,7 @@ class Experiment:
             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # הפעלת מערכת ניטור הזיכרון
-        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=150)
+        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=147)
         self.memory_monitor.start_monitoring()
         
         # הפעלת הניסוי
@@ -180,21 +181,33 @@ class Experiment:
             print("Parameters received or auto-start enabled.")
             # המשך עם הניסוי ברגע שהפרמטרים נקבעו
             # התחלת הניסוי בthread נפרד כדי לשמור על הGUI מגיב
-            threading.Thread(target=self.start_experiment).start()
+            print("[DEBUG] Starting experiment thread...")
+            threading.Thread(target=self.start_experiment, daemon=True).start()
 
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
         print("[DEBUG] start_experiment called")
-        fsm = FiniteStateMachine(self)
-        self.fsm = fsm
-        print("FSM created:", self.fsm)
         
-        # אם זה אתחול אוטומטי, פתח את live window
-        if self.auto_start:
-            print("Auto-start enabled - opening live window...")
-            self.run_live_window()
-        else:
-            print("[DEBUG] Auto-start not enabled")
+        try:
+            # יצירת FSM
+            fsm = FiniteStateMachine(self)
+            self.fsm = fsm
+            print("FSM created:", self.fsm)
+            
+            # אם זה אתחול אוטומטי, פתח את live window
+            if self.auto_start:
+                print("Auto-start enabled - opening live window...")
+                # המתנה קצרה שהכל יתייצב
+                time.sleep(1)
+                self.run_live_window()
+                print("[DEBUG] Live window opened successfully")
+            else:
+                print("[DEBUG] Auto-start not enabled")
+                
+        except Exception as e:
+            print(f"[DEBUG] Error in start_experiment: {e}")
+            import traceback
+            traceback.print_exc()
 
     def run_live_window(self):
         print("[DEBUG] run_live_window called")

@@ -89,12 +89,16 @@ import os
 # הוספת התיקייה הנוכחית ל-PATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
-
+print("[RestartScript] CWD:", current_dir)
+print("[RestartScript] Python:", sys.executable)
 print("Restarting experiment automatically...")
 print(f"Experiment name: {self.experiment.txt_file_name}")
 
-# הפעלת הניסוי מחדש עם הפרמטרים הנכונים
-os.system(f"python experiment.py --restart {self.experiment.txt_file_name}")
+# הפעלת הניסוי מחדש עם אותו פרשן פייתון
+cmd = f"\"{sys.executable}\" experiment.py --restart {self.experiment.txt_file_name}"
+print("[RestartScript] Running:", cmd)
+os.chdir(current_dir)
+os.system(cmd)
 '''
             
             script_path = "restart_experiment.py"
@@ -113,15 +117,42 @@ os.system(f"python experiment.py --restart {self.experiment.txt_file_name}")
         try:
             print(f"[MemoryMonitor] Restarting experiment: {self.experiment.txt_file_name}")
             
-            # הפעלת הסקריפט ברקע
+            # הפעלת הסקריפט ברקע מאותה תיקייה
             if restart_script and os.path.exists(restart_script):
+                current_dir = os.path.dirname(os.path.abspath(__file__))
+                print("[MemoryMonitor] Spawning restart script with:", sys.executable, restart_script, "cwd=", current_dir)
                 subprocess.Popen([sys.executable, restart_script], 
+                               cwd=current_dir,
                                stdout=subprocess.DEVNULL, 
                                stderr=subprocess.DEVNULL)
                 
                 # המתנה קצרה ואז יציאה
-                time.sleep(2)
+                time.sleep(0.5)
                 print("[MemoryMonitor] Restart initiated, exiting current process...")
+                
+                # ניקוי משאבים לפני יציאה
+                try:
+                    if hasattr(self.experiment, 'live_w') and self.experiment.live_w:
+                        try:
+                            self.experiment.live_w.root.destroy()
+                            time.sleep(0.1)
+                        except:
+                            pass
+                except:
+                    pass
+                
+                try:
+                    if hasattr(self.experiment, 'root') and self.experiment.root:
+                        try:
+                            self.experiment.root.quit()
+                            time.sleep(0.1)
+                        except:
+                            pass
+                except:
+                    pass
+                
+                # המתנה קטנה כדי לתת ל-GUI להסגר
+                time.sleep(0.2)
                 
                 # יציאה מהתהליך הנוכחי
                 os._exit(0)
