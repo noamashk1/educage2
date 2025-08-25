@@ -407,3 +407,63 @@ class TkinterApp:
     def open_data_analysis_window(self):
         analysis_root = tk.Toplevel()
         DataAnalysis(analysis_root)
+
+    def update_gui_with_loaded_data(self, levels_df, mice_dict, exp_params):
+        """
+        מעדכן את ה-GUI עם הנתונים שנטענו מאתחול מחדש
+        """
+        try:
+            print("[GUI] Updating GUI with loaded data...")
+            
+            # עדכון הרמות
+            if levels_df is not None:
+                self.levels_df = levels_df
+                self._update_levels_display(levels_df)
+                print("[GUI] Levels updated successfully")
+            
+            # עדכון רשימת העכברים
+            if mice_dict is not None:
+                self.mice_table.mice_dict = mice_dict
+                self.mice_table.update_mice_display()
+                print("[GUI] Mice updated successfully")
+            
+            # עדכון הפרמטרים
+            if exp_params is not None:
+                self._update_parameters_display(exp_params)
+                print("[GUI] Parameters updated successfully")
+                
+            print("[GUI] GUI update completed")
+            
+        except Exception as e:
+            print(f"[GUI] Error updating GUI: {e}")
+    
+    def _update_levels_display(self, levels_df):
+        """מעדכן את תצוגת הרמות ב-GUI"""
+        try:
+            # ניקוי התצוגה הקיימת
+            for item in self.tree.get_children():
+                self.tree.delete(item)
+            
+            # הוספת הנתונים החדשים
+            for index, row in levels_df.iterrows():
+                values = list(row.values)
+                self.tree.insert('', 'end', values=values)
+                
+        except Exception as e:
+            print(f"[GUI] Error updating levels display: {e}")
+    
+    def _update_parameters_display(self, exp_params):
+        """מעדכן את תצוגת הפרמטרים ב-GUI"""
+        try:
+            # עדכון הפרמטרים ב-GUI
+            if hasattr(self, 'parameters_btns'):
+                # עדכון הפרמטרים לפי מה שנטען
+                if 'lick_time' in exp_params:
+                    self.parameters_btns.lick_time_display_option.set(exp_params['lick_time'])
+                if 'lick_time_bin_size' in exp_params and exp_params['lick_time_bin_size']:
+                    self.parameters_btns.lick_time_bin_size_entry.delete(0, tk.END)
+                    self.parameters_btns.lick_time_bin_size_entry.insert(0, str(exp_params['lick_time_bin_size']))
+                # וכן הלאה לשאר הפרמטרים...
+                
+        except Exception as e:
+            print(f"[GUI] Error updating parameters display: {e}")

@@ -40,7 +40,7 @@ class MemoryMonitor:
         while self.monitoring:
             try:
                 current_memory = self._get_current_memory_mb()
-                
+                print(f"[MemoryMonitor] Memory usage {current_memory:.1f}MB , threshold {self.threshold_mb}MB")
                 if current_memory > self.threshold_mb:
                     print(f"[MemoryMonitor] WARNING: Memory usage {current_memory:.1f}MB exceeds threshold {self.threshold_mb}MB")
                     self._handle_memory_overflow()
@@ -90,7 +90,10 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
-# הפעלת הניסוי מחדש
+print("Restarting experiment automatically...")
+print(f"Experiment name: {self.experiment.txt_file_name}")
+
+# הפעלת הניסוי מחדש עם הפרמטרים הנכונים
 os.system(f"python experiment.py --restart {self.experiment.txt_file_name}")
 '''
             

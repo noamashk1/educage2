@@ -76,6 +76,9 @@ class Experiment:
         יצירת ניסוי חדש
         auto_start: אם True, הניסוי יתחיל אוטומטית אם יש פרמטרים
         """
+        print(f"[DEBUG] Experiment.__init__: exp_name={exp_name}, auto_start={auto_start}")
+        print(f"[DEBUG] Parameters: exp_params={exp_params is not None}, mice_dict={mice_dict is not None}, levels_df={levels_df is not None}")
+        
         self.exp_params = exp_params
         self.fsm = None
         self.live_w = None
@@ -87,12 +90,19 @@ class Experiment:
         self.txt_file_path = None
         self.auto_start = auto_start
         
+        print(f"[DEBUG] self.auto_start set to: {self.auto_start}")
+        
         # יצירת תיקיית הניסוי
         self.new_txt_file(self.txt_file_name)
         
         # יצירת GUI
         self.root = tk.Tk()
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
+        
+        # אם יש פרמטרים שנטענו, עדכן את ה-GUI
+        if self.auto_start and self.exp_params and self.levels_df is not None and self.mice_dict:
+            print("[DEBUG] Updating GUI with loaded data...")
+            self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # הפעלת מערכת ניטור הזיכרון
         self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=150)
@@ -161,7 +171,10 @@ class Experiment:
 
     def run_experiment(self):
         # בדיקה אם יש פרמטרים או אם זה אתחול אוטומטי
+        print(f"[DEBUG] run_experiment: exp_params={self.exp_params is not None}, auto_start={self.auto_start}")
+        
         if self.exp_params is None and not self.auto_start:
+            print("[DEBUG] Waiting for parameters...")
             self.root.after(100, lambda: self.run_experiment())  # בדיקה נוספת אחרי 100ms
         else:
             print("Parameters received or auto-start enabled.")
@@ -171,6 +184,7 @@ class Experiment:
 
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
+        print("[DEBUG] start_experiment called")
         fsm = FiniteStateMachine(self)
         self.fsm = fsm
         print("FSM created:", self.fsm)
@@ -179,13 +193,21 @@ class Experiment:
         if self.auto_start:
             print("Auto-start enabled - opening live window...")
             self.run_live_window()
+        else:
+            print("[DEBUG] Auto-start not enabled")
 
     def run_live_window(self):
+        print("[DEBUG] run_live_window called")
         self.root.after(0, self.open_live_window)
         
     def open_live_window(self):
+        print("[DEBUG] open_live_window called")
         if self.live_w is None:
-            self.live_w = live_window.LiveWindow()#self.GUI
+            print("[DEBUG] Creating new LiveWindow...")
+            self.live_w = live_window.LiveWindow()
+            print("[DEBUG] LiveWindow created successfully")
+        else:
+            print("[DEBUG] LiveWindow already exists")
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)

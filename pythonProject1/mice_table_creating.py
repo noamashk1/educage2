@@ -69,6 +69,21 @@ class MainApp:
         self.mice_list = data_list
         self.create_mice_table()
 
+    def update_mice_display(self):
+        """
+        מעדכן את תצוגת העכברים עם הנתונים שנטענו
+        """
+        try:
+            if self.mice_dict is not None:
+                # יצירת רשימת עכברים מהמילון
+                mice_list = list(self.mice_dict.keys())
+                self.set_new_mice_list(mice_list)
+                print("[MiceTable] Mice display updated successfully")
+            else:
+                print("[MiceTable] No mice data to update")
+        except Exception as e:
+            print(f"[MiceTable] Error updating mice display: {e}")
+
                     
     def open_parameter_window(self):
         if len(self.main_GUI.levels_list) == 0:
