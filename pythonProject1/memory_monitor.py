@@ -82,28 +82,54 @@ class MemoryMonitor:
     def _create_restart_script(self):
         """יוצר סקריפט Python שיאתחל מחדש את הניסוי"""
         try:
+            # קבלת הנתיב המלא ל-experiment.py
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            experiment_path = os.path.join(current_dir, "experiment.py")
+            
             script_content = f'''#!/usr/bin/env python3
 import sys
 import os
 
+print("[RestartScript] Starting restart process...")
+print("[RestartScript] Current working directory:", os.getcwd())
+
 # הוספת התיקייה הנוכחית ל-PATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
-print("[RestartScript] CWD:", current_dir)
-print("[RestartScript] Python:", sys.executable)
+print("[RestartScript] Script directory:", current_dir)
+print("[RestartScript] Python interpreter:", sys.executable)
+
+# בדיקה שה-experiment.py קיים
+experiment_path = "{experiment_path}"
+if os.path.exists(experiment_path):
+    print("[RestartScript] Found experiment.py at:", experiment_path)
+else:
+    print("[RestartScript] ERROR: experiment.py not found at:", experiment_path)
+    sys.exit(1)
+
 print("Restarting experiment automatically...")
 print(f"Experiment name: {self.experiment.txt_file_name}")
 
-# הפעלת הניסוי מחדש עם אותו פרשן פייתון
-cmd = f"\"{sys.executable}\" experiment.py --restart {self.experiment.txt_file_name}"
-print("[RestartScript] Running:", cmd)
+# הפעלת הניסוי מחדש עם נתיב מלא
+cmd = f"\"{sys.executable}\" \"{experiment_path}\" --restart {self.experiment.txt_file_name}"
+print("[RestartScript] Running command:", cmd)
+
+# שינוי לתיקייה הנכונה והפעלה
 os.chdir(current_dir)
-os.system(cmd)
+result = os.system(cmd)
+print(f"[RestartScript] Command completed with result: {{result}}")
 '''
             
             script_path = "restart_experiment.py"
             with open(script_path, 'w') as f:
                 f.write(script_content)
+            
+            # מתן הרשאות הרצה לסקריפט
+            try:
+                os.chmod(script_path, 0o755)
+                print(f"[MemoryMonitor] Made script executable: {script_path}")
+            except Exception as e:
+                print(f"[MemoryMonitor] Warning: Could not make script executable: {e}")
             
             print(f"[MemoryMonitor] Restart script created: {script_path}")
             return script_path
@@ -120,14 +146,20 @@ os.system(cmd)
             # הפעלת הסקריפט ברקע מאותה תיקייה
             if restart_script and os.path.exists(restart_script):
                 current_dir = os.path.dirname(os.path.abspath(__file__))
-                print("[MemoryMonitor] Spawning restart script with:", sys.executable, restart_script, "cwd=", current_dir)
-                subprocess.Popen([sys.executable, restart_script], 
-                               cwd=current_dir,
-                               stdout=subprocess.DEVNULL, 
-                               stderr=subprocess.DEVNULL)
+                restart_script_path = os.path.join(current_dir, restart_script)
+                
+                print(f"[MemoryMonitor] Spawning restart script: {restart_script_path}")
+                print(f"[MemoryMonitor] Working directory: {current_dir}")
+                
+                # הפעלת הסקריפט עם subprocess במקום os.system
+                process = subprocess.Popen([sys.executable, restart_script_path], 
+                                        cwd=current_dir,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE,
+                                        text=True)
                 
                 # המתנה קצרה ואז יציאה
-                time.sleep(0.5)
+                time.sleep(1)
                 print("[MemoryMonitor] Restart initiated, exiting current process...")
                 
                 # ניקוי משאבים לפני יציאה
@@ -161,3 +193,5 @@ os.system(cmd)
                 
         except Exception as e:
             print(f"[MemoryMonitor] Error during experiment restart: {e}")
+            import traceback
+            traceback.print_exc()
