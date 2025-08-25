@@ -180,9 +180,10 @@ print(f"[RestartScript] Command completed with result: {{result}}")
                 except:
                     pass
                 
-                time.sleep(0.5)
-                if process.poll() is None:
-                    print("Child started successfully")
+                # המתנה קטנה כדי לתת ל-GUI להסגר
+                time.sleep(0.2)
+                print("[MemoryMonitor] pre os.exist")
+                # יציאה מהתהליך הנוכחי
                 os._exit(0)
             else:
                 print("[MemoryMonitor] Restart script not found, cannot restart")
