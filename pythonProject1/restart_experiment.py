@@ -146,26 +146,10 @@ def main():
         if saved_state.get('gui_state', {}).get('live_window_open', False):
             print("Attempting to restore live_window...")
             try:
-                # המתנה קצרה שהמערכת תתייצב
-                import time
-                time.sleep(2)
-                
-                # פתיחת live_window
                 experiment.run_live_window()
                 print("Live window restored successfully")
-                
-                # המתנה נוספת שהחלון ייפתח
-                time.sleep(1)
-                
             except Exception as e:
                 print(f"Failed to restore live_window: {e}")
-                # נסיון נוסף
-                try:
-                    print("Trying alternative method to open live_window...")
-                    experiment.open_live_window()
-                    print("Live window opened with alternative method")
-                except Exception as e2:
-                    print(f"Alternative method also failed: {e2}")
         
     except Exception as e:
         print(f"Error during experiment restart: {e}")
