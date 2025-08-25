@@ -13,7 +13,6 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
-from memory_monitor import MemoryMonitor  # הוספת ניטור זיכרון
 
 ###  use those commands on terminal to push changes to git
 
@@ -83,16 +82,8 @@ class Experiment:
         self.txt_file_name = exp_name
         self.txt_file_path = None
         self.new_txt_file(self.txt_file_name)
-        
-        # יצירת ניטור זיכרון
-        self.memory_monitor = MemoryMonitor(self, memory_threshold_mb=160)
-        
         self.root = tk.Tk()
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
-        
-        # התחלת ניטור הזיכרון
-        self.memory_monitor.start_monitoring()
-        
         self.run_experiment()
         self.root.mainloop()
         self.root.destroy()
@@ -151,22 +142,6 @@ class Experiment:
     def save_results(self, filename: str):
         with open(filename, 'w') as f:
             json.dump(self.results, f, indent=4)
-    
-    def get_memory_status(self):
-        """מחזיר את מצב הזיכרון הנוכחי"""
-        if hasattr(self, 'memory_monitor'):
-            return self.memory_monitor.get_memory_status()
-        return {'error': 'Memory monitor not available'}
-    
-    def stop_memory_monitoring(self):
-        """עוצר את ניטור הזיכרון"""
-        if hasattr(self, 'memory_monitor'):
-            self.memory_monitor.stop_monitoring()
-    
-    def restart_memory_monitoring(self):
-        """מתחיל מחדש את ניטור הזיכרון"""
-        if hasattr(self, 'memory_monitor'):
-            self.memory_monitor.start_monitoring()
 
 if __name__ == "__main__":
     
