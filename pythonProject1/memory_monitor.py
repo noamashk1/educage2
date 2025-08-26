@@ -4,6 +4,8 @@ import sys
 import threading
 import time
 import subprocess
+import tkinter as tk
+
 
 class MemoryMonitor:
     def __init__(self, experiment, threshold_mb=400, check_interval=60):
