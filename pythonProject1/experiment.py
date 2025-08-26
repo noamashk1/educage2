@@ -114,9 +114,10 @@ class Experiment:
         os.makedirs(folder_path, exist_ok=True)  # Ensure the folder exists
 
         self.txt_file_path = os.path.join(folder_path,filename+".txt")  
-
-        with open(self.txt_file_path, 'w') as file:
-            pass
+        # Create the file only if it does not exist; do not truncate if it exists
+        if not os.path.exists(self.txt_file_path):
+            with open(self.txt_file_path, 'w') as file:
+                pass
 
     def save_minimal_state(self):
         """

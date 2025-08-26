@@ -149,8 +149,15 @@ class IdleState(State):
                     self.fsm.current_trial.update_current_mouse(self.fsm.exp.mice_dict[mouse_id])
                     print("mouse: " + self.fsm.exp.mice_dict[mouse_id].get_id())
                     print("Level: " + self.fsm.exp.mice_dict[mouse_id].get_level())
-                    self.fsm.exp.live_w.update_last_rfid(mouse_id)
-                    self.fsm.exp.live_w.update_level(self.fsm.exp.mice_dict[mouse_id].get_level())
+                    
+                    # בדיקה בסיסית שה-live_w זמין
+                    if hasattr(self.fsm.exp, 'live_w') and self.fsm.exp.live_w is not None:
+                        try:
+                            self.fsm.exp.live_w.update_last_rfid(mouse_id)
+                            self.fsm.exp.live_w.update_level(self.fsm.exp.mice_dict[mouse_id].get_level())
+                        except Exception as e:
+                            print(f"[IdleState] Warning: Could not update GUI: {e}")
+                    
                     self.on_event('in_port')
                     break
             else:
