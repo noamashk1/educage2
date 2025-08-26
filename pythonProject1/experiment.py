@@ -29,8 +29,8 @@ import time
 class Experiment:
     def __init__(self, exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None, exp_params = None, auto_start = False):
         """
-        יצירת ניסוי חדש
-        auto_start: אם True, הניסוי יתחיל אוטומטית אם יש פרמטרים
+        Creating a new experiment
+        auto_start: if True, the experiment will start automatically if parameters are available
         """
         print(f"[DEBUG] Experiment.__init__: exp_name={exp_name}, auto_start={auto_start}")
         print(f"[DEBUG] Parameters: exp_params={exp_params is not None}, mice_dict={mice_dict is not None}, levels_df={levels_df is not None}")
@@ -48,23 +48,23 @@ class Experiment:
         
         print(f"[DEBUG] self.auto_start set to: {self.auto_start}")
         
-        # יצירת תיקיית הניסוי
+        # Creating experiment folder
         self.new_txt_file(self.txt_file_name)
         
-        # יצירת GUI
+        # Creating GUI
         self.root = tk.Tk()
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         
-        # אם יש פרמטרים שנטענו, עדכן את ה-GUI
+        # If there are loaded parameters, update the GUI
         if self.auto_start and self.exp_params and self.levels_df is not None and self.mice_dict:
             print("[DEBUG] Updating GUI with loaded data...")
             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
-        # הפעלת מערכת ניטור הזיכרון
+        # Starting memory monitoring system
         self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=150)
         self.memory_monitor.start_monitoring()
         
-        # הפעלת הניסוי
+        # Starting the experiment
         self.run_experiment()
         self.root.mainloop()
         self.root.destroy()
@@ -96,7 +96,7 @@ class Experiment:
 
     def save_minimal_state(self):
         """
-        שומר את המצב המינימלי של הניסוי
+        Saving the minimal state of the experiment
         """
         if self.exp_params and self.levels_df is not None and self.mice_dict:
             state_io.save_minimal_state(
@@ -111,32 +111,32 @@ class Experiment:
             print("Cannot save state - missing required data")
 
     def get_memory_status(self):
-        """מחזיר את סטטוס הזיכרון הנוכחי"""
+        """Returning the current memory status"""
         if hasattr(self, 'memory_monitor'):
             return self.memory_monitor._get_current_memory_mb()
         return 0
     
     def stop_memory_monitoring(self):
-        """עוצר את ניטור הזיכרון"""
+        """Stopping memory monitoring"""
         if hasattr(self, 'memory_monitor'):
             self.memory_monitor.stop_monitoring()
     
     def restart_memory_monitoring(self):
-        """מתחיל מחדש את ניטור הזיכרון"""
+        """Restarting memory monitoring"""
         if hasattr(self, 'memory_monitor'):
             self.memory_monitor.start_monitoring()
 
     def run_experiment(self):
-        # בדיקה אם יש פרמטרים או אם זה אתחול אוטומטי
+        # Check if there are parameters or if this is auto-start
         print(f"[DEBUG] run_experiment: exp_params={self.exp_params is not None}, auto_start={self.auto_start}")
         
         if self.exp_params is None and not self.auto_start:
             #print("[DEBUG] Waiting for parameters...")
-            self.root.after(100, lambda: self.run_experiment())  # בדיקה נוספת אחרי 100ms
+            self.root.after(100, lambda: self.run_experiment())  # Check again after 100ms
         else:
             print("Parameters received or auto-start enabled.")
-            # המשך עם הניסוי ברגע שהפרמטרים נקבעו
-            # התחלת הניסוי בthread נפרד כדי לשמור על הGUI מגיב
+            # Continue with the experiment once parameters are set
+            # Start experiment in a separate thread to keep the GUI responsive
             print("[DEBUG] Starting experiment thread...")
             threading.Thread(target=self.start_experiment, daemon=True).start()
 
@@ -145,21 +145,21 @@ class Experiment:
         print("[DEBUG] start_experiment called")
         
         try:
-            # אם זה אתחול אוטומטי, פתח את live window
+            # If this is auto-start, open the live window
             if self.auto_start:
                 print("Auto-start enabled - opening live window...")
-                # המתנה קצרה שהכל יתייצב
+                # Short wait for everything to stabilize
                 time.sleep(1)
-                # יצירת live window באופן סינכרוני
+                # Creating live window synchronously
                 self.open_live_window()
                 print("[DEBUG] Live window opened successfully")
             else:
                 print("[DEBUG] Auto-start not enabled")
                 
-            # יצירת FSM רק אחרי שה-live_w נוצר
+            # Create FSM only after live_w is created
             if self.auto_start and (self.live_w is None):
                 print("[DEBUG] WARNING: LiveWindow not available, waiting...")
-                # המתנה נוספת וניסיון נוסף
+                # Additional wait and another attempt
                 time.sleep(1)
                 self.open_live_window()
                 
@@ -189,7 +189,7 @@ class Experiment:
             try:
                 self.live_w = live_window.LiveWindow()
                 print("[DEBUG] LiveWindow created successfully")
-                # המתנה קצרה לוודא שה-window נוצר בהצלחה
+                # Short wait to ensure the window is created successfully
                 time.sleep(0.5)
             except Exception as e:
                 print(f"[DEBUG] Error creating LiveWindow: {e}")
@@ -197,7 +197,7 @@ class Experiment:
         else:
             print("[DEBUG] LiveWindow already exists")
         
-        # בדיקה שה-live_w אכן נוצר
+        # Check that live_w was indeed created
         if self.live_w is None:
             print("[DEBUG] WARNING: LiveWindow creation failed!")
         else:
@@ -213,11 +213,11 @@ class Experiment:
 if __name__ == "__main__":
     import sys
     
-    # בדיקה אם זה אתחול מחדש
+    # Check if this is a restart
     restart_mode = False
     restart_exp_name = None
     
-    # בדיקת ארגומנטים של command line
+    # Check command line arguments
     if len(sys.argv) > 1 and sys.argv[1] == "--restart":
         if len(sys.argv) > 2:
             restart_exp_name = sys.argv[2]
@@ -226,16 +226,16 @@ if __name__ == "__main__":
             print("Usage: python experiment.py --restart <experiment_name>")
             sys.exit(1)
     
-    # אם זה אתחול מחדש, נסה לטעון את המצב
+    # If this is a restart, try to load the state
     if restart_mode and restart_exp_name:
         print(f"Attempting to restart experiment: {restart_exp_name}")
         
-        # טעינת המצב
+        # Loading the state
         state_data = state_io.load_minimal_state(restart_exp_name)
         
         if state_data:
             print("State loaded successfully, starting experiment...")
-            # יצירת הניסוי עם הפרמטרים שנטענו
+            # Creating the experiment with loaded parameters
             experiment = Experiment(
                 exp_name=restart_exp_name,
                 mice_dict=state_data['mice_dict'],
@@ -247,7 +247,7 @@ if __name__ == "__main__":
             print(f"Failed to load state for {restart_exp_name}")
             sys.exit(1)
     else:
-        # הפעלה רגילה - יצירת תיקיית ניסוי חדשה
+        # Normal startup - creating a new experiment folder
         created_folder_name = None
 
         def create_experiment_folder():
@@ -266,27 +266,27 @@ if __name__ == "__main__":
             full_path = os.path.join(base_dir, folder_name)
 
             if os.path.exists(full_path):
-                # בדיקה אם יש קובץ מצב זמין
+                # Check if there is a saved state available
                 if state_io.check_if_restart_available(folder_name):
                     answer = messagebox.askyesno("Restart Available", 
                         f"The folder '{folder_name}' exists and has a saved state.\nDo you want to restart the experiment?")
                     if answer:
-                        # אתחול מחדש
+                        # Restart
                         created_folder_name = folder_name
                         root.destroy()
                         return
                 
-                # שאלה אם רוצים להשתמש בתיקייה קיימת
+                # Ask if they want to use the existing folder
                 answer = messagebox.askyesno("Folder Exists", f"The folder '{folder_name}' already exists.\nDo you want to use it?")
                 if not answer:
-                    return  # לא לעשות כלום, לתת למשתמש לשנות את השם או לבטל
+                    return  # Do nothing, let the user change the name or cancel
             else:
                 os.makedirs(full_path)
 
             created_folder_name = folder_name
             root.destroy()
 
-        # יצירת חלון הGUI
+        # Creating the GUI window
         root = tk.Tk()
         root.title("Experiment Setup")
         root.geometry("300x120")
@@ -294,14 +294,14 @@ if __name__ == "__main__":
         tk.Label(root, text="Enter Experiment Name:").pack(pady=10)
 
         entry = tk.Entry(root, width=30)
-        entry.insert(0, "exp")  # טקסט ברירת מחדל
+        entry.insert(0, "exp")  # Default text
         entry.pack()
 
         tk.Button(root, text="Create Folder", command=create_experiment_folder).pack(pady=10)
 
         root.mainloop()
 
-        # יצירת הניסוי
+        # Creating the experiment
         if created_folder_name:
             experiment = Experiment(exp_name=created_folder_name)
 
