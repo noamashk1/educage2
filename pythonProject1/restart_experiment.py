@@ -20,10 +20,10 @@ else:
     sys.exit(1)
 
 print("Restarting experiment automatically...")
-print(f"Experiment name: exp_25_08_2025")
+print(f"Experiment name: exp_26_08_2025")
 
 # הפעלת הניסוי מחדש עם נתיב מלא
-cmd = f'"/usr/bin/python3" "/home/educage/git_educage2/educage2/pythonProject1/experiment.py" --restart exp_25_08_2025'
+cmd = f'"/usr/bin/python3" "/home/educage/git_educage2/educage2/pythonProject1/experiment.py" --restart exp_26_08_2025'
 print("[RestartScript] Running command:", cmd)
 
 # שינוי לתיקייה הנכונה והפעלה
