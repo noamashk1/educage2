@@ -24,32 +24,7 @@ import time
 # git commit -m ""
 # git push
 # 
-# corrupted size vs. prev_size while consolidating
-# 
-# Expression 'paTimedOut' failed in 'src/os/unix/pa_unix_util.c', line: 387
-# Expression 'PaUnixThread_New( &stream->thread, &CallbackThreadFunc, stream, 1., stream->rtSched )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2998
-# Exception in thread Thread-24763:
-# Traceback (most recent call last):
-#   File "/usr/lib/python3.9/threading.py", line 954, in _bootstrap_inner
-#     self.run()
-#   File "/usr/lib/python3.9/threading.py", line 892, in run
-#     self._target(*self._args, **self._kwargs)
-#   File "/home/educage/git_educage2/educage2/pythonProject1/finite_state_machine.py", line 315, in tdt_as_stim
-#     sd.play(stim_array, samplerate=sample_rate, blocking=True)
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 178, in play
-#     ctx.start_stream(OutputStream, samplerate, ctx.output_channels,
-# Expression 'paTimedOut' failed in 'src/os/unix/pa_unix_util.c', line: 387
-# ALSA lib pcm.c:8545:(snd_pcm_recover) underrun occurred
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2632, in start_stream
-#     self.stream.start()
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 1124, in start
-#     _check(err, 'Error starting stream')
-#   File "/home/educage/.local/lib/python3.9/site-packages/sounddevice.py", line 2796, in _check
-#     raise PortAudioError(errormsg, err)Expression 'PaUnixThread_New( &stream->thread, &CallbackThreadFunc, stream, 1., stream->rtSched )' failed in 'src/hostapi/alsa/pa_linux_alsa.c', line: 2998
-# 
 
-# 
-# Process ended with exit code -9.
 ###
 class Experiment:
     def __init__(self, exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None, exp_params = None, auto_start = False):
@@ -156,7 +131,7 @@ class Experiment:
         print(f"[DEBUG] run_experiment: exp_params={self.exp_params is not None}, auto_start={self.auto_start}")
         
         if self.exp_params is None and not self.auto_start:
-            print("[DEBUG] Waiting for parameters...")
+            #print("[DEBUG] Waiting for parameters...")
             self.root.after(100, lambda: self.run_experiment())  # בדיקה נוספת אחרי 100ms
         else:
             print("Parameters received or auto-start enabled.")

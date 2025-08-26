@@ -115,7 +115,6 @@ class IdleState(State):
         self.fsm.exp.live_w.update_trial_value('')
 
         log_memory_usage("Enter Idle")
-        #log_thread_count("Enter Idle")
 
         threading.Thread(target=self.wait_for_event, daemon=True).start()
 
@@ -218,7 +217,6 @@ class TrialState(State):
     def __init__(self, fsm):
         super().__init__("trial", fsm)
         log_memory_usage("Enter Trial")
-        #log_thread_count("Enter Trial")
         self.got_response = None
         self.stop_threads = False
         self.trial_thread = threading.Thread(target=self.run_trial)
@@ -255,10 +253,8 @@ class TrialState(State):
                 self.give_punishment()
         
         log_memory_usage("After Trial")
-        #log_thread_count("After Trial")
         gc.collect()
         log_memory_usage("After gc")
-        #log_thread_count("After gc")
         del stim_thread
         del input_thread
         self.on_event('trial_over')
@@ -273,46 +269,15 @@ class TrialState(State):
             sd.stop()
             try:
                 with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-                    noise = z['noise'].astype(np.float32, copy=False)
+                    noise = z['noise']
                     Fs = int(z['Fs'])
-                    sd.play(noise, samplerate=Fs)
-                    sd.wait()
-#                 with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-#                     noise = z['noise']
-#                     Fs = int(z['Fs'])
-#                     sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
+                    sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
             finally:
                 sd.stop()
                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
                 time.sleep(5)  # timeout as punishment
                 del noise
     
-
-#     def tdt_as_stim(self):
-#         stim_path = self.fsm.current_trial.current_stim_path
-#         try:
-#             with np.load(stim_path, mmap_mode='r') as z:
-#                 stim_array = z["data"]
-#                 #stim_array = np.ascontiguousarray(stim_array, dtype=np.float32)
-#                 sample_rate = int(z["rate"].item())
-# 
-#             stim_duration = len(stim_array) / sample_rate
-#             print("stim_duration: " + str(stim_duration))
-# 
-#             sd.stop()  
-#             try:
-#                 sd.play(stim_array, samplerate=sample_rate, blocking=True)
-#                 start_time = time.time()
-#                 while time.time() - start_time < stim_duration:
-#                     if self.got_response:
-#                         print("Early response detected — stopping stimulus")
-#                         sd.stop()
-#                         return
-#                     time.sleep(0.05)
-#             finally:
-#                 sd.stop()
-#                 del stim_array
-
     def tdt_as_stim(self):
         with audio_lock:  # 🔒 ensure only one audio action at a time
             stim_path = self.fsm.current_trial.current_stim_path
