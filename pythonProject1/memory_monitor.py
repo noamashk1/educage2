@@ -6,7 +6,7 @@ import time
 import subprocess
 
 class MemoryMonitor:
-    def __init__(self, experiment, threshold_mb=150, check_interval=10):
+    def __init__(self, experiment, threshold_mb=150, check_interval=60):
         """
         מערכת ניטור זיכרון אוטומטית
         experiment: אובייקט הניסוי
