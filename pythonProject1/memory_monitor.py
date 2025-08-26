@@ -5,6 +5,8 @@ import threading
 import time
 import subprocess
 import tkinter as tk
+import smtplib
+from email.mime.text import MIMEText
 
 
 class MemoryMonitor:
@@ -48,6 +50,7 @@ class MemoryMonitor:
                 # Check if memory has reached 100MB below threshold and warning hasn't been shown yet
                 if not self.warning_shown and current_memory > (self.threshold_mb - 100):
                     self._show_memory_warning(current_memory)
+                    self._send_warning_email_async(current_memory)
                     self.warning_shown = True
                 
                 if current_memory > self.threshold_mb:
@@ -80,7 +83,7 @@ class MemoryMonitor:
                     # Creating a simple warning window
                     warning_window = tk.Tk()
                     warning_window.title("Memory Warning")
-                    warning_window.geometry("400x200")
+                    warning_window.geometry("450x250")
                     warning_window.resizable(False, False)
                     
                     # Message in English
@@ -89,13 +92,11 @@ class MemoryMonitor:
 Current usage: {current_memory:.1f}MB
 Threshold: {self.threshold_mb}MB
 
-When the system reaches the threshold, it will restart automatically.
-
-Click OK to continue."""
+When the system reaches the threshold, it will restart automatically."""
                     
                     # Label with the message
                     label = tk.Label(warning_window, text=message, font=("Arial", 12), 
-                                   justify=tk.CENTER, wraplength=350)
+                                   justify=tk.CENTER, wraplength=380)
                     label.pack(pady=20)
                     
                     # OK button
@@ -124,6 +125,39 @@ Click OK to continue."""
             
         except Exception as e:
             print(f"[MemoryMonitor] Error in _show_memory_warning: {e}")
+
+    def _send_warning_email_async(self, current_memory: float) -> None:
+        """Send memory warning email in a background thread (non-blocking)."""
+        try:
+            def send_email():
+                try:
+                    recipient = getattr(self.experiment, 'alert_email', None)
+                    if not recipient:
+                        return
+                    subject = "Educage2 Memory Warning"
+                    body = (
+                        f"Warning: Memory is approaching the threshold.\n\n"
+                        f"Current usage: {current_memory:.1f} MB\n"
+                        f"Threshold: {self.threshold_mb} MB\n\n"
+                        f"The system will restart automatically when the threshold is reached."
+                    )
+                    msg = MIMEText(body)
+                    msg['Subject'] = subject
+                    msg['From'] = 'no-reply@educage2'
+                    msg['To'] = recipient
+                    
+                    # Try to send via localhost SMTP; if not available, fail silently
+                    try:
+                        with smtplib.SMTP('localhost') as server:
+                            server.send_message(msg)
+                            print(f"[MemoryMonitor] Warning email sent to {recipient}")
+                    except Exception as e:
+                        print(f"[MemoryMonitor] Could not send email via localhost SMTP: {e}")
+                except Exception as e:
+                    print(f"[MemoryMonitor] Error preparing/sending email: {e}")
+            threading.Thread(target=send_email, daemon=True).start()
+        except Exception as e:
+            print(f"[MemoryMonitor] Error launching email thread: {e}")
 
     def _handle_memory_overflow(self):
         """Handles memory overflow above the threshold"""

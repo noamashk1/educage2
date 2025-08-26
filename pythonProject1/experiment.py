@@ -45,6 +45,7 @@ class Experiment:
         self.txt_file_name = exp_name
         self.txt_file_path = None
         self.auto_start = auto_start
+        self.alert_email = "noam4596@gmail.com"  # Email for memory warnings
         
         print(f"[DEBUG] self.auto_start set to: {self.auto_start}")
         
