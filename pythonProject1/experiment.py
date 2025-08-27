@@ -60,7 +60,7 @@ class Experiment:
 #             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # Starting memory monitoring system
-        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=151)
+        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=450)
         self.memory_monitor.start_monitoring()
         
         # Starting the experiment

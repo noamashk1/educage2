@@ -12,6 +12,7 @@ import gc
 import tracemalloc
 import objgraph
 import logging
+import pandas as pd
 
 audio_lock = threading.Lock()
 valve_pin = 4  # 23
@@ -268,15 +269,16 @@ class TrialState(State):
         with audio_lock:
             sd.stop()
             try:
-                with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-                    noise = z['noise']
-                    Fs = int(z['Fs'])
-                    sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
+                # with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
+                #     noise = z['noise']
+                #     Fs = int(z['Fs'])
+                #     sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
+                sd.play(self.noise, samplerate=self.noise_Fs, blocking=True)  #sd.wait(
             finally:
                 sd.stop()
                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
                 time.sleep(5)  # timeout as punishment
-                del noise
+                #del noise
     
     def tdt_as_stim(self):
         with audio_lock:  # 🔒 ensure only one audio action at a time
@@ -285,6 +287,69 @@ class TrialState(State):
                 with np.load(stim_path, mmap_mode='r') as z:
                     stim_array = z["data"].astype(np.float32, copy=False)
                     sample_rate = int(z["rate"].item())
+
+                stim_duration = len(stim_array) / sample_rate
+                print("stim_duration:", stim_duration)
+
+                sd.stop()
+                try:
+                    sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                    start_time = time.time()
+                    while time.time() - start_time < stim_duration:
+                        if self.got_response:
+                            print("Early response detected — stopping stimulus")
+                            sd.stop()
+                            return
+                        time.sleep(0.05)
+                finally:
+                    sd.stop()
+                    del stim_array
+
+                time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+                print("Stimulus done. Waiting post-stim lick window...")
+
+                start_post = time.time()
+                while time.time() - start_post < time_to_lick:
+                    if self.got_response:
+                        print("Early response during post-stim window — skipping rest")
+                        return
+                    time.sleep(0.05)
+
+                print("Post-stim lick window completed.")
+
+            finally:
+                self.fsm.exp.live_w.toggle_indicator("stim", "off")
+
+    def tdt_as_stim_cached(self):
+        with audio_lock:  # ensure only one audio action at a time
+            stim_path = self.fsm.current_trial.current_stim_path
+            try:
+                stim_array = None
+                sample_rate = None
+
+                # Try to fetch from preloaded all_signals_df
+                try:
+                    df = getattr(self.fsm, 'all_signals_df', None)
+                    if df is not None and hasattr(df, 'empty') and not df.empty:
+                        row = df.loc[df['path'] == stim_path]
+                        if not row.empty:
+                            stim_array = row.iloc[0]['data']
+                            sample_rate = row.iloc[0]['fs']
+                except Exception as e:
+                    print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
+
+                # Fallback to loading from disk if not found in cache
+                if stim_array is None:
+                    try:
+                        with np.load(stim_path, mmap_mode='r') as z:
+                            stim_array = z["data"].astype(np.float32, copy=False)
+                            sample_rate = int(z["rate"].item())
+                    except Exception as e:
+                        print(f"[TrialState] Error loading stimulus from disk '{stim_path}': {e}")
+                        return
+                else:
+                    # Ensure dtype float32; avoid copying if possible
+                    stim_array = np.asarray(stim_array, dtype=np.float32)
 
                 stim_duration = len(stim_array) / sample_rate
                 print("stim_duration:", stim_duration)
@@ -378,6 +443,82 @@ class FiniteStateMachine:
         self.exp = experiment
         self.current_trial = Trial(self)
         self.state = IdleState(self)
+        self.all_signals_df = None
+        with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz', mmap_mode='r') as z:
+            self.noise = z['data']
+            self.noise_Fs = int(z['Fs'])
+
+        # Build a DataFrame with all stimuli referenced by the levels table
+        self._build_all_signals_df()
+
+    def _build_all_signals_df(self):
+        try:
+            if self.exp is None or self.exp.levels_df is None:
+                print("[FSM] No levels_df available; skipping all_signals_df build")
+                return
+            if "Stimulus Path" not in self.exp.levels_df.columns:
+                print("[FSM] 'Stimulus Path' column not found in levels_df; skipping all_signals_df build")
+                return
+
+            paths = [p for p in self.exp.levels_df["Stimulus Path"].tolist() if isinstance(p, str) and len(p) > 0]
+            unique_paths = []
+            seen = set()
+            for p in paths:
+                if p not in seen:
+                    seen.add(p)
+                    unique_paths.append(p)
+
+            rows = []
+            for p in unique_paths:
+                try:
+                    data = None
+                    fs = None
+                    # Support .npz and .npy
+                    if p.lower().endswith('.npz'):
+                        with np.load(p, mmap_mode='r') as z:
+                            if 'data' in z:
+                                data = z['data']
+                            elif 'noise' in z:
+                                data = z['noise']
+                            else:
+                                # Fallback: first array-like entry
+                                for k in z.files:
+                                    arr = z[k]
+                                    if isinstance(arr, np.ndarray):
+                                        data = arr
+                                        break
+                            if 'rate' in z:
+                                fs = int(z['rate'].item()) if hasattr(z['rate'], 'item') else int(z['rate'])
+                            elif 'Fs' in z:
+                                fs = int(z['Fs'].item()) if hasattr(z['Fs'], 'item') else int(z['Fs'])
+                    else:
+                        # .npy or raw array
+                        arr = np.load(p, mmap_mode='r')
+                        data = arr
+                        # No fs info in .npy files; leave as None or set a conventional default if needed
+
+                    if data is None:
+                        print(f"[FSM] Warning: could not extract data from {p}")
+                        continue
+
+                    rows.append({
+                        'path': p,
+                        'data': data,
+                        'fs': fs
+                    })
+                except Exception as e:
+                    print(f"[FSM] Error loading stimulus '{p}': {e}")
+
+            if rows:
+                # Create DataFrame with fixed column order
+                self.all_signals_df = pd.DataFrame(rows, columns=['path', 'data', 'fs'])
+                print(f"[FSM] all_signals_df built with {len(self.all_signals_df)} entries")
+            else:
+                self.all_signals_df = pd.DataFrame(columns=['path', 'data', 'fs'])
+                print("[FSM] all_signals_df built empty (no stimuli loaded)")
+        except Exception as e:
+            print(f"[FSM] Failed to build all_signals_df: {e}")
+
 
     def on_event(self, event):
         self.state.on_event(event)
