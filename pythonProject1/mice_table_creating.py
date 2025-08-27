@@ -70,9 +70,6 @@ class MainApp:
         self.create_mice_table()
 
     def update_mice_display(self):
-        """
-        מעדכן את תצוגת העכברים עם הנתונים שנטענו
-        """
         try:
             if self.mice_dict is not None:
                 # יצירת רשימת עכברים מהמילון

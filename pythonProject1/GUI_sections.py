@@ -196,12 +196,6 @@ class TkinterApp:
                 tone_shape = self.create_pure_tone(freq, voltage, tone_dur, ramp_dur, Fs)
                 
                 os.makedirs("stimuli", exist_ok=True)  # Ensure folder exists      
-#                 filename = filedialog.asksaveasfilename(
-#                     initialdir="./stimuli",
-#                     title="Save Stimulus File",
-#                     filetypes=[("NumPy files", "*.npy")],
-#                     defaultextension=".npy"
-#                 )
                 filename = filedialog.asksaveasfilename(
                     initialdir="./stimuli",
                     title="Save Stimulus File",
@@ -210,8 +204,6 @@ class TkinterApp:
                 )
                 
                 if filename:  # If user didn't cancel
-#                     os.makedirs("stimuli", exist_ok=True)  # Ensure folder exists
-                    #np.save(filename, tone_shape)  # Save as .npy file
                     np.savez(filename, data=tone_shape, rate=Fs)
                     messagebox.showinfo("Success", f"Stimulus saved as: {filename}")
 

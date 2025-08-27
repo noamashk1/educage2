@@ -125,35 +125,19 @@ class Experiment:
 
     def run_experiment(self):
         # Check if there are parameters or if this is auto-start
-        print(f"[DEBUG] run_experiment: exp_params={self.exp_params is not None}, auto_start={self.auto_start}")
-        
         if self.exp_params is None and not self.auto_start:
-            #print("[DEBUG] Waiting for parameters...")
             self.root.after(100, lambda: self.run_experiment())  # Check again after 100ms
         else:
-            print("Parameters received or auto-start enabled.")
             # Continue with the experiment once parameters are set
             # Start experiment in a separate thread to keep the GUI responsive
-            print("[DEBUG] Starting experiment thread...")
             threading.Thread(target=self.start_experiment, daemon=True).start()
 
     def start_experiment(self):
         # This method runs the actual experiment (on a separate thread)
-        print("[DEBUG] start_experiment called")
-        
         try:
             # If this is auto-start, open the live window
             if self.auto_start:
-                print("Auto-start enabled - opening live window...")
-#                 # Short wait for everything to stabilize
-#                 time.sleep(1)
-#                 # Creating live window synchronously
-#                 self.open_live_window()
-#                 print("[DEBUG] Live window opened successfully")
                 self.root.after(200, self.run_live_window)
-                print("[DEBUG] Live window scheduled to open (200ms)")
-            else:
-                print("[DEBUG] Auto-start not enabled")
                 
             # Create FSM only after live_w is created
             if self.auto_start and (self.live_w is None):
@@ -168,22 +152,18 @@ class Experiment:
                 
             fsm = FiniteStateMachine(self)
             self.fsm = fsm
-            print("FSM created:", self.fsm)
+            print("FSM created: tThe experiment has begun.")
             
-                
         except Exception as e:
             print(f"[DEBUG] Error in start_experiment: {e}")
             import traceback
             traceback.print_exc()
 
     def run_live_window(self):
-        print("[DEBUG] run_live_window called")
         self.root.after(0, self.open_live_window)
         
     def open_live_window(self):
-        print("[DEBUG] open_live_window called")
         if self.live_w is None:
-            print("[DEBUG] Creating new LiveWindow...")
             try:
                 self.live_w = live_window.LiveWindow()
                 print("[DEBUG] LiveWindow created successfully")
@@ -198,8 +178,6 @@ class Experiment:
         # Check that live_w was indeed created
         if self.live_w is None:
             print("[DEBUG] WARNING: LiveWindow creation failed!")
-        else:
-            print("[DEBUG] LiveWindow is ready")
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)
