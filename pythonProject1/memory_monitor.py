@@ -10,7 +10,7 @@ from General_functions import send_email
 
 
 class MemoryMonitor:
-    def __init__(self, experiment, threshold_mb=400, check_interval=30):
+    def __init__(self, experiment, threshold_mb=400, check_interval=10*60):
         """
         Memory monitoring system
         experiment: experiment object

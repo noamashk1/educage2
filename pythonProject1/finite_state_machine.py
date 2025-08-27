@@ -273,54 +273,54 @@ class TrialState(State):
                 #     noise = z['noise']
                 #     Fs = int(z['Fs'])
                 #     sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
-                sd.play(self.noise, samplerate=self.noise_Fs, blocking=True)  #sd.wait(
+                sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True)  #sd.wait(
             finally:
                 sd.stop()
                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
                 time.sleep(5)  # timeout as punishment
                 #del noise
     
+#     def tdt_as_stim(self):
+#         with audio_lock:  # 🔒 ensure only one audio action at a time
+#             stim_path = self.fsm.current_trial.current_stim_path
+#             try:
+#                 with np.load(stim_path, mmap_mode='r') as z:
+#                     stim_array = z["data"].astype(np.float32, copy=False)
+#                     sample_rate = int(z["rate"].item())
+# 
+#                 stim_duration = len(stim_array) / sample_rate
+#                 print("stim_duration:", stim_duration)
+# 
+#                 sd.stop()
+#                 try:
+#                     sd.play(stim_array, samplerate=sample_rate, blocking=True)
+#                     start_time = time.time()
+#                     while time.time() - start_time < stim_duration:
+#                         if self.got_response:
+#                             print("Early response detected — stopping stimulus")
+#                             sd.stop()
+#                             return
+#                         time.sleep(0.05)
+#                 finally:
+#                     sd.stop()
+#                     del stim_array
+# 
+#                 time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+#                 print("Stimulus done. Waiting post-stim lick window...")
+# 
+#                 start_post = time.time()
+#                 while time.time() - start_post < time_to_lick:
+#                     if self.got_response:
+#                         print("Early response during post-stim window — skipping rest")
+#                         return
+#                     time.sleep(0.05)
+# 
+#                 print("Post-stim lick window completed.")
+# 
+#             finally:
+#                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
+
     def tdt_as_stim(self):
-        with audio_lock:  # 🔒 ensure only one audio action at a time
-            stim_path = self.fsm.current_trial.current_stim_path
-            try:
-                with np.load(stim_path, mmap_mode='r') as z:
-                    stim_array = z["data"].astype(np.float32, copy=False)
-                    sample_rate = int(z["rate"].item())
-
-                stim_duration = len(stim_array) / sample_rate
-                print("stim_duration:", stim_duration)
-
-                sd.stop()
-                try:
-                    sd.play(stim_array, samplerate=sample_rate, blocking=True)
-                    start_time = time.time()
-                    while time.time() - start_time < stim_duration:
-                        if self.got_response:
-                            print("Early response detected — stopping stimulus")
-                            sd.stop()
-                            return
-                        time.sleep(0.05)
-                finally:
-                    sd.stop()
-                    del stim_array
-
-                time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
-                print("Stimulus done. Waiting post-stim lick window...")
-
-                start_post = time.time()
-                while time.time() - start_post < time_to_lick:
-                    if self.got_response:
-                        print("Early response during post-stim window — skipping rest")
-                        return
-                    time.sleep(0.05)
-
-                print("Post-stim lick window completed.")
-
-            finally:
-                self.fsm.exp.live_w.toggle_indicator("stim", "off")
-
-    def tdt_as_stim_cached(self):
         with audio_lock:  # ensure only one audio action at a time
             stim_path = self.fsm.current_trial.current_stim_path
             try:
@@ -444,8 +444,8 @@ class FiniteStateMachine:
         self.current_trial = Trial(self)
         self.state = IdleState(self)
         self.all_signals_df = None
-        with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz', mmap_mode='r') as z:
-            self.noise = z['data']
+        with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
+            self.noise = z['noise']
             self.noise_Fs = int(z['Fs'])
 
         # Build a DataFrame with all stimuli referenced by the levels table
