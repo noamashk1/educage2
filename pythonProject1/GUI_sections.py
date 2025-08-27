@@ -457,13 +457,48 @@ class TkinterApp:
         try:
             # עדכון הפרמטרים ב-GUI
             if hasattr(self, 'parameters_btns'):
-                # עדכון הפרמטרים לפי מה שנטען
-                if 'lick_time' in exp_params:
-                    self.parameters_btns.lick_time_display_option.set(exp_params['lick_time'])
+                # lick_time and optional bin size
+                if 'lick_time' in exp_params and exp_params['lick_time'] is not None:
+                    self.parameters_btns.lick_time_display_option.set(str(exp_params['lick_time']))
+                    self.lick_time_show_entry_field()
                 if 'lick_time_bin_size' in exp_params and exp_params['lick_time_bin_size']:
                     self.parameters_btns.lick_time_bin_size_entry.delete(0, tk.END)
                     self.parameters_btns.lick_time_bin_size_entry.insert(0, str(exp_params['lick_time_bin_size']))
-                # וכן הלאה לשאר הפרמטרים...
+                
+                # start_trial option and optional time
+                if 'start_trial_option' in exp_params and exp_params['start_trial_option'] is not None:
+                    self.parameters_btns.start_trial_display_option.set(str(exp_params['start_trial_option']))
+                    self.start_trial_show_entry_field()
+                if 'start_trial_time' in exp_params and exp_params['start_trial_time']:
+                    self.parameters_btns.start_trial_bin_size_entry.delete(0, tk.END)
+                    self.parameters_btns.start_trial_bin_size_entry.insert(0, str(exp_params['start_trial_time']))
+                
+                # IR_no_RFID option
+                if 'IR_no_RFID_option' in exp_params and exp_params['IR_no_RFID_option']:
+                    self.parameters_btns.option_var.set(str(exp_params['IR_no_RFID_option']))
+                
+                # lick_threshold
+                if 'lick_threshold' in exp_params and exp_params['lick_threshold'] is not None:
+                    self.parameters_btns.licks_entry.delete(0, tk.END)
+                    self.parameters_btns.licks_entry.insert(0, str(exp_params['lick_threshold']))
+                
+                # time_to_lick_after_stim
+                if 'time_to_lick_after_stim' in exp_params and exp_params['time_to_lick_after_stim'] is not None:
+                    self.parameters_btns.time_licks_entry.delete(0, tk.END)
+                    self.parameters_btns.time_licks_entry.insert(0, str(exp_params['time_to_lick_after_stim']))
+                
+                # open_valve_duration
+                if 'open_valve_duration' in exp_params and exp_params['open_valve_duration'] is not None:
+                    self.parameters_btns.time_open_valve_entry.delete(0, tk.END)
+                    self.parameters_btns.time_open_valve_entry.insert(0, str(exp_params['open_valve_duration']))
+                
+                # ITI and optional ITI_time
+                if 'ITI' in exp_params and exp_params['ITI'] is not None:
+                    self.parameters_btns.ITI_display_option.set(str(exp_params['ITI']))
+                    self.ITI_show_entry_field()
+                if 'ITI_time' in exp_params and exp_params['ITI_time']:
+                    self.parameters_btns.ITI_bin_size_entry.delete(0, tk.END)
+                    self.parameters_btns.ITI_bin_size_entry.insert(0, str(exp_params['ITI_time']))
                 
         except Exception as e:
             print(f"[GUI] Error updating parameters display: {e}")

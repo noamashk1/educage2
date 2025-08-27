@@ -32,8 +32,6 @@ class Experiment:
         Creating a new experiment
         auto_start: if True, the experiment will start automatically if parameters are available
         """
-        print(f"[DEBUG] Experiment.__init__: exp_name={exp_name}, auto_start={auto_start}")
-        print(f"[DEBUG] Parameters: exp_params={exp_params is not None}, mice_dict={mice_dict is not None}, levels_df={levels_df is not None}")
         
         self.exp_params = exp_params
         self.fsm = None
@@ -46,8 +44,6 @@ class Experiment:
         self.txt_file_path = None
         self.auto_start = auto_start
         self.user_email = "noam4596@gmail.com"  # Email for memory warnings
-        
-        print(f"[DEBUG] self.auto_start set to: {self.auto_start}")
         
         # Creating experiment folder
         self.new_txt_file(self.txt_file_name)
