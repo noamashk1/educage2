@@ -95,6 +95,13 @@ class MemoryMonitor:
                     warning_window.geometry("450x250")
                     warning_window.resizable(False, False)
                     
+                    # Handle window close button (X)
+                    def on_closing():
+                        warning_window.destroy()
+                        warning_window.quit()
+                    
+                    warning_window.protocol("WM_DELETE_WINDOW", on_closing)
+                    
                     # Message in English
                     message = f"""Warning: Memory is approaching the threshold!
 
@@ -108,8 +115,12 @@ When the system reaches the threshold, it will restart automatically."""
                                    justify=tk.CENTER, wraplength=380)
                     label.pack(pady=20)
                     
-                    # OK button
-                    ok_button = tk.Button(warning_window, text="OK", command=warning_window.destroy,
+                    # OK button with proper command
+                    def close_window():
+                        warning_window.destroy()
+                        warning_window.quit()
+                    
+                    ok_button = tk.Button(warning_window, text="OK", command=close_window,
                                         font=("Arial", 12), width=10)
                     ok_button.pack(pady=10)
                     
