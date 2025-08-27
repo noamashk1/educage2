@@ -89,16 +89,17 @@ class MemoryMonitor:
             # Creating a separate thread to show the message so it doesn't stop the system
             def show_warning():
                 try:
-                    # Creating a simple warning window
-                    warning_window = tk.Tk()
+                    # Creating a simple warning window using Toplevel instead of Tk
+                    warning_window = tk.Toplevel()
                     warning_window.title("Memory Warning")
                     warning_window.geometry("450x250")
                     warning_window.resizable(False, False)
+                    warning_window.transient()  # Make it a transient window
+                    warning_window.grab_set()   # Make it modal
                     
                     # Handle window close button (X)
                     def on_closing():
                         warning_window.destroy()
-                        warning_window.quit()
                     
                     warning_window.protocol("WM_DELETE_WINDOW", on_closing)
                     
@@ -118,7 +119,6 @@ When the system reaches the threshold, it will restart automatically."""
                     # OK button with proper command
                     def close_window():
                         warning_window.destroy()
-                        warning_window.quit()
                     
                     ok_button = tk.Button(warning_window, text="OK", command=close_window,
                                         font=("Arial", 12), width=10)
