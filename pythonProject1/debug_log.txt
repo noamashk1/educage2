@@ -54771,3 +54771,63 @@
 [2025-08-26 16:24:46] [MEM] After Trial Memory usage: 153.40 MB
 [2025-08-26 16:24:46] [MEM] After gc Memory usage: 153.40 MB
 [2025-08-26 16:24:48] [MEM] Enter Idle Memory usage: 153.40 MB
+[2025-08-26 16:43:07] [MEM] Enter Idle Memory usage: 149.42 MB
+[2025-08-26 16:43:23] [MEM] Enter Trial Memory usage: 149.52 MB
+[2025-08-26 16:43:26] [MEM] After Trial Memory usage: 149.92 MB
+[2025-08-26 16:43:26] [MEM] After gc Memory usage: 149.92 MB
+[2025-08-26 16:43:28] [MEM] Enter Idle Memory usage: 149.92 MB
+[2025-08-26 16:44:11] [MEM] Enter Trial Memory usage: 153.09 MB
+[2025-08-26 16:44:14] [MEM] After Trial Memory usage: 153.57 MB
+[2025-08-26 16:44:15] [MEM] After gc Memory usage: 153.57 MB
+[2025-08-26 16:44:16] [MEM] Enter Idle Memory usage: 153.57 MB
+[2025-08-26 16:44:27] [MEM] Enter Trial Memory usage: 153.59 MB
+[2025-08-26 16:44:30] [MEM] After Trial Memory usage: 153.75 MB
+[2025-08-26 16:44:30] [MEM] After gc Memory usage: 153.75 MB
+[2025-08-26 16:44:32] [MEM] Enter Idle Memory usage: 153.75 MB
+[2025-08-26 16:44:33] [MEM] Enter Trial Memory usage: 153.75 MB
+[2025-08-26 16:44:34] [MEM] After Trial Memory usage: 154.15 MB
+[2025-08-26 16:44:35] [MEM] After gc Memory usage: 154.15 MB
+[2025-08-26 16:44:36] [MEM] Enter Idle Memory usage: 154.15 MB
+[2025-08-26 16:45:23] [MEM] Enter Trial Memory usage: 154.15 MB
+[2025-08-26 16:45:26] [MEM] After Trial Memory usage: 154.20 MB
+[2025-08-26 16:45:27] [MEM] After gc Memory usage: 154.20 MB
+[2025-08-26 16:45:28] [MEM] Enter Idle Memory usage: 154.20 MB
+[2025-08-26 16:45:30] [MEM] Enter Trial Memory usage: 154.20 MB
+[2025-08-26 16:45:37] [MEM] After Trial Memory usage: 155.05 MB
+[2025-08-26 16:45:37] [MEM] After gc Memory usage: 155.05 MB
+[2025-08-26 16:45:39] [MEM] Enter Idle Memory usage: 155.05 MB
+[2025-08-26 16:50:39] [MEM] IdleState periodic check Memory usage: 155.04 MB
+[2025-08-26 16:55:39] [MEM] IdleState periodic check Memory usage: 155.04 MB
+[2025-08-26 17:00:39] [MEM] IdleState periodic check Memory usage: 185.68 MB
+[2025-08-26 17:05:39] [MEM] IdleState periodic check Memory usage: 185.68 MB
+[2025-08-26 17:10:39] [MEM] IdleState periodic check Memory usage: 187.52 MB
+[2025-08-26 17:15:40] [MEM] IdleState periodic check Memory usage: 187.52 MB
+[2025-08-26 17:20:40] [MEM] IdleState periodic check Memory usage: 188.27 MB
+[2025-08-26 17:25:40] [MEM] IdleState periodic check Memory usage: 188.27 MB
+[2025-08-27 09:49:44] [MEM] Enter Idle Memory usage: 148.55 MB
+[2025-08-27 09:49:58] [MEM] Enter Trial Memory usage: 148.66 MB
+[2025-08-27 09:50:01] [MEM] After Trial Memory usage: 149.07 MB
+[2025-08-27 09:50:02] [MEM] After gc Memory usage: 149.07 MB
+[2025-08-27 09:50:03] [MEM] Enter Idle Memory usage: 149.07 MB
+[2025-08-27 10:01:35] [MEM] Enter Idle Memory usage: 150.17 MB
+[2025-08-27 10:01:47] [MEM] Enter Trial Memory usage: 150.25 MB
+[2025-08-27 10:01:50] [MEM] After Trial Memory usage: 150.68 MB
+[2025-08-27 10:01:51] [MEM] After gc Memory usage: 150.68 MB
+[2025-08-27 10:01:52] [MEM] Enter Idle Memory usage: 150.68 MB
+[2025-08-27 10:01:53] [MEM] Enter Trial Memory usage: 150.86 MB
+[2025-08-27 10:01:56] [MEM] After Trial Memory usage: 151.41 MB
+[2025-08-27 10:01:56] [MEM] After gc Memory usage: 151.41 MB
+[2025-08-27 10:01:58] [MEM] Enter Idle Memory usage: 154.03 MB
+[2025-08-27 10:06:58] [MEM] IdleState periodic check Memory usage: 154.05 MB
+[2025-08-27 10:13:21] [MEM] Enter Idle Memory usage: 152.77 MB
+[2025-08-27 10:13:32] [MEM] Enter Trial Memory usage: 152.83 MB
+[2025-08-27 10:13:36] [MEM] After Trial Memory usage: 153.13 MB
+[2025-08-27 10:13:36] [MEM] After gc Memory usage: 153.13 MB
+[2025-08-27 10:13:37] [MEM] Enter Idle Memory usage: 153.13 MB
+[2025-08-27 10:13:37] [MEM] Enter Trial Memory usage: 153.29 MB
+[2025-08-27 10:14:02] [MEM] Enter Idle Memory usage: 149.95 MB
+[2025-08-27 10:14:55] [MEM] Enter Idle Memory usage: 149.52 MB
+[2025-08-27 10:15:23] [MEM] Enter Trial Memory usage: 150.47 MB
+[2025-08-27 10:15:26] [MEM] After Trial Memory usage: 152.66 MB
+[2025-08-27 10:15:27] [MEM] After gc Memory usage: 152.66 MB
+[2025-08-27 10:15:49] [MEM] Enter Idle Memory usage: 149.32 MB

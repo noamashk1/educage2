@@ -5,13 +5,13 @@ import os
 print("[RestartScript] Starting restart process...")
 print("[RestartScript] Current working directory:", os.getcwd())
 
-# הוספת התיקייה הנוכחית ל-PATH
+# Adding the current directory to PATH
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 print("[RestartScript] Script directory:", current_dir)
 print("[RestartScript] Python interpreter:", sys.executable)
 
-# בדיקה שה-experiment.py קיים
+# Checking if experiment.py exists
 experiment_path = "/home/educage/git_educage2/educage2/pythonProject1/experiment.py"
 if os.path.exists(experiment_path):
     print("[RestartScript] Found experiment.py at:", experiment_path)
@@ -20,13 +20,13 @@ else:
     sys.exit(1)
 
 print("Restarting experiment automatically...")
-print(f"Experiment name: exp_26_08_2025")
+print(f"Experiment name: exp_27_08_2025")
 
-# הפעלת הניסוי מחדש עם נתיב מלא
-cmd = f'"/usr/bin/python3" "/home/educage/git_educage2/educage2/pythonProject1/experiment.py" --restart exp_26_08_2025'
+# Running the experiment with full path
+cmd = f'"/usr/bin/python3" "/home/educage/git_educage2/educage2/pythonProject1/experiment.py" --restart exp_27_08_2025'
 print("[RestartScript] Running command:", cmd)
 
-# שינוי לתיקייה הנכונה והפעלה
+# Changing to the correct directory and running
 os.chdir(current_dir)
 result = os.system(cmd)
 print(f"[RestartScript] Command completed with result: {result}")

@@ -45,7 +45,7 @@ class Experiment:
         self.txt_file_name = exp_name
         self.txt_file_path = None
         self.auto_start = auto_start
-        self.alert_email = "noam4596@gmail.com"  # Email for memory warnings
+        self.user_email = "noam4596@gmail.com"  # Email for memory warnings
         
         print(f"[DEBUG] self.auto_start set to: {self.auto_start}")
         
@@ -62,7 +62,7 @@ class Experiment:
             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # Starting memory monitoring system
-        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=250)
+        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=149)
         self.memory_monitor.start_monitoring()
         
         # Starting the experiment

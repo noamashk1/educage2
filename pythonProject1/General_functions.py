@@ -1,6 +1,29 @@
 import numpy as np
 import sounddevice as sd
 import tkinter as tk
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def send_email(to_email, subject, body):
+    EMAIL = "educage.lab@gmail.com"
+    APP_PASSWORD = "vptc kxsf gggs ybxa"  
+    msg = MIMEMultipart()
+    msg["From"] = EMAIL
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(EMAIL, APP_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        print(f"✅ Mail sent to {to_email}")
+    except Exception as e:
+        print("❌ Error sending email:", e)
 
 def center_the_window(window,size=None):
     # Implicitly set dimensions for example purposes
