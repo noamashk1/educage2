@@ -53,9 +53,9 @@ class Experiment:
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
         
         # If there are loaded parameters, update the GUI
-        if self.auto_start and self.exp_params and self.levels_df is not None and self.mice_dict:
-            print("[DEBUG] Updating GUI with loaded data...")
-            self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
+#         if self.auto_start and self.exp_params and self.levels_df is not None and self.mice_dict:
+#             print("[DEBUG] Updating GUI with loaded data...")
+#             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # Starting memory monitoring system
         self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=150)

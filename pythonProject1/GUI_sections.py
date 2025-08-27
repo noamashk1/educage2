@@ -348,12 +348,20 @@ class TkinterApp:
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.run_live_window()
 #             self.experiment.set_parameters(parameters)
-            self.experiment.root.after(200, lambda: self.experiment.set_parameters(parameters))
-            # שמירת המצב המינימלי של הניסוי
-            self.experiment.save_minimal_state()
+#             self.experiment.root.after(200, lambda: self.experiment.set_parameters(parameters))
+#             # שמירת המצב המינימלי של הניסוי
+#             self.experiment.save_minimal_state()
+#             
+#             self.save_parameters_txt()
+#             self.save_mice_list_txt()
             
-            self.save_parameters_txt()
-            self.save_mice_list_txt()
+            def apply_params_and_save():
+                self.experiment.set_parameters(parameters)
+                # שמירת המצב המינימלי של הניסוי
+                self.experiment.save_minimal_state()
+                self.save_parameters_txt()
+                self.save_mice_list_txt()
+            self.experiment.root.after(200, apply_params_and_save)
             
     def save_mice_list_txt(self):
         folder_path = os.path.dirname(self.experiment.txt_file_path)
