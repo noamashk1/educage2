@@ -347,8 +347,8 @@ class TkinterApp:
             self.mice_table.set_mice_as_dict()
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.run_live_window()
-            self.experiment.set_parameters(parameters)
-            
+#             self.experiment.set_parameters(parameters)
+            self.experiment.root.after(200, lambda: self.experiment.set_parameters(parameters))
             # שמירת המצב המינימלי של הניסוי
             self.experiment.save_minimal_state()
             
