@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog, messagebox
+from tkinter import simpledialog
 import pandas as pd
 import csv
 import mice_table_creating
@@ -77,6 +78,8 @@ class TkinterApp:
         self.btnStimGenerator.grid(row=0, column=0, padx=10, pady=10)
         self.btnDataAnalysis = tk.Button(self.left_frame_bottom, text="Data Analysis",command=self.open_data_analysis_window)
         self.btnDataAnalysis.grid(row=0, column=1, padx=10, pady=10)
+        self.btnUpdateEmail = tk.Button(self.left_frame_bottom, text="Update User Mail", command=self.update_user_mail)
+        self.btnUpdateEmail.grid(row=0, column=2, padx=10, pady=10)
 
 
         # Create a Frame to hold the Treeview and Scrollbars
@@ -407,6 +410,16 @@ class TkinterApp:
     def open_data_analysis_window(self):
         analysis_root = tk.Toplevel()
         DataAnalysis(analysis_root)
+
+    def update_user_mail(self):
+        try:
+            current_val = getattr(self.experiment, 'user_email', '') or ''
+            email = simpledialog.askstring("Update User Email", "Enter your email:", initialvalue=current_val, parent=self.root)
+            if email:
+                self.experiment.user_email = email.strip()
+                messagebox.showinfo("Email Updated", f"User email set to: {self.experiment.user_email}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to update user email: {e}")
 
     def update_gui_with_loaded_data(self, levels_df, mice_dict, exp_params):
         """

@@ -27,7 +27,7 @@ import time
 
 ###
 class Experiment:
-    def __init__(self, exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None, exp_params = None, auto_start = False):
+    def __init__(self, exp_name, mice_dict: dict[str, Mouse] = None, levels_df = None, exp_params = None, auto_start = False, user_email = None):
         """
         Creating a new experiment
         auto_start: if True, the experiment will start automatically if parameters are available
@@ -43,8 +43,10 @@ class Experiment:
         self.txt_file_name = exp_name
         self.txt_file_path = None
         self.auto_start = auto_start
-        self.user_email = "noam4596@gmail.com"  # Email for memory warnings
-        
+        if user_email is None:
+            self.user_email = "noam4596@gmail.com"  # Email for memory warnings
+        else:
+            self.user_email = user_email
         # Creating experiment folder
         self.new_txt_file(self.txt_file_name)
         
@@ -102,7 +104,8 @@ class Experiment:
                 self.levels_df,
                 self.mice_dict,
                 self.txt_file_name,
-                self.txt_file_path
+                self.txt_file_path,
+                self.user_email
             )
         else:
             print("Cannot save state - missing required data")
@@ -152,7 +155,7 @@ class Experiment:
                 
             fsm = FiniteStateMachine(self)
             self.fsm = fsm
-            print("FSM created: tThe experiment has begun.")
+            print("FSM created: The experiment has begun.")
             
         except Exception as e:
             print(f"[DEBUG] Error in start_experiment: {e}")
@@ -217,7 +220,8 @@ if __name__ == "__main__":
                 mice_dict=state_data['mice_dict'],
                 levels_df=state_data['levels_df'],
                 exp_params=state_data['exp_params'],
-                auto_start=True
+                auto_start=True,
+                user_email=state_data['user_email']
             )
         else:
             print(f"Failed to load state for {restart_exp_name}")

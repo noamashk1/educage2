@@ -3,7 +3,7 @@ import os
 from typing import Dict, Any, Optional
 import pandas as pd
 
-def save_minimal_state(exp_name: str, exp_params, levels_df, mice_dict, txt_file_name: str, txt_file_path: str) -> str:
+def save_minimal_state(exp_name: str, exp_params, levels_df, mice_dict, txt_file_name: str, txt_file_path: str, user_email: str = "") -> str:
     """
     שומר את המצב המינימלי של הניסוי בתיקיית הניסוי
     מחזיר את הנתיב שבו נשמר המצב
@@ -22,7 +22,8 @@ def save_minimal_state(exp_name: str, exp_params, levels_df, mice_dict, txt_file
             'levels_df': levels_df,
             'mice_dict': mice_dict,
             'txt_file_name': txt_file_name,
-            'txt_file_path': txt_file_path
+            'txt_file_path': txt_file_path,
+            'user_email': user_email,
         }
         
         # שמירה עם pickle
