@@ -131,7 +131,7 @@ class IdleState(State):
                 last_log_time = time.time()
                 print(f"[IdleState] Waiting for RFID... {minutes_passed} minutes passed")
 
-                if minutes_passed % 3 == 0: 
+                if minutes_passed % 30 == 0: 
                     try:
                         src = self.fsm.exp.exp_folder_path
                         dst = os.path.join(self.fsm.exp.remote_folder, os.path.basename(src))

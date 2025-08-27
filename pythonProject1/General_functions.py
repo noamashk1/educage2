@@ -140,7 +140,7 @@ def generate_white_noise_npz(duration, Fs, voltage, save_path='/home/educage/git
     return noise
 
 #generate_white_noise_npz(duration=1, Fs=44100, voltage=0.8)
-def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10, save_path: str | None = None):
+def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10, save_path = None):
     """
     מוסיף גם רכיב על-קולי בתדרים שהעכברים שומעים (אנחנו לא).
     חשוב להשתמש בכרטיס קול שיכול לנגן עד 192kHz!
@@ -193,7 +193,7 @@ def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10, save_
 
 #scary_with_ultrasonic(2, click_rate=15, save_path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz')
 
-def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path: str | None = None):
+def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path = None):
     t = np.linspace(0, duration, int(sample_rate*duration), endpoint=False)
 
     # --- בסיס: תדרים צורמים ---

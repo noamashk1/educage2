@@ -50,7 +50,7 @@ class Experiment:
             self.user_email = user_email
         # Creating experiment folder
         self.new_txt_file(self.txt_file_name)
-        
+        self.remote_folder = "/mnt/labfolder/Noam/results"
         # Creating GUI
         self.root = tk.Tk()
         self.GUI = GUI_sections.TkinterApp(self.root, self, exp_name = self.txt_file_name)
