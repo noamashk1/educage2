@@ -42,6 +42,7 @@ class Experiment:
         self.stim_length = 2
         self.txt_file_name = exp_name
         self.txt_file_path = None
+        self.exp_folder_path =None
         self.auto_start = auto_start
         if user_email is None:
             self.user_email = "noam4596@gmail.com"  # Email for memory warnings
@@ -85,6 +86,7 @@ class Experiment:
     def new_txt_file(self, filename):
         # Build the path: ./experiments/filename/
         folder_path = os.path.join(os.getcwd(), "experiments", filename)
+        self.exp_folder_path = folder_path
         os.makedirs(folder_path, exist_ok=True)  # Ensure the folder exists
 
         self.txt_file_path = os.path.join(folder_path,filename+".txt")  

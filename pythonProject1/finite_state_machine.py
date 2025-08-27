@@ -13,6 +13,7 @@ import tracemalloc
 import objgraph
 import logging
 import pandas as pd
+import shutil
 
 audio_lock = threading.Lock()
 valve_pin = 4  # 23
@@ -129,13 +130,27 @@ class IdleState(State):
                 minutes_passed += 1
                 last_log_time = time.time()
                 print(f"[IdleState] Waiting for RFID... {minutes_passed} minutes passed")
+
+                if minutes_passed % 3 == 0: 
+                    try:
+                        src = self.fsm.exp.exp_folder_path
+                        dst = os.path.join(self.fsm.exp.remote_folder, os.path.basename(src))
+                        shutil.copytree(src, dst, dirs_exist_ok=True)
+                        print("data updated")
+
+                    except PermissionError:
+                        print("PermissionError")
+                    except FileNotFoundError:
+                        print("FileNotFoundError")
+                    except Exception as e:
+                        print(f"Exception: {e}")
                  
                 if minutes_passed % 5 == 0:
                     log_memory_usage("IdleState periodic check")
                     #log_thread_count("IdleState periodic check")
-                if minutes_passed % 10 == 0:
-                    log_memory_usage_snap()
-                    log_open_files_count()
+                #if minutes_passed % 10 == 0:
+                    #log_memory_usage_snap()
+                    #log_open_files_count()
 
             if ser.in_waiting > 0 and not self.fsm.exp.live_w.pause:
                 try:
