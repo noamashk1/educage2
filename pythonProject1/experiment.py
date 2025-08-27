@@ -58,7 +58,7 @@ class Experiment:
             self.GUI.update_gui_with_loaded_data(self.levels_df, self.mice_dict, self.exp_params)
         
         # Starting memory monitoring system
-        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=249)
+        self.memory_monitor = memory_monitor.MemoryMonitor(self, threshold_mb=150)
         self.memory_monitor.start_monitoring()
         
         # Starting the experiment
@@ -145,11 +145,13 @@ class Experiment:
             # If this is auto-start, open the live window
             if self.auto_start:
                 print("Auto-start enabled - opening live window...")
-                # Short wait for everything to stabilize
-                time.sleep(1)
-                # Creating live window synchronously
-                self.open_live_window()
-                print("[DEBUG] Live window opened successfully")
+#                 # Short wait for everything to stabilize
+#                 time.sleep(1)
+#                 # Creating live window synchronously
+#                 self.open_live_window()
+#                 print("[DEBUG] Live window opened successfully")
+                self.root.after(200, self.run_live_window)
+                print("[DEBUG] Live window scheduled to open (200ms)")
             else:
                 print("[DEBUG] Auto-start not enabled")
                 
@@ -168,7 +170,6 @@ class Experiment:
             self.fsm = fsm
             print("FSM created:", self.fsm)
             
-
                 
         except Exception as e:
             print(f"[DEBUG] Error in start_experiment: {e}")
