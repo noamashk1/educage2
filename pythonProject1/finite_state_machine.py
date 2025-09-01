@@ -287,8 +287,9 @@ class TrialState(State):
                 sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True)  #sd.wait(
             finally:
                 sd.stop()
-                self.fsm.exp.live_w.toggle_indicator("stim", "off")
-                time.sleep(5)  # timeout as punishment
+                #self.fsm.exp.live_w.toggle_indicator("stim", "off")
+                time.sleep(float(self.fsm.exp.exp_params["timeout_punishment"])) 
+                #time.sleep(5)  # timeout as punishment
                 #del noise
     
 #     def tdt_as_stim(self):
@@ -334,22 +335,21 @@ class TrialState(State):
     def tdt_as_stim(self):
         with audio_lock:  # ensure only one audio action at a time
             stim_path = self.fsm.current_trial.current_stim_path
+            stim_array = None
+            sample_rate = None
+
+            # Try to fetch from preloaded all_signals_df
             try:
-                stim_array = None
-                sample_rate = None
+                df = getattr(self.fsm, 'all_signals_df', None)
+                if df is not None and hasattr(df, 'empty') and not df.empty:
+                    row = df.loc[df['path'] == stim_path]
+                    if not row.empty:
+                        stim_array = row.iloc[0]['data']
+                        sample_rate = row.iloc[0]['fs']
+            except Exception as e:
+                print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
 
-                # Try to fetch from preloaded all_signals_df
-                try:
-                    df = getattr(self.fsm, 'all_signals_df', None)
-                    if df is not None and hasattr(df, 'empty') and not df.empty:
-                        row = df.loc[df['path'] == stim_path]
-                        if not row.empty:
-                            stim_array = row.iloc[0]['data']
-                            sample_rate = row.iloc[0]['fs']
-                except Exception as e:
-                    print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
-
-                # Fallback to loading from disk if not found in cache
+            # Fallback to loading from disk if not found in cache
 #                 if stim_array is None:
 #                     try:
 #                         with np.load(stim_path, mmap_mode='r') as z:
@@ -362,35 +362,35 @@ class TrialState(State):
 #                     # Ensure dtype float32; avoid copying if possible
 #                     stim_array = np.asarray(stim_array, dtype=np.float32)
 
-                stim_duration = len(stim_array) / sample_rate
-                sd.stop()
-                try:
-                    sd.play(stim_array, samplerate=sample_rate, blocking=True)
-                    start_time = time.time()
-                    while time.time() - start_time < stim_duration:
-                        if self.got_response:
-                            print("Early response detected — stopping stimulus")
-                            sd.stop()
-                            return
-                        time.sleep(0.05)
-                finally:
-                    sd.stop()
-                    del stim_array
-
-                time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
-                print("Stimulus done. Waiting post-stim lick window...")
-
-                start_post = time.time()
-                while time.time() - start_post < time_to_lick:
+            stim_duration = len(stim_array) / sample_rate
+            sd.stop()
+            try:
+                self.fsm.exp.live_w.toggle_indicator("stim", "on")
+                sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                start_time = time.time()
+                while time.time() - start_time < stim_duration:
                     if self.got_response:
-                        print("Early response during post-stim window — skipping rest")
+                        print("Early response detected — stopping stimulus")
+                        sd.stop()
                         return
                     time.sleep(0.05)
-
-                print("Post-stim lick window completed.")
-
             finally:
+                sd.stop()
+                del stim_array
                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
+
+            time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+            print("Stimulus done. Waiting post-stim lick window...")
+
+            start_post = time.time()
+            while time.time() - start_post < time_to_lick:
+                if self.got_response:
+                    print("Early response during post-stim window — skipping rest")
+                    return
+                time.sleep(0.05)
+
+            print("Post-stim lick window completed.")
+
 
     def receive_input(self, stop):
         if self.fsm.exp.exp_params["lick_time_bin_size"] is not None:

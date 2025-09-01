@@ -336,6 +336,7 @@ class TkinterApp:
                 "ITI": self.parameters_btns.ITI_display_option.get(),
                 "ITI_time": self.parameters_btns.ITI_bin_size_entry.get() if self.parameters_btns.ITI_display_option.get() == '2' else None,
                 "stimulus_length": self.experiment.stim_length,
+                "timeout_punishment": self.parameters_btns.punishment_timeout_entry.get(),
             }
             # Set parameters in the Experiment class
             self.experiment.set_levels_df(self.levels_df)

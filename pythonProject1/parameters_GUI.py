@@ -114,6 +114,17 @@ class ParametersApp:
         self.time_open_valve_entry.pack(side=tk.LEFT, padx=10)
         self.time_open_valve_frame.pack(anchor=tk.W,pady=10)
 
+#####################################################################
+        # Punishment timeout (seconds)
+        self.punishment_timeout_frame = tk.Frame(root)
+        self.punishment_timeout_label = tk.Label(self.punishment_timeout_frame, text="timeout_punishment (sec):", font=self.font_style)
+        self.punishment_timeout_label.pack(side=tk.LEFT)
+        self.punishment_timeout_entry = tk.Entry(self.punishment_timeout_frame, font=self.font_style, width=5)
+        self.punishment_timeout_entry.insert(0, "5")
+        self.punishment_timeout_entry.pack(side=tk.LEFT, padx=10)
+        self.punishment_timeout_frame.pack(anchor=tk.W, pady=10)
+
+#####################################################################
         # Entry field for custom bin size (initially hidden)
 #         self.ITI_frame = tk.Frame(root)
 #         self.ITI_label = tk.Label(self.ITI_frame, text="ITI:", font=self.font_style)
