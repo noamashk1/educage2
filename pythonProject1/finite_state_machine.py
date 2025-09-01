@@ -133,10 +133,7 @@ class IdleState(State):
 
                 if minutes_passed % 30 == 0: 
                     try:
-                        src = self.fsm.exp.exp_folder_path
-                        dst = os.path.join(self.fsm.exp.remote_folder, os.path.basename(src))
-                        shutil.copytree(src, dst, dirs_exist_ok=True)
-                        print("data updated")
+                        self.fsm.exp.upload_data()
 
                     except PermissionError:
                         print("PermissionError")
@@ -162,7 +159,7 @@ class IdleState(State):
 
                 if self.recognize_mouse(mouse_id):
                     self.fsm.current_trial.update_current_mouse(self.fsm.exp.mice_dict[mouse_id])
-                    print("mouse: " + self.fsm.exp.mice_dict[mouse_id].get_id())
+                    print("\nmouse: " + self.fsm.exp.mice_dict[mouse_id].get_id())
                     print("Level: " + self.fsm.exp.mice_dict[mouse_id].get_level())
                     
                     # בדיקה בסיסית שה-live_w זמין
@@ -186,7 +183,6 @@ class IdleState(State):
 
     def recognize_mouse(self, data: str):
         if data in self.fsm.exp.mice_dict:
-            print('recognized mouse: ' + data)
             return True
         else:
             print("mouse ID: '" + data + "' does not exist in the mouse dictionary.")
@@ -354,21 +350,19 @@ class TrialState(State):
                     print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
 
                 # Fallback to loading from disk if not found in cache
-                if stim_array is None:
-                    try:
-                        with np.load(stim_path, mmap_mode='r') as z:
-                            stim_array = z["data"].astype(np.float32, copy=False)
-                            sample_rate = int(z["rate"].item())
-                    except Exception as e:
-                        print(f"[TrialState] Error loading stimulus from disk '{stim_path}': {e}")
-                        return
-                else:
-                    # Ensure dtype float32; avoid copying if possible
-                    stim_array = np.asarray(stim_array, dtype=np.float32)
+#                 if stim_array is None:
+#                     try:
+#                         with np.load(stim_path, mmap_mode='r') as z:
+#                             stim_array = z["data"].astype(np.float32, copy=False)
+#                             sample_rate = int(z["rate"].item())
+#                     except Exception as e:
+#                         print(f"[TrialState] Error loading stimulus from disk '{stim_path}': {e}")
+#                         return
+#                 else:
+#                     # Ensure dtype float32; avoid copying if possible
+#                     stim_array = np.asarray(stim_array, dtype=np.float32)
 
                 stim_duration = len(stim_array) / sample_rate
-                print("stim_duration:", stim_duration)
-
                 sd.stop()
                 try:
                     sd.play(stim_array, samplerate=sample_rate, blocking=True)

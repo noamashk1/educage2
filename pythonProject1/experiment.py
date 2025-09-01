@@ -16,6 +16,9 @@ from datetime import datetime
 import state_io
 import memory_monitor
 import time
+import subprocess
+import shutil
+
 
 ###  use those commands on terminal to push changes to git
 
@@ -72,7 +75,7 @@ class Experiment:
     def set_parameters(self, parameters):
         """This method is called by App when the OK button is pressed."""
         self.exp_params = parameters
-        print("Parameters set in Experiment:", self.exp_params)
+        print("\nParameters set in Experiment:\n", self.exp_params,"\n")
 
     def set_mice_dict(self, mice_dict):
         """This method is called by App when the OK button is pressed."""
@@ -171,14 +174,14 @@ class Experiment:
         if self.live_w is None:
             try:
                 self.live_w = live_window.LiveWindow()
-                print("[DEBUG] LiveWindow created successfully")
+                print("LiveWindow created successfully")
                 # Short wait to ensure the window is created successfully
                 time.sleep(0.5)
             except Exception as e:
                 print(f"[DEBUG] Error creating LiveWindow: {e}")
                 self.live_w = None
-        else:
-            print("[DEBUG] LiveWindow already exists")
+#         else:
+#             print("[DEBUG] LiveWindow already exists")
         
         # Check that live_w was indeed created
         if self.live_w is None:
@@ -190,6 +193,14 @@ class Experiment:
     def save_results(self, filename: str):
         with open(filename, 'w') as f:
             json.dump(self.results, f, indent=4)
+            
+    def upload_data(self):
+        subprocess.run(["sudo", "systemctl", "daemon-reload"], check=True)
+        subprocess.run(["sudo", "mount", "-a"], check=True)
+        src = self.exp_folder_path
+        dst = os.path.join(self.remote_folder, os.path.basename(src))
+        shutil.copytree(src, dst, dirs_exist_ok=True)
+        print("data updated")
 
 if __name__ == "__main__":
     import sys

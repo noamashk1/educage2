@@ -1,6 +1,6 @@
 import os
 import shutil
-folder_name= "exp_27_08_2025"
+folder_name= "exp_01_09_2025"
 folder_path = os.path.join(os.getcwd(), "experiments",folder_name)
 remote_folder="/mnt/labfolder/Noam/results"
 try:

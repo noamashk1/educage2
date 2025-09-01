@@ -239,6 +239,6 @@ class MainApp:
             # Add to dictionary: mouse name as key and selected level as value
             data[mouse_name] = Mouse(mouse_name,selected_level)
         self.mice_dict = data
-        print(data)  # Display the dictionary
+        print(f"mice list: {list(data.keys())}")  # Display the dictionary
 
 
