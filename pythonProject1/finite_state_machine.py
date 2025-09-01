@@ -239,7 +239,7 @@ class TrialState(State):
         self.fsm.current_trial.calculate_stim()
         self.fsm.exp.live_w.update_trial_value(self.fsm.current_trial.current_value)
 
-        stim_thread = threading.Thread(target=self.tdt_as_stim)
+        stim_thread = threading.Thread(target=self.tdt_as_stim, args=(lambda: self.stop_threads,))
         input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
 
         stim_thread.start()
@@ -264,34 +264,58 @@ class TrialState(State):
             elif self.fsm.current_trial.score == 'fa':
                 self.give_punishment()
         
-        log_memory_usage("After Trial")
         gc.collect()
-        log_memory_usage("After gc")
+        log_memory_usage("After Trial")
         del stim_thread
         del input_thread
         self.on_event('trial_over')
+        
+    def tdt_as_stim(self, stop):
+        with audio_lock:  # ensure only one audio action at a time
+            stim_path = self.fsm.current_trial.current_stim_path
+            stim_array = None
+            sample_rate = None
 
-    def give_reward(self):
-        GPIO.output(valve_pin, GPIO.HIGH)
-        time.sleep(float(self.fsm.exp.exp_params["open_valve_duration"]))
-        GPIO.output(valve_pin, GPIO.LOW)
-
-    def give_punishment(self):  # after changing to .npz
-        with audio_lock:
+            # Try to fetch from preloaded all_signals_df
+            try:
+                df = getattr(self.fsm, 'all_signals_df', None)
+                if df is not None and hasattr(df, 'empty') and not df.empty:
+                    row = df.loc[df['path'] == stim_path]
+                    if not row.empty:
+                        stim_array = row.iloc[0]['data']
+                        sample_rate = row.iloc[0]['fs']
+            except Exception as e:
+                print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
+                
+            stim_duration = len(stim_array) / sample_rate
             sd.stop()
             try:
-                # with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-                #     noise = z['noise']
-                #     Fs = int(z['Fs'])
-                #     sd.play(noise, samplerate=Fs, blocking=True)  #sd.wait()
-                sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True)  #sd.wait(
+                self.fsm.exp.live_w.toggle_indicator("stim", "on")
+                sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                start_time = time.time()
+                while time.time() - start_time < stim_duration:
+                    if stop():#self.got_response:
+                        print("Early response detected — stopping stimulus")
+                        sd.stop()
+                        return
+                    time.sleep(0.05)
             finally:
                 sd.stop()
-                #self.fsm.exp.live_w.toggle_indicator("stim", "off")
-                time.sleep(float(self.fsm.exp.exp_params["timeout_punishment"])) 
-                #time.sleep(5)  # timeout as punishment
-                #del noise
-    
+                del stim_array
+                self.fsm.exp.live_w.toggle_indicator("stim", "off")
+
+            time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+            print("Stimulus done. Waiting post-stim lick window...")
+
+            start_post = time.time()
+            while time.time() - start_post < time_to_lick:
+                if stop():#self.got_response:
+                    print("Early response during post-stim window — skipping rest")
+                    return
+                time.sleep(0.05)
+
+            print("Post-stim lick window completed.")
+            
 #     def tdt_as_stim(self):
 #         with audio_lock:  # 🔒 ensure only one audio action at a time
 #             stim_path = self.fsm.current_trial.current_stim_path
@@ -332,65 +356,6 @@ class TrialState(State):
 #             finally:
 #                 self.fsm.exp.live_w.toggle_indicator("stim", "off")
 
-    def tdt_as_stim(self):
-        with audio_lock:  # ensure only one audio action at a time
-            stim_path = self.fsm.current_trial.current_stim_path
-            stim_array = None
-            sample_rate = None
-
-            # Try to fetch from preloaded all_signals_df
-            try:
-                df = getattr(self.fsm, 'all_signals_df', None)
-                if df is not None and hasattr(df, 'empty') and not df.empty:
-                    row = df.loc[df['path'] == stim_path]
-                    if not row.empty:
-                        stim_array = row.iloc[0]['data']
-                        sample_rate = row.iloc[0]['fs']
-            except Exception as e:
-                print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
-
-            # Fallback to loading from disk if not found in cache
-#                 if stim_array is None:
-#                     try:
-#                         with np.load(stim_path, mmap_mode='r') as z:
-#                             stim_array = z["data"].astype(np.float32, copy=False)
-#                             sample_rate = int(z["rate"].item())
-#                     except Exception as e:
-#                         print(f"[TrialState] Error loading stimulus from disk '{stim_path}': {e}")
-#                         return
-#                 else:
-#                     # Ensure dtype float32; avoid copying if possible
-#                     stim_array = np.asarray(stim_array, dtype=np.float32)
-
-            stim_duration = len(stim_array) / sample_rate
-            sd.stop()
-            try:
-                self.fsm.exp.live_w.toggle_indicator("stim", "on")
-                sd.play(stim_array, samplerate=sample_rate, blocking=True)
-                start_time = time.time()
-                while time.time() - start_time < stim_duration:
-                    if self.got_response:
-                        print("Early response detected — stopping stimulus")
-                        sd.stop()
-                        return
-                    time.sleep(0.05)
-            finally:
-                sd.stop()
-                del stim_array
-                self.fsm.exp.live_w.toggle_indicator("stim", "off")
-
-            time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
-            print("Stimulus done. Waiting post-stim lick window...")
-
-            start_post = time.time()
-            while time.time() - start_post < time_to_lick:
-                if self.got_response:
-                    print("Early response during post-stim window — skipping rest")
-                    return
-                time.sleep(0.05)
-
-            print("Post-stim lick window completed.")
-
 
     def receive_input(self, stop):
         if self.fsm.exp.exp_params["lick_time_bin_size"] is not None:
@@ -423,6 +388,29 @@ class TrialState(State):
             print('no response')
         print('num of licks: ' + str(counter))
 
+    def give_reward(self):
+        GPIO.output(valve_pin, GPIO.HIGH)
+        time.sleep(float(self.fsm.exp.exp_params["open_valve_duration"]))
+        GPIO.output(valve_pin, GPIO.LOW)
+
+    def give_punishment(self):  # after changing to .npz
+        with audio_lock:
+            sd.stop()
+            try:
+                sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True)  #sd.wait(
+            finally:
+                sd.stop()
+                time.sleep(float(self.fsm.exp.exp_params["timeout_punishment"])) 
+
+    def evaluate_response(self):
+        value = self.fsm.current_trial.current_value
+        if value == 'go':
+            return 'hit' if self.got_response else 'miss'
+        elif value == 'no-go':
+            return 'fa' if self.got_response else 'cr'
+        elif value == 'catch':
+            return 'catch - response' if self.got_response else 'catch - no response'
+
     def on_event(self, event):
         if event == 'trial_over':
             time.sleep(0.5)
@@ -435,16 +423,6 @@ class TrialState(State):
                 time.sleep(int(self.fsm.exp.exp_params['ITI_time']))
             print("Transitioning from trial to idle")
             self.fsm.state = IdleState(self.fsm)
-
-    def evaluate_response(self):
-        value = self.fsm.current_trial.current_value
-        if value == 'go':
-            return 'hit' if self.got_response else 'miss'
-        elif value == 'no-go':
-            return 'fa' if self.got_response else 'cr'
-        elif value == 'catch':
-            return 'catch - response' if self.got_response else 'catch - no response'
-
 
 class FiniteStateMachine:
 
