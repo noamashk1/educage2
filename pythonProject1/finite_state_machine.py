@@ -100,7 +100,8 @@ class State:
     def __init__(self, name, fsm):
         self.name = name
         self.fsm = fsm
-        ##self.fsm.exp.live_w.deactivate_states_indicators(name)
+        if self.fsm.exp.live_w.activate_window:
+            self.fsm.exp.live_w.deactivate_states_indicators(name)
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.deactivate_states_indicators, name)
 
     def on_event(self, event):

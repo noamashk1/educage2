@@ -65,6 +65,11 @@ class LiveWindow:
         self.activate_button_frame.pack(pady=(0, 20))
         self.activate_button = tk.Button(self.activate_button_frame, text="Activate Window", command=self.on_activate_window)
         self.activate_button.pack()
+        
+        try:
+            self._activate_btn_default_bg = self.activate_button.cget("bg")
+        except Exception:
+            self._activate_btn_default_bg = None
 
 
     def create_indicator(self, name):
@@ -145,7 +150,7 @@ class LiveWindow:
             self.activate_window = False
             self.activate_button.config(
             highlightthickness=0,
-            bg="SystemButtonFace"  # מחזיר לרקע ברירת המחדל
+            bg=(self._activate_btn_default_bg if self._activate_btn_default_bg else "#d9d9d9")  # reset to original or a neutral default
         )
 
 
