@@ -101,6 +101,7 @@ class State:
         self.name = name
         self.fsm = fsm
         ##self.fsm.exp.live_w.deactivate_states_indicators(name)
+        ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.deactivate_states_indicators, name)
 
     def on_event(self, event):
         pass
@@ -115,6 +116,10 @@ class IdleState(State):
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_level, '')
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_score, '')
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_trial_value, '')
+        ##self.fsm.exp.live_w.update_last_rfid('')
+        ##self.fsm.exp.live_w.update_level('')
+        ##self.fsm.exp.live_w.update_score('')
+        ##self.fsm.exp.live_w.update_trial_value('')
 
         log_memory_usage("Enter Idle")
 
@@ -123,6 +128,49 @@ class IdleState(State):
     def wait_for_event(self):
         minutes_passed = 0
         last_log_time = time.time()
+#         
+#         while True:
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_last_rfid, 'a')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_level, 'a')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_score, 'a')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_trial_value, 'a')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "IR", "on")
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "stim", "on")
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "on")
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.deactivate_states_indicators,"Idle")
+#             time.sleep(0.2)
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_last_rfid, '')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_level, '')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_score, '')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_trial_value, '')
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "IR", "off")
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "stim", "off")
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "off")
+#             self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.deactivate_states_indicators,"port")
+#             time.sleep(0.2)
+            
+#             self.fsm.exp.live_w.update_last_rfid('a')
+#             self.fsm.exp.live_w.update_level('a')
+#             self.fsm.exp.live_w.update_score('a')
+#             self.fsm.exp.live_w.update_trial_value('a')
+#             self.fsm.exp.live_w.toggle_indicator("IR","on")
+#             self.fsm.exp.live_w.toggle_indicator("stim","on")
+#             self.fsm.exp.live_w.toggle_indicator("lick","on")
+#             self.fsm.exp.live_w.deactivate_states_indicators("Idle")
+#             time.sleep(0.05)
+#             self.fsm.exp.live_w.update_last_rfid('')
+#             self.fsm.exp.live_w.update_level('')
+#             self.fsm.exp.live_w.update_score('')
+#             self.fsm.exp.live_w.update_trial_value('')
+#             self.fsm.exp.live_w.toggle_indicator("IR", "off")
+#             self.fsm.exp.live_w.toggle_indicator("stim", "off")
+#             self.fsm.exp.live_w.toggle_indicator("lick", "off")
+#             self.fsm.exp.live_w.deactivate_states_indicators("port")
+#             time.sleep(0.05)
+            
+#             if time.time() - last_log_time > 10:
+#                 log_memory_usage("live_w check")
+#                 last_log_time = time.time()
 
         while True:
 
@@ -163,12 +211,15 @@ class IdleState(State):
                     print("Level: " + self.fsm.exp.mice_dict[mouse_id].get_level())
                     
                     # בדיקה בסיסית שה-live_w זמין
-                    ##if hasattr(self.fsm.exp, 'live_w') and self.fsm.exp.live_w is not None:
-                        ##try:
+                    if hasattr(self.fsm.exp, 'live_w') and self.fsm.exp.live_w is not None:
+                        try:
+                            print("remove me")
                             ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_last_rfid, mouse_id)
+                            ##self.fsm.exp.live_w.update_last_rfid(mouse_id)
                             ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_level, self.fsm.exp.mice_dict[mouse_id].get_level())
-                        ##except Exception as e:
-                            ##print(f"[IdleState] Warning: Could not update GUI: {e}")
+                            ##self.fsm.exp.live_w.update_level(self.fsm.exp.mice_dict[mouse_id].get_level())
+                        except Exception as e:
+                            print(f"[IdleState] Warning: Could not update GUI: {e}")
                     
                     self.on_event('in_port')
                     break
@@ -206,8 +257,10 @@ class InPortState(State):
             time.sleep(0.09)
 
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "IR", "on")
+        ##self.fsm.exp.live_w.toggle_indicator("IR", "on")
         time.sleep(0.1)
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "IR", "off")
+        ##self.fsm.exp.live_w.toggle_indicator("IR", "off")
         print("The mouse entered!")
 
         if self.fsm.exp.exp_params["start_trial_time"] is not None:
@@ -238,6 +291,7 @@ class TrialState(State):
         self.fsm.current_trial.start_time = datetime.now().strftime('%H:%M:%S.%f')  # Get current time
         self.fsm.current_trial.calculate_stim()
         ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_trial_value, self.fsm.current_trial.current_value)
+        ##self.fsm.exp.live_w.update_trial_value(self.fsm.current_trial.current_value)
 
         stim_thread = threading.Thread(target=self.tdt_as_stim, args=(lambda: self.stop_threads,))
         input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
@@ -258,6 +312,7 @@ class TrialState(State):
             self.fsm.current_trial.score = self.evaluate_response()
             print("score: " + self.fsm.current_trial.score)
             ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_score, self.fsm.current_trial.score)
+            ##self.fsm.exp.live_w.update_score(self.fsm.current_trial.score)
 
             if self.fsm.current_trial.score == 'hit':
                 self.give_reward()
@@ -291,6 +346,7 @@ class TrialState(State):
             sd.stop()
             try:
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "stim", "on")
+                ##self.fsm.exp.live_w.toggle_indicator("stim", "on")
                 sd.play(stim_array, samplerate=sample_rate, blocking=True)
                 start_time = time.time()
                 while time.time() - start_time < stim_duration:
@@ -303,6 +359,7 @@ class TrialState(State):
                 sd.stop()
                 del stim_array
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "stim", "off")
+                ##self.fsm.exp.live_w.toggle_indicator("stim", "off")
 
             time_to_lick = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
             print("Stimulus done. Waiting post-stim lick window...")
@@ -371,10 +428,12 @@ class TrialState(State):
         while not stop():
             if GPIO.input(lick_pin) == GPIO.HIGH:
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "on")
+                ##self.fsm.exp.live_w.toggle_indicator("lick", "on")
                 self.fsm.current_trial.add_lick_time()
                 counter += 1
                 time.sleep(0.08)
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "off")
+                ##self.fsm.exp.live_w.toggle_indicator("lick", "off")
                 print("lick detected")
 
                 if counter >= int(self.fsm.exp.exp_params["lick_threshold"]) and not self.got_response:
