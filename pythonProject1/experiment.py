@@ -174,6 +174,11 @@ class Experiment:
         if self.live_w is None:
             try:
                 self.live_w = live_window.LiveWindow()
+                # wire back-reference so buttons can call experiment methods
+                try:
+                    self.live_w.set_experiment(self)
+                except Exception:
+                    pass
                 print("LiveWindow created successfully")
                 # Short wait to ensure the window is created successfully
                 time.sleep(0.5)
@@ -186,6 +191,14 @@ class Experiment:
         # Check that live_w was indeed created
         if self.live_w is None:
             print("[DEBUG] WARNING: LiveWindow creation failed!")
+
+    def activate_live_window(self):
+        """Stub for Activate Window action from LiveWindow button."""
+        try:
+            # No-op for now
+            pass
+        except Exception as e:
+            print(f"[Experiment] activate_live_window error: {e}")
 
     def change_mouse_level(self, mouse: Mouse, new_level: Level):
         mouse.update_level(new_level)

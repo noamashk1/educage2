@@ -10,6 +10,7 @@ class LiveWindow:
         self.root.geometry("300x530")  # Set the window dimensions to 400x600 pixels
         
         self.pause = False
+        self.activate_window = False
         # Create title label
         title_label = tk.Label(self.root, text="Live Window", font=("Arial", 16))
         title_label.pack(pady=(10, 5), anchor='w')  # Left align title with some padding
@@ -58,6 +59,12 @@ class LiveWindow:
 
         self.end_button = tk.Button(self.button_frame, text="End Experiment", command=self.end_experiment)
         self.end_button.pack(side='left', padx=5)
+
+        # Activate Window button (centered under existing buttons)
+        self.activate_button_frame = tk.Frame(self.root)
+        self.activate_button_frame.pack(pady=(0, 20))
+        self.activate_button = tk.Button(self.activate_button_frame, text="Activate Window", command=self.on_activate_window)
+        self.activate_button.pack()
 
 
     def create_indicator(self, name):
@@ -124,6 +131,24 @@ class LiveWindow:
             self.stimulus_bulb.itemconfig(self.indicator_circle, fill=fill)
 
         
+
+    def on_activate_window(self):
+        if self.activate_window == False:
+            self.activate_window = True
+            self.activate_button.config(
+            highlightbackground="green",
+            highlightcolor="green",
+            highlightthickness=3,
+            bg="#ccffcc"
+        )
+        else:
+            self.activate_window = False
+            self.activate_button.config(
+            highlightthickness=0,
+            bg="SystemButtonFace"  # מחזיר לרקע ברירת המחדל
+        )
+
+
     def deactivate_states_indicators(self, state_name):
         self.idle_bulb.itemconfig(self.indicator_circle, fill="gray")  
         self.in_port_bulb.itemconfig(self.indicator_circle, fill="gray") 
