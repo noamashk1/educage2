@@ -436,7 +436,7 @@ class TrialState(State):
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "on")
                 self.fsm.current_trial.add_lick_time()
                 counter += 1
-                time.sleep(0.08)
+                time.sleep(0.01)
                 if self.fsm.exp.live_w.activate_window:
                     self.fsm.exp.live_w.toggle_indicator("lick", "off")
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "off")

@@ -168,15 +168,15 @@ class LiveWindow:
 
     def pause_experiment(self):
         self.pause = True
-#         self.main_GUI.able_parameters_buttons()
+        # Highlight the pause button with a light red background
+        self.pause_button.config(state=tk.DISABLED, bg="#ffcccc", activebackground="#ffcccc")
         self.continue_button.config(state=tk.NORMAL)
-        self.pause_button.config(state=tk.DISABLED)
         print("Experiment paused")
 
     def continue_experiment(self):
         self.pause = False
 #         self.main_GUI.disable_parameters_buttons()
-        self.pause_button.config(state=tk.NORMAL)
+        self.pause_button.config(state=tk.NORMAL, bg=self.root.cget("bg"), activebackground=self.root.cget("bg"))
         self.continue_button.config(state=tk.DISABLED)
         print("Experiment continued")
 

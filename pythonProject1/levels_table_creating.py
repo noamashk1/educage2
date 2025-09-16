@@ -35,6 +35,10 @@ class LevelDefinitionApp:
         self.level_entries = []  # Store level name and stimulus counts
         self.stimuli_table_content = []
         self.stimuli_frame = None  # Frame for the stimuli table
+        self.stimuli_container = None  # Container for scrollable content
+        self.canvas = None  # Canvas for scrolling
+        self.scrollbar = None  # Scrollbar
+        self.scrollable_frame = None  # Scrollable frame
         self.save_path = None
 
     def add_level(self):
@@ -66,15 +70,50 @@ class LevelDefinitionApp:
     
     def load_levels(self):
         # Clear previous stimuli frame if it exists
-        if self.stimuli_frame is not None:
-            for widget in self.stimuli_frame.winfo_children():
-                widget.destroy()
-            self.header_titles()
-        else:
-            # Create stimuli frame if it doesn't exist
-            self.stimuli_frame = tk.Frame(self.master)
-            self.stimuli_frame.pack(side="left", padx=10, pady=10)
-            self.header_titles()
+        # if self.stimuli_frame is not None:
+        #     for widget in self.stimuli_frame.winfo_children():
+        #         widget.destroy()
+        #     self.header_titles()
+        # else:
+        #     # Create stimuli frame if it doesn't exist
+        #     self.stimuli_frame = tk.Frame(self.master)
+        #     self.stimuli_frame.pack(side="left", padx=10, pady=10)
+        #     self.header_titles()
+        if self.stimuli_container is not None:
+            self.stimuli_container.destroy()
+            
+        # Clear the stimuli table content list
+        self.stimuli_table_content = []
+            
+        # Create main container for scrollable content
+        self.stimuli_container = tk.Frame(self.master)
+        self.stimuli_container.pack(side="left", padx=10, pady=10, fill="both", expand=True)
+        
+        # Create canvas and scrollbar for scrolling
+        self.canvas = tk.Canvas(self.stimuli_container, width=800, height=400)
+        self.scrollbar = tk.Scrollbar(self.stimuli_container, orient="vertical", command=self.canvas.yview)
+        self.scrollable_frame = tk.Frame(self.canvas)
+        
+        # Configure scrolling
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        )
+        
+        # Create window in canvas
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        
+        # Pack canvas and scrollbar
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.scrollbar.pack(side="right", fill="y")
+        
+        # Bind mouse wheel to canvas
+        self.canvas.bind("<MouseWheel>", self._on_mousewheel)
+        
+        # Set stimuli_frame to be the scrollable frame
+        self.stimuli_frame = self.scrollable_frame
+        self.header_titles()
 
 
         # Attempt to build the second table based on user input
@@ -212,6 +251,11 @@ class LevelDefinitionApp:
             # Update the label to show only the filename
             filename = file_path.split("/")[-1]  # Get the filename from the path
             label.config(text=filename)  # Update the label with just the filename
+    
+    def _on_mousewheel(self, event):
+        """Handle mouse wheel scrolling"""
+        if self.canvas:
+            self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
             
         
 

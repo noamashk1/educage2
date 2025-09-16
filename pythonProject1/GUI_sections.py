@@ -173,7 +173,7 @@ class TkinterApp:
         # Labels and Entry fields for parameters
         params = {
             "Frequency (KHz)": 15,       # Default value
-            "Voltage": 0.5,                # Default value
+            "Voltage": 0.6,                # Default value
             "Tone Duration (s)": 0.5,     # Default value
             "Ramp Duration (s)": 0.05,    # Default value
             "Sampling Rate (Hz)": 300000  # Default value
