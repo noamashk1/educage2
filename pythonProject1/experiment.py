@@ -295,7 +295,11 @@ if __name__ == "__main__":
         def choose_existing_folder():
             global created_folder_name
             
-            selected_folder = filedialog.askdirectory(title="Choose Existing Experiment Folder")
+            selected_folder = filedialog.askdirectory(
+                title="Choose Existing Experiment Folder",
+                mustexist=True,
+                initialdir=os.path.join(os.getcwd(), "experiments")
+            )
             if selected_folder:
                 # Get just the folder name (last part of the path)
                 folder_name = os.path.basename(selected_folder)
@@ -320,5 +324,6 @@ if __name__ == "__main__":
 
         # Creating the experiment
         if created_folder_name:
+            print(f"folder name: {created_folder_name}")
             experiment = Experiment(exp_name=created_folder_name)
 

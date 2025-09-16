@@ -113,10 +113,6 @@ class IdleState(State):
         super().__init__("Idle", fsm)
         ser.flushInput()  # clear the data from the serial
         self.fsm.current_trial.clear_trial()
-        ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_last_rfid, '')
-        ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_level, '')
-        ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_score, '')
-        ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.update_trial_value, '')
         if self.fsm.exp.live_w.activate_window:
             self.fsm.exp.live_w.update_last_rfid('')
             self.fsm.exp.live_w.update_level('')
@@ -181,7 +177,7 @@ class IdleState(State):
                 last_log_time = time.time()
                 print(f"[IdleState] Waiting for RFID... {minutes_passed} minutes passed")
 
-                if minutes_passed % 30 == 0: 
+                if minutes_passed % 5 == 0: 
                     try:
                         self.fsm.exp.upload_data()
 
@@ -428,9 +424,12 @@ class TrialState(State):
 
         counter = 0
         self.got_response = False
+        previous_lick_state = GPIO.LOW  # Track previous state for edge detection
         print('waiting for licks...')
         while not stop():
-            if GPIO.input(lick_pin) == GPIO.HIGH:
+            current_lick_state = GPIO.input(lick_pin)
+            # Only count lick on transition from LOW to HIGH (rising edge)
+            if current_lick_state == GPIO.HIGH and previous_lick_state == GPIO.LOW:
                 if self.fsm.exp.live_w.activate_window:
                     self.fsm.exp.live_w.toggle_indicator("lick", "on")
                 ##self.fsm.exp.live_w.call_on_ui(self.fsm.exp.live_w.toggle_indicator, "lick", "on")
@@ -446,7 +445,8 @@ class TrialState(State):
                     self.got_response = True
                     print('threshold reached')
                     break
-
+            # Update previous state for next iteration
+            previous_lick_state = current_lick_state
             time.sleep(0.08)
 
         if not self.got_response:
@@ -522,6 +522,7 @@ class FiniteStateMachine:
 
             rows = []
             for p in unique_paths:
+                print(p)
                 try:
                     data = None
                     fs = None
