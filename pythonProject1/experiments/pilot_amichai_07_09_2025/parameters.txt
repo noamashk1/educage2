@@ -33,3 +33,38 @@ stimulus_length: 2
 timeout_punishment: 5
 
 ----------------------------------------
+
+--- 2025-09-08 11:26:15 ---
+
+Levels:
+Level Name                                                        Stimulus Path  Probability Value  Index
+        TA  /home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz          100    go      1
+     1B_1T  /home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz           50    go      2
+     1B_1T  /home/educage/git_educage2/educage2/pythonProject1/stimuli/13-9.npz           50 no-go      3
+     1B_2T  /home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz           25    go      4
+     1B_2T  /home/educage/git_educage2/educage2/pythonProject1/stimuli/7-69.npz           25    go      5
+     1B_2T  /home/educage/git_educage2/educage2/pythonProject1/stimuli/13-9.npz           25 no-go      6
+     1B_2T /home/educage/git_educage2/educage2/pythonProject1/stimuli/12-77.npz           25 no-go      7
+
+Mice:
+ID: 000799EB9B, Level:TA
+ID: 000822F347, Level:TA
+ID: 0007DEFBE1, Level:TA
+ID: 00082F18E9, Level:TA
+ID: 000822D804, Level:TA
+
+Parameters:
+lick_time: 1
+lick_time_bin_size: None
+start_trial_option: 1
+start_trial_time: None
+IR_no_RFID_option: Take the Last RFID
+lick_threshold: 3
+time_to_lick_after_stim: 2
+open_valve_duration: 0.02
+ITI: 1
+ITI_time: None
+stimulus_length: 2
+timeout_punishment: 5
+
+----------------------------------------
