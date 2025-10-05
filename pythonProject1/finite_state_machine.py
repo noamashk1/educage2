@@ -502,6 +502,20 @@ class FiniteStateMachine:
 
         # Build a DataFrame with all stimuli referenced by the levels table
         self._build_all_signals_df()
+        self.check_all_signals_not_none()
+        
+    def check_all_signals_not_none(self):
+        """
+        Checks that all entries in self.all_signals_df are not NoneType.
+        If any row contains a None value, prints the row index and the column name(s) with NoneType.
+        """
+        if self.all_signals_df is None:
+            print("[FSM] all_signals_df is None")
+            return
+        for idx, row in self.all_signals_df.iterrows():
+            none_columns = [col for col in self.all_signals_df.columns if row[col] is None]
+            if none_columns:
+                print(f"[FSM] Row index {idx} has NoneType in columns: {none_columns}. Row: {row.to_dict()}")
 
     def _build_all_signals_df(self):
         try:
