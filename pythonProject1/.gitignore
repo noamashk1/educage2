@@ -37,3 +37,4 @@ dist/
 *.svg
 
 experiments/
+debug_log.txt
