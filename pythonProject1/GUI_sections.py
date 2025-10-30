@@ -344,6 +344,9 @@ class TkinterApp:
             self.mice_table.set_mice_as_dict()
             self.experiment.set_mice_dict(self.mice_table.mice_dict)
             self.experiment.run_live_window()
+            if self.experiment.fsm:
+                self.experiment.fsm.build_all_signals_df()
+                self.experiment.fsm.check_all_signals_not_none()
 #             self.experiment.set_parameters(parameters)
 #             self.experiment.root.after(200, lambda: self.experiment.set_parameters(parameters))
 #             # שמירת המצב המינימלי של הניסוי

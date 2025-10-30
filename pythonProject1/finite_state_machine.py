@@ -421,7 +421,7 @@ class FiniteStateMachine:
             print("Warning: white_noise.npz not found, punishment audio will not work")
 
         # Build a DataFrame with all stimuli referenced by the levels table
-        self._build_all_signals_df()
+        self.build_all_signals_df()
         self.check_all_signals_not_none()
         self.state = IdleState(self)
     
@@ -462,7 +462,7 @@ class FiniteStateMachine:
             except Exception as e:
                 print(f"[FSM] Error playing sound from row {idx}: {e}")
 
-    def _build_all_signals_df(self):
+    def build_all_signals_df(self):
         try:
             if self.exp is None or self.exp.levels_df is None:
                 print("[FSM] No levels_df available; skipping all_signals_df build")

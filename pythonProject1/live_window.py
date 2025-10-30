@@ -122,9 +122,6 @@ class LiveWindow:
             self.score_value = value_label  
 
         
-    def call_on_ui(self, fn, *args, **kwargs):
-        self.root.after(0, lambda: fn(*args, **kwargs))
-        
     def toggle_indicator(self, bulb_name, turn_to):
         # Check current state and toggle the indicator light
         if turn_to == "on":
