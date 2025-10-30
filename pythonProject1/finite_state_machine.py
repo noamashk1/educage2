@@ -31,10 +31,6 @@ GPIO.setwarnings(False)
 
 # Generic serial port detection (e.g., Arduino/USB-Serial)
 ports = glob.glob('/dev/ttyUSB*')
-# if not ports:
-#     ports = glob.glob('/dev/ttyACM*')
-# if not ports:
-#     ports = glob.glob('/dev/ttyS*')  # fallback, may include many; first usable will be tried
 if not ports:
     raise Exception("No USB serial device found!")
 
@@ -423,9 +419,13 @@ class FiniteStateMachine:
         self.current_trial = Trial(self)
         
         self.all_signals_df = None
-        with np.load('/home/educage/git_educage2/educage2/pythonProject1/stimuli/white_noise.npz', mmap_mode='r') as z:
-            self.noise = z['noise']
-            self.noise_Fs = int(z['Fs'])
+        # Load white noise for punishment from local stimuli directory
+        try:
+            with np.load(os.path.join('stimuli', 'white_noise.npz'), mmap_mode='r') as z:
+                self.noise = z['noise']
+                self.noise_Fs = int(z['Fs'])
+        except FileNotFoundError:
+            print("Warning: white_noise.npz not found, punishment audio will not work")
 
         # Build a DataFrame with all stimuli referenced by the levels table
         self._build_all_signals_df()
