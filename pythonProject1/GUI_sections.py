@@ -15,6 +15,7 @@ import sounddevice as sd
 import os
 from datetime import datetime
 from data_analysis import DataAnalysis
+from column_constants import ColumnNames
 
 
 class TkinterApp:
@@ -89,12 +90,12 @@ class TkinterApp:
         self.tree_frame.pack_propagate(False)
 
         # Prepare the Treeview in the tree frame
-        self.tree = ttk.Treeview(self.tree_frame, columns=("Level Name","Stimulus Path", "Probability", "Value", "Index"), show='headings', height=5)
-        self.tree.heading("Level Name", text="Level Name")
-        self.tree.heading("Stimulus Path", text="Stimulus Path")
-        self.tree.heading("Probability", text="Probability")
-        self.tree.heading("Value", text="Value")
-        self.tree.heading("Index", text="Index")
+        self.tree = ttk.Treeview(self.tree_frame, columns=ColumnNames.get_treeview_columns(), show='headings', height=5)
+        self.tree.heading(ColumnNames.LEVEL_NAME, text=ColumnNames.LEVEL_NAME)
+        self.tree.heading(ColumnNames.STIMULUS_PATH, text=ColumnNames.STIMULUS_PATH)
+        self.tree.heading(ColumnNames.PROBABILITY, text=ColumnNames.PROBABILITY)
+        self.tree.heading(ColumnNames.VALUE, text=ColumnNames.VALUE)
+        self.tree.heading(ColumnNames.INDEX, text=ColumnNames.INDEX)
 
 
         # Set the width of the columns
@@ -401,12 +402,9 @@ class TkinterApp:
             file.write("\n" + "-"*40 + "\n")
     
     def set_fixed_column_widths(self):
-        # Define fixed widths for the columns
-        self.tree.column("Level Name", width=50)
-        self.tree.column("Stimulus Path", width=200)
-        self.tree.column("Probability", width=50)
-        self.tree.column("Value", width=50)
-        self.tree.column("Index", width=50)
+        # Define fixed widths for the columns using constants
+        for column_name, width in ColumnNames.COLUMN_WIDTHS.items():
+            self.tree.column(column_name, width=width)
 
     def open_data_analysis_window(self):
         analysis_root = tk.Toplevel()
