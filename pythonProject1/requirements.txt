@@ -1,9 +1,0 @@
-numpy
-pandas
-matplotlib
-scipy
-pygame
-RPi.GPIO
-pyserial
-objgraph
-psutil
