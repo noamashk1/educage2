@@ -34,6 +34,9 @@ class LiveWindow:
         # Label for the level of the last RFID 
         self.create_labeled_frame("level:")
 
+        # Label for the current stimulus
+        self.create_labeled_frame("stimulus:")
+
         # Create indicator bulbs for additional status
         self.lick_bulb = self.create_indicator("Lick")
         self.ir_bulb = self.create_indicator("IR")
@@ -107,6 +110,8 @@ class LiveWindow:
             self.last_rfid_value = value_label  # Store reference to the last RFID label
         elif label_text == "level:":
             self.level_value = value_label  
+        elif label_text == "stimulus:":
+            self.stimulus_value = value_label
         elif label_text == "trial value:":
             self.trial_value = value_label  
         elif label_text == "score:":
@@ -195,6 +200,9 @@ class LiveWindow:
         
     def update_trial_value(self, trial_value):
         self.trial_value.config(text=str(trial_value))  # Update score label
+
+    def update_stimulus(self, stimulus):
+        self.stimulus_value.config(text=str(stimulus))
 
 # Example usage
 #live_window = LiveWindow()

@@ -124,6 +124,7 @@ class IdleState(State):
             self.fsm.exp.live_w.update_level('')
             self.fsm.exp.live_w.update_score('')
             self.fsm.exp.live_w.update_trial_value('')
+            self.fsm.exp.live_w.update_stimulus('')
 
         log_memory_usage("Enter Idle")
 
@@ -244,8 +245,12 @@ class TrialState(State):
     def run_trial(self):
         self.fsm.current_trial.start_time = datetime.now().strftime('%H:%M:%S.%f')  # Get current time
         self.fsm.current_trial.calculate_stim()
+        current_value = self.fsm.current_trial.current_value
+        current_stim = os.path.basename(self.fsm.current_trial.current_stim_path)
+        print(f"Trial value: {current_value}, Stimulus: {current_stim}")
         if self.fsm.exp.live_w.activate_window:
-           self.fsm.exp.live_w.update_trial_value(self.fsm.current_trial.current_value)
+           self.fsm.exp.live_w.update_trial_value(current_value)
+           self.fsm.exp.live_w.update_stimulus(current_stim)
 
         stim_thread = threading.Thread(target=self.tdt_as_stim, args=(lambda: self.stop_threads,))
         input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
