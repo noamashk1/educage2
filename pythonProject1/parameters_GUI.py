@@ -17,7 +17,7 @@ class ParametersApp:
         # y_position = (screen_height // 2) - (window_height // 2)
         # self.root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
         #
-        # # Font style for widgets
+        #         # Font style for widgets
         self.font_style = tkFont.Font(family="Helvetica", size=13)
 #####################################################################################
         # Variable to track selected display option
@@ -25,7 +25,7 @@ class ParametersApp:
 
         # lick_time (when to start counting licks) Radiobuttons frame
         self.lick_time_radiobuttons_frame = tk.Frame(root)
-        self.lick_time_radiobuttons_frame.pack(pady=10)
+        self.lick_time_radiobuttons_frame.pack(anchor=tk.W, padx=10, pady=10)
         self.lick_time_custom_input_label = tk.Label(self.lick_time_radiobuttons_frame, text=" When to start counting the licks:", font=self.font_style)
         self.lick_time_custom_input_label.pack(anchor=tk.W)
         # Radiobuttons with command to trigger display of entry field
@@ -53,7 +53,7 @@ class ParametersApp:
 
         # Radiobuttons frame
         self.start_trial_radiobuttons_frame = tk.Frame(root)
-        self.start_trial_radiobuttons_frame.pack(pady=10)
+        self.start_trial_radiobuttons_frame.pack(anchor=tk.W, padx=10, pady=10)
         self.start_trial_custom_input_label = tk.Label(self.start_trial_radiobuttons_frame, text="Start trial:", font=self.font_style)
         self.start_trial_custom_input_label.pack(anchor=tk.W)
         # Radiobuttons with command to trigger display of entry field
@@ -81,7 +81,7 @@ class ParametersApp:
         self.IR_no_RFID = ttk.OptionMenu(self.IR_no_RFID_frame, self.option_var, "Take the Last RFID", "Take the Last RFID", "dont start trial")
         self.IR_no_RFID.pack(pady=2,side=tk.LEFT)
         # Add IR_no_RFID_frame to the root window
-        self.IR_no_RFID_frame.pack(pady=10)
+        self.IR_no_RFID_frame.pack(anchor=tk.W, padx=10, pady=10)
 
 ####################################################################
 
@@ -138,7 +138,7 @@ class ParametersApp:
 
         # Radiobuttons frame
         self.ITI_radiobuttons_frame = tk.Frame(root)
-        self.ITI_radiobuttons_frame.pack(pady=10)
+        self.ITI_radiobuttons_frame.pack(anchor=tk.W, padx=10, pady=10)
         self.ITI_custom_input_label = tk.Label(self.ITI_radiobuttons_frame, text="ITI:", font=self.font_style)
         self.ITI_custom_input_label.pack(anchor=tk.W)
         # Radiobuttons with command to trigger display of entry field
@@ -158,10 +158,46 @@ class ParametersApp:
         self.ITI_bin_size_entry.pack_forget()  # Hide initially
         self.ITI_bin_size_frame.pack(anchor=tk.W)
 #####################################################################
+        # Reinforcement delay checkbox
+        self.reinforcement_delay_frame = tk.Frame(root)
+        self.reinforcement_delay_frame.pack(anchor=tk.W, padx=10, pady=10)
+        self.reinforcement_delay = tk.BooleanVar(value=True)  # Default checked
+        self.reinforcement_delay_checkbox = tk.Checkbutton(
+            self.reinforcement_delay_frame,
+            text="use reinforcement delay",
+            variable=self.reinforcement_delay,
+            font=self.font_style,
+            command=self.reinforcement_delay_show_entry_field
+        )
+        self.reinforcement_delay_checkbox.pack(anchor=tk.W, padx=0)
+        
+        # Delay time entry frame (shown when checkbox is checked, in a separate row)
+        self.delay_time_frame = tk.Frame(root)
+        self.delay_time_label = tk.Label(self.delay_time_frame, text="delay_time (sec):", font=self.font_style)
+        self.delay_time_label.pack(side=tk.LEFT)
+        self.delay_time_entry = tk.Entry(self.delay_time_frame, font=self.font_style, width=5)
+        self.delay_time_entry.insert(0, "1")
+        self.delay_time_entry.pack(side=tk.LEFT, padx=10)
+        # Will be shown/hidden by reinforcement_delay_show_entry_field
+
+#####################################################################
+        # Reinforcement threshold entry (shown when checkbox is checked)
+        self.reinforcement_threshold_frame = tk.Frame(root)
+        self.reinforcement_threshold_label = tk.Label(self.reinforcement_threshold_frame, text="reinforcement_threshold:", font=self.font_style)
+        self.reinforcement_threshold_label.pack(side=tk.LEFT)
+        self.reinforcement_threshold_entry = tk.Entry(self.reinforcement_threshold_frame, font=self.font_style, width=5)
+        self.reinforcement_threshold_entry.insert(0, "3")
+        self.reinforcement_threshold_entry.pack(side=tk.LEFT, padx=10)
+        # Will be shown/hidden by reinforcement_delay_show_entry_field
+
+#####################################################################
 
         # OK button to run analysis
         # self.ok_button = tk.Button(root, text="OK", command=self.get_parameters, font=self.font_style)
         # self.ok_button.pack(pady=20)
+        
+        # Show delay_time and reinforcement_threshold initially since checkbox is checked by default
+        self.reinforcement_delay_show_entry_field()
     
 ###################################################################
     def lick_time_show_entry_field(self):
@@ -184,6 +220,15 @@ class ParametersApp:
             self.ITI_bin_size_entry.pack(side=tk.LEFT, padx=5)
         else:  # Hide entry for other options
             self.ITI_bin_size_entry.pack_forget()
+            
+    def reinforcement_delay_show_entry_field(self):
+        """Show/hide delay_time entry and reinforcement_threshold based on checkbox state."""
+        if self.reinforcement_delay.get():  # If checkbox is checked
+            self.delay_time_frame.pack(anchor=tk.W, padx=30, pady=5)
+            self.reinforcement_threshold_frame.pack(anchor=tk.W, padx=10, pady=10)
+        else:  # If checkbox is unchecked
+            self.delay_time_frame.pack_forget()
+            self.reinforcement_threshold_frame.pack_forget()
 
 #     def get_parameters(self):
 # 
@@ -213,10 +258,10 @@ class ParametersApp:
 # Example usage
 def run():
     root = tk.Tk()
-    app = App(root)
+    app = ParametersApp(root)
     root.mainloop()
 if __name__ == "__main__":
     run()
-    # root = tk.Tk()
-    # app = App(root)
-    # root.mainloop()
+#     root = tk.Tk()
+#     app = App(root)
+#     root.mainloop()

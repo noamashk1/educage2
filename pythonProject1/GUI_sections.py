@@ -338,6 +338,9 @@ class TkinterApp:
                 "ITI_time": self.parameters_btns.ITI_bin_size_entry.get() if self.parameters_btns.ITI_display_option.get() == '2' else None,
                 "stimulus_length": self.experiment.stim_length,
                 "timeout_punishment": self.parameters_btns.punishment_timeout_entry.get(),
+                "reinforcement_delay": self.parameters_btns.reinforcement_delay.get() if self.parameters_btns.reinforcement_delay.get() else None,
+                "reinforcement_threshold": self.parameters_btns.reinforcement_threshold_entry.get() if self.parameters_btns.reinforcement_delay.get() else None,
+                "reinforcement_delay_time": self.parameters_btns.delay_time_entry.get() if self.parameters_btns.reinforcement_delay.get() else None,
             }
             # Set parameters in the Experiment class
             self.experiment.set_levels_df(self.levels_df)

@@ -252,8 +252,13 @@ class TrialState(State):
            self.fsm.exp.live_w.update_trial_value(current_value)
            self.fsm.exp.live_w.update_stimulus(current_stim)
 
-        stim_thread = threading.Thread(target=self.tdt_as_stim, args=(lambda: self.stop_threads,))
-        input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
+        if self.fsm.exp.exp_params["reinforcement_delay"]:
+            print("Reinforcement delay is enabled")
+            stim_thread = threading.Thread(target=self.auditory_stim_RD, args=(lambda: self.stop_threads,))
+            input_thread = threading.Thread(target=self.receive_input_RD, args=(lambda: self.stop_threads,))
+        else:
+            stim_thread = threading.Thread(target=self.auditory_stim, args=(lambda: self.stop_threads,))
+            input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
 
         stim_thread.start()
         input_thread.start()
@@ -285,7 +290,8 @@ class TrialState(State):
         del input_thread
         self.on_event('trial_over')
         
-    def tdt_as_stim(self, stop):
+        
+    def auditory_stim(self, stop):
         with audio_lock:  # ensure only one audio action at a time
             stim_path = self.fsm.current_trial.current_stim_path
             stim_array = None
@@ -310,7 +316,7 @@ class TrialState(State):
                 sd.play(stim_array, samplerate=sample_rate, blocking=True)
                 start_time = time.time()
                 while time.time() - start_time < stim_duration:
-                    if stop():#self.got_response:
+                    if stop():
                         print("Early response detected — stopping stimulus")
                         sd.stop()
                         return
@@ -368,6 +374,14 @@ class TrialState(State):
         if not self.got_response:
             print('no response')
         print('num of licks: ' + str(counter))
+
+    def auditory_stim_RD(self, stop):
+
+        pass
+
+    def receive_input_RD(self, stop):
+        pass
+
 
     def give_reward(self):
         GPIO.output(valve_pin, GPIO.HIGH)
@@ -443,11 +457,11 @@ class FiniteStateMachine:
         import numpy as np
         for idx, row in self.all_signals_df.iterrows():
             try:
-                # Use iloc[0] style as in tdt_as_stim, even though here we have a single row
-                # This is for consistency with the tdt_as_stim approach
+                # Use iloc[0] style as in auditory_stim, even though here we have a single row
+                # This is for consistency with the auditory_stim approach
                 df = self.all_signals_df
                 single_row = df.loc[[idx]]  # DataFrame with a single row
-                # Use iloc[0] to access the row as in tdt_as_stim
+                # Use iloc[0] to access the row as in auditory_stim
                 data = single_row.iloc[0]['data'] if 'data' in single_row.columns else None
                 fs = single_row.iloc[0]['fs'] if 'fs' in single_row.columns else None
                 path = single_row.iloc[0]['Stimulus Path'] if 'Stimulus Path' in single_row.columns else None
