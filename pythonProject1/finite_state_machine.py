@@ -326,15 +326,20 @@ class TrialState(State):
             elif value == 'catch':
                 score = 'early response - catch'
             self.fsm.current_trial.score = score
+            if self.fsm.exp.live_w.activate_window:
+                self.fsm.exp.live_w.update_score(self.fsm.current_trial.score)
             if self.fsm.current_trial.score == 'early response - go':
                 time.sleep(int(self.fsm.exp.exp_params["time_to_lick_after_stim"])) #wait the time of trial- as mini punishment (maybe change to the punishment time)
             elif self.fsm.current_trial.score == 'early response - no go':
                 self.give_punishment()
 
         else:
+            self.stop_threads = False
             start_limit = time.time()
             response_window = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
-            self.receive_input(lambda: self.stop_threads or (time.time() - start_limit > response_window))
+            print("\ntime to lick!")
+            self.receive_input(lambda: self.got_response or (time.time() - start_limit > response_window))
+            print("\nstop lick!\n")
 
         if self.fsm.current_trial.score is None:
             self.fsm.current_trial.score = self.evaluate_response()

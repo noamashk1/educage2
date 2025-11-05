@@ -190,7 +190,7 @@ class ParametersApp:
         self.delay_time_label = tk.Label(self.delay_time_frame, text="delay_time (sec):", font=self.font_style)
         self.delay_time_label.pack(side=tk.LEFT)
         self.delay_time_entry = tk.Entry(self.delay_time_frame, font=self.font_style, width=5)
-        self.delay_time_entry.insert(0, "1")
+        self.delay_time_entry.insert(0, "0.3")
         self.delay_time_entry.pack(side=tk.LEFT, padx=10)
         # Will be shown/hidden by reinforcement_delay_show_entry_field
 
