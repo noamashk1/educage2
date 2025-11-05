@@ -238,8 +238,12 @@ class TrialState(State):
         super().__init__("trial", fsm)
         log_memory_usage("Enter Trial")
         self.got_response = None
+        self.got_response_RD = None
         self.stop_threads = False
-        self.trial_thread = threading.Thread(target=self.run_trial)
+        if self.fsm.exp.exp_params["reinforcement_delay"]:
+            self.trial_thread = threading.Thread(target=self.run_trial_RD)
+        else:
+            self.trial_thread = threading.Thread(target=self.run_trial)
         self.trial_thread.start()
 
     def run_trial(self):
@@ -252,13 +256,8 @@ class TrialState(State):
            self.fsm.exp.live_w.update_trial_value(current_value)
            self.fsm.exp.live_w.update_stimulus(current_stim)
 
-        if self.fsm.exp.exp_params["reinforcement_delay"]:
-            print("Reinforcement delay is enabled")
-            stim_thread = threading.Thread(target=self.auditory_stim_RD, args=(lambda: self.stop_threads,))
-            input_thread = threading.Thread(target=self.receive_input_RD, args=(lambda: self.stop_threads,))
-        else:
-            stim_thread = threading.Thread(target=self.auditory_stim, args=(lambda: self.stop_threads,))
-            input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
+        stim_thread = threading.Thread(target=self.auditory_stim, args=(lambda: self.stop_threads,))
+        input_thread = threading.Thread(target=self.receive_input, args=(lambda: self.stop_threads,))
 
         stim_thread.start()
         input_thread.start()
@@ -272,6 +271,71 @@ class TrialState(State):
         stim_thread.join()
         self.stop_threads = True
         input_thread.join()
+        if self.fsm.current_trial.score is None:
+            self.fsm.current_trial.score = self.evaluate_response()
+            print("score: " + self.fsm.current_trial.score)
+            if self.fsm.exp.live_w.activate_window:
+                self.fsm.exp.live_w.update_score(self.fsm.current_trial.score)
+            
+
+            if self.fsm.current_trial.score == 'hit':
+                self.give_reward()
+            elif self.fsm.current_trial.score == 'fa':
+                self.give_punishment()
+        
+        gc.collect()
+        log_memory_usage("After Trial")
+        del stim_thread
+        del input_thread
+        self.on_event('trial_over')
+
+    def run_trial_RD(self):
+        self.fsm.current_trial.start_time = datetime.now().strftime('%H:%M:%S.%f')  # Get current time
+        self.fsm.current_trial.calculate_stim()
+        current_value = self.fsm.current_trial.current_value
+        current_stim = os.path.basename(self.fsm.current_trial.current_stim_path)
+        print(f"Trial value: {current_value}, Stimulus: {current_stim}")
+        if self.fsm.exp.live_w.activate_window:
+           self.fsm.exp.live_w.update_trial_value(current_value)
+           self.fsm.exp.live_w.update_stimulus(current_stim)
+
+        
+        print("Reinforcement delay is enabled")
+        stim_thread = threading.Thread(target=self.auditory_stim_RD, args=(lambda: self.stop_threads,))
+        input_thread = threading.Thread(target=self.receive_input_RD, args=(lambda: self.stop_threads,))
+
+        stim_thread.start()
+        input_thread.start()
+
+        while stim_thread.is_alive():
+            if self.got_response_RD: #TODO: add the reinforcement delay evaluation
+                self.stop_threads = True
+                break
+            time.sleep(0.05)
+
+        stim_thread.join()
+        self.stop_threads = True
+        input_thread.join()
+
+        if self.got_response_RD:
+            value = self.fsm.current_trial.current_value
+            if value == 'go':
+                score = 'early response - go' 
+            elif value == 'no-go':
+                score = 'early response - no go'
+            elif value == 'catch':
+                score = 'early response - catch'
+            self.fsm.current_trial.score = score
+            if self.fsm.current_trial.score == 'early response - go':
+                time.sleep(int(self.fsm.exp.exp_params["time_to_lick_after_stim"])) #wait the time of trial- as mini punishment (maybe change to the punishment time)
+            elif self.fsm.current_trial.score == 'early response - no go':
+                self.give_punishment()
+
+        else:
+            start_limit = time.time()
+            response_window = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
+            self.receive_input(lambda: self.stop_threads or (time.time() - start_limit > response_window))
+
         if self.fsm.current_trial.score is None:
             self.fsm.current_trial.score = self.evaluate_response()
             print("score: " + self.fsm.current_trial.score)
@@ -376,11 +440,81 @@ class TrialState(State):
         print('num of licks: ' + str(counter))
 
     def auditory_stim_RD(self, stop):
+        with audio_lock:  # ensure only one audio action at a time
+            stim_path = self.fsm.current_trial.current_stim_path
+            stim_array = None
+            sample_rate = None
 
-        pass
+            # Try to fetch from preloaded all_signals_df
+            try:
+                df = getattr(self.fsm, 'all_signals_df', None)
+                if df is not None and hasattr(df, 'empty') and not df.empty:
+                    row = df.loc[df['path'] == stim_path]
+                    if not row.empty:
+                        stim_array = row.iloc[0]['data']
+                        sample_rate = row.iloc[0]['fs']
+            except Exception as e:
+                print(f"[TrialState] Warning: lookup in all_signals_df failed for '{stim_path}': {e}")
+                
+            stim_duration = len(stim_array) / sample_rate
+            sd.stop()
+            try:
+                if self.fsm.exp.live_w.activate_window:
+                  self.fsm.exp.live_w.toggle_indicator("stim", "on")
+                sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                start_time = time.time()
+                while time.time() - start_time < stim_duration:
+                    if stop():
+                        print("Early response detected — stopping stimulus")
+                        sd.stop()
+                        return
+                    time.sleep(0.05)
+            finally:
+                sd.stop()
+                del stim_array
+                if self.fsm.exp.live_w.activate_window:
+                    self.fsm.exp.live_w.toggle_indicator("stim", "off")
+
+            reinforcement_delay = int(self.fsm.exp.exp_params["reinforcement_delay_time"])
+            print("Stimulus done. Waiting reinforcement delay...")
+
+            start_post = time.time()
+            while time.time() - start_post < reinforcement_delay:
+                if stop():
+                    print("Early response during reinforcement_delay")
+                    return
+                time.sleep(0.05)
+
+            print("reinforcement delay window completed.")
 
     def receive_input_RD(self, stop):
-        pass
+        counter = 0
+        self.got_response_RD = False
+        previous_lick_state = GPIO.LOW  # Track previous state for edge detection
+        print('waiting for licks...')
+        while not stop():
+            current_lick_state = GPIO.input(lick_pin)
+            # Only count lick on transition from LOW to HIGH (rising edge)
+            if current_lick_state == GPIO.HIGH and previous_lick_state == GPIO.LOW:
+                self.fsm.current_trial.add_lick_time_RD()
+                counter += 1
+                if self.fsm.exp.live_w.activate_window:
+                    self.fsm.exp.live_w.toggle_indicator("lick", "on")
+                    time.sleep(0.01) #wait for the lick to be visible on the indicator
+                    self.fsm.exp.live_w.toggle_indicator("lick", "off")
+                print("lick detected")
+
+                if counter >= int(self.fsm.exp.exp_params["reinforcement_threshold"]) and not self.got_response_RD:
+                    self.got_response_RD = True
+                    print('reinforcement threshold reached')
+                    break
+            # Update previous state for next iteration
+            previous_lick_state = current_lick_state
+            time.sleep(0.01)
+
+        if not self.got_response_RD:
+            print('no reinforcement response')
+        print('num of reinforcement licks: ' + str(counter))
 
 
     def give_reward(self):

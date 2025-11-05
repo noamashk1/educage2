@@ -29,10 +29,24 @@ class ParametersApp:
         self.lick_time_custom_input_label = tk.Label(self.lick_time_radiobuttons_frame, text=" When to start counting the licks:", font=self.font_style)
         self.lick_time_custom_input_label.pack(anchor=tk.W)
         # Radiobuttons with command to trigger display of entry field
-        tk.Radiobutton(self.lick_time_radiobuttons_frame, text="With stim", variable=self.lick_time_display_option, value='1',
-                       font=self.font_style, command=self.lick_time_show_entry_field).pack(anchor=tk.W)
-        tk.Radiobutton(self.lick_time_radiobuttons_frame, text="After stim", variable=self.lick_time_display_option, value='2',
-                       font=self.font_style, command=self.lick_time_show_entry_field).pack(anchor=tk.W)
+        self.lick_time_with_stim_rb = tk.Radiobutton(
+            self.lick_time_radiobuttons_frame,
+            text="With stim",
+            variable=self.lick_time_display_option,
+            value='1',
+            font=self.font_style,
+            command=self.lick_time_show_entry_field
+        )
+        self.lick_time_with_stim_rb.pack(anchor=tk.W)
+        self.lick_time_after_stim_rb = tk.Radiobutton(
+            self.lick_time_radiobuttons_frame,
+            text="After stim",
+            variable=self.lick_time_display_option,
+            value='2',
+            font=self.font_style,
+            command=self.lick_time_show_entry_field
+        )
+        self.lick_time_after_stim_rb.pack(anchor=tk.W)
 
         # Radiobutton with associated entry field
         self.lick_time_bin_size_frame = tk.Frame(self.lick_time_radiobuttons_frame)
@@ -222,13 +236,28 @@ class ParametersApp:
             self.ITI_bin_size_entry.pack_forget()
             
     def reinforcement_delay_show_entry_field(self):
-        """Show/hide delay_time entry and reinforcement_threshold based on checkbox state."""
+        """Show/hide delay_time & reinforcement_threshold; lock lick-time radios when enabled."""
         if self.reinforcement_delay.get():  # If checkbox is checked
+            # Show reinforcement controls
             self.delay_time_frame.pack(anchor=tk.W, padx=30, pady=5)
             self.reinforcement_threshold_frame.pack(anchor=tk.W, padx=10, pady=10)
+            # Force default and disable lick-time options
+            self.lick_time_display_option.set('1')
+            self.lick_time_with_stim_rb.config(state=tk.DISABLED)
+            self.lick_time_after_stim_rb.config(state=tk.DISABLED)
+            self.lick_time_bin_size_radiobutton.config(state=tk.DISABLED)
+            self.lick_time_bin_size_entry.pack_forget()
+            self.lick_time_bin_size_entry.config(state=tk.DISABLED)
         else:  # If checkbox is unchecked
+            # Hide reinforcement controls
             self.delay_time_frame.pack_forget()
             self.reinforcement_threshold_frame.pack_forget()
+            # Re-enable lick-time options
+            self.lick_time_with_stim_rb.config(state=tk.NORMAL)
+            self.lick_time_after_stim_rb.config(state=tk.NORMAL)
+            self.lick_time_bin_size_radiobutton.config(state=tk.NORMAL)
+            self.lick_time_bin_size_entry.config(state=tk.NORMAL)
+            self.lick_time_show_entry_field()
 
 #     def get_parameters(self):
 # 
