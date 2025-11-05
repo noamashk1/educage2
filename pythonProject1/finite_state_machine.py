@@ -480,7 +480,7 @@ class TrialState(State):
                 if self.fsm.exp.live_w.activate_window:
                     self.fsm.exp.live_w.toggle_indicator("stim", "off")
 
-            reinforcement_delay = int(self.fsm.exp.exp_params["reinforcement_delay_time"])
+            reinforcement_delay = float(self.fsm.exp.exp_params["reinforcement_delay_time"])
             print("Stimulus done. Waiting reinforcement delay...")
 
             start_post = time.time()
