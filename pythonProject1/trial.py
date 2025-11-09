@@ -52,6 +52,7 @@ class Trial:
         self.start_time = None
         self.current_stim_index = None
         self.licks_time = []
+        self.lick_time_RD = []
 
     def add_lick_time(self):
         current_datetime = datetime.now()
