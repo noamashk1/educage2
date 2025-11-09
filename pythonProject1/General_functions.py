@@ -4,6 +4,7 @@ import tkinter as tk
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
 
 def send_email(to_email, subject, body):
     EMAIL = "educage.lab@gmail.com"
@@ -140,7 +141,7 @@ def generate_white_noise_npz(duration, Fs, voltage, save_path='/home/educage/git
     return noise
 
 #generate_white_noise_npz(duration=1, Fs=44100, voltage=0.8)
-def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10, save_path = None):
+def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10,amplitude=1.0, save_path = None):
     """
     מוסיף גם רכיב על-קולי בתדרים שהעכברים שומעים (אנחנו לא).
     חשוב להשתמש בכרטיס קול שיכול לנגן עד 192kHz!
@@ -173,8 +174,9 @@ def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10, save_
         click_signal[i:i+click_len] = 1.0
 
     # שילוב הכל
-    signal = tone_audible + tone_ultra + noise + click_signal
-    signal = signal / np.max(np.abs(signal))
+#     signal = tone_audible + tone_ultra + noise + click_signal
+#     signal = signal / np.max(np.abs(signal))
+    signal = amplitude * (tone_audible + tone_ultra + noise + click_signal)
 
     # השמעה
     sd.play(signal, samplerate=sample_rate)
@@ -185,13 +187,13 @@ def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10, save_
         try:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
             # נשמור גם במפתחות כפולים לתאימות ('noise','Fs') וגם ('data','rate')
-            np.savez(save_path, data=signal, Fs=sample_rate)
+            np.savez(save_path, noise=signal, Fs=sample_rate)
             print("stimulus saved")
         except Exception as e:
             print(f"[save npz] failed to save '{save_path}': {e}")
 
 
-#scary_with_ultrasonic(2, click_rate=15, save_path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz')
+scary_with_ultrasonic(3, click_rate=15, save_path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz')
 
 def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path = None):
     t = np.linspace(0, duration, int(sample_rate*duration), endpoint=False)
@@ -228,7 +230,7 @@ def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path 
     if save_path:
         try:
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
-            np.savez(save_path, data=signal, Fs=sample_rate)
+            np.savez(save_path, noise=signal, Fs=sample_rate)
             print("stimulus saved")
         except Exception as e:
             print(f"[save npz] failed to save '{save_path}': {e}")
