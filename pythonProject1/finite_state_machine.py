@@ -567,7 +567,7 @@ class FiniteStateMachine:
         self.all_signals_df = None
         # Load white noise for punishment from local stimuli directory
         try:
-            with np.load(os.path.join('stimuli', 'white_noise.npz'), mmap_mode='r') as z:
+            with np.load(os.path.join('stimuli', 'scary_noise_with_ultrasonic.npz'), mmap_mode='r') as z: #'white_noise.npz'
                 self.noise = z['noise']
                 self.noise_Fs = int(z['Fs'])
         except FileNotFoundError:

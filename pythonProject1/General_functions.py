@@ -193,7 +193,7 @@ def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10,amplit
             print(f"[save npz] failed to save '{save_path}': {e}")
 
 
-scary_with_ultrasonic(3, click_rate=15, save_path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz')
+#scary_with_ultrasonic(3, click_rate=15, save_path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz')
 
 def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path = None):
     t = np.linspace(0, duration, int(sample_rate*duration), endpoint=False)
