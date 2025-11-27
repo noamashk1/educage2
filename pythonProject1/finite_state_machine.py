@@ -15,6 +15,7 @@ import objgraph
 import logging
 import pandas as pd
 import shutil
+import random
 
 audio_lock = threading.Lock()
 valve_pin = 4  # 23
@@ -334,6 +335,15 @@ class TrialState(State):
                 self.give_punishment()
 
         else:
+            """" 
+            to be removed - after testing the pavlovian learning effect
+            """
+            ###########
+            prob = 70
+            if self.fsm.current_trial.current_stim_path == "/home/educage/git_educage2/educage2/pythonProject1/stimuli/21-21.npz":
+                if random.randint(1, 100) <= prob:
+                    self.give_reward()
+            ###########
             self.stop_threads = False
             start_limit = time.time()
             response_window = int(self.fsm.exp.exp_params["time_to_lick_after_stim"])
