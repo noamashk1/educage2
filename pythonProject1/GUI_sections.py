@@ -160,7 +160,7 @@ class TkinterApp:
         tone_shape = voltage * ramp * np.sin(2 * np.pi * freq * 1000 * t / Fs)
 
         # Play sound
-        sd.play(tone_shape, Fs)
+        sd.play(tone_shape, Fs,blocking=True, blocksize=8192)
         sd.wait()  # Wait until sound finishes playing
 
         return tone_shape
@@ -173,11 +173,11 @@ class TkinterApp:
         
         # Labels and Entry fields for parameters
         params = {
-            "Frequency (KHz)": 15,       # Default value
+            "Frequency (KHz)": 7.07,       # Default value
             "Voltage": 0.6,                # Default value
-            "Tone Duration (s)": 0.5,     # Default value
+            "Tone Duration (s)": 0.3,     # Default value
             "Ramp Duration (s)": 0.05,    # Default value
-            "Sampling Rate (Hz)": 300000  # Default value
+            "Sampling Rate (Hz)": 96000  # Default value
         }
 
         entries = {}

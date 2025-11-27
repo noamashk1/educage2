@@ -102,7 +102,7 @@ def generate_white_noise(duration, Fs, voltage):
     # Clamp the noise values to ensure they stay within the valid range
     noise = np.clip(noise, -1, 1)
     
-    sd.play(noise, Fs)
+    sd.play(noise, Fs,blocking=True, blocksize=8192)
     sd.wait()  # Wait until sound finishes playing
     
     np.save('/home/educage/git_educage2/educage2/pythonProject1/stimulus/white_noise', noise)
@@ -132,16 +132,17 @@ def generate_white_noise_npz(duration, Fs, voltage, save_path='/home/educage/git
     noise = np.clip(noise, -1, 1)
     
     # Play the sound
-    sd.play(noise, samplerate=Fs)
+    sd.play(noise, samplerate=Fs,blocking=True, blocksize=8192)
     sd.wait()
 
     # Save noise and sample rate together
-    np.savez(save_path, noise=noise, Fs=Fs)
+    #np.savez(save_path, noise=noise, Fs=Fs)
+    print(8)
 
     return noise
 
-#generate_white_noise_npz(duration=1, Fs=44100, voltage=0.8)
-def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10,amplitude=1.0, save_path = None):
+#generate_white_noise_npz(duration=1, Fs=96000, voltage=0.8)
+def scary_with_ultrasonic(duration=3.0, sample_rate=96000, click_rate=10,amplitude=0.6, save_path = None):
     """
     מוסיף גם רכיב על-קולי בתדרים שהעכברים שומעים (אנחנו לא).
     חשוב להשתמש בכרטיס קול שיכול לנגן עד 192kHz!
@@ -179,7 +180,7 @@ def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10,amplit
     signal = amplitude * (tone_audible + tone_ultra + noise + click_signal)
 
     # השמעה
-    sd.play(signal, samplerate=sample_rate)
+    sd.play(signal, samplerate=sample_rate,blocking=True, blocksize=8192)
     sd.wait()
 
     # שמירה כ-NPZ (בדומה ל-General_functions.generate_white_noise_npz)
@@ -195,7 +196,7 @@ def scary_with_ultrasonic(duration=3.0, sample_rate=192000, click_rate=10,amplit
 
 #scary_with_ultrasonic(3, click_rate=15, save_path = '/home/educage/git_educage2/educage2/pythonProject1/stimuli/scary_noise_with_ultrasonic.npz')
 
-def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path = None):
+def scary_with_clicks(duration=3.0, sample_rate=96000, click_rate=10, save_path = None):
     t = np.linspace(0, duration, int(sample_rate*duration), endpoint=False)
 
     # --- בסיס: תדרים צורמים ---
@@ -223,7 +224,7 @@ def scary_with_clicks(duration=3.0, sample_rate=44100, click_rate=10, save_path 
     signal = signal / np.max(np.abs(signal))
 
     # השמעה
-    sd.play(signal, samplerate=sample_rate)
+    sd.play(signal, samplerate=sample_rate,blocking=True, blocksize=8192)
     sd.wait()
 
     # שמירה כ-NPZ (בדומה ל-General_functions.generate_white_noise_npz)

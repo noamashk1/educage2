@@ -1,15 +1,4 @@
 Level Name,Stimulus Path,Probability,Value,Index
-1B_3T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,15,go,1
-1B_3T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-69.npz,15,go,2
-1B_3T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/8-37.npz,15,go,3
-1B_3T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/13-9.npz,15,no-go,4
-1B_3T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/12-77.npz,15,no-go,5
-1B_3T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/11-74.npz,15,no-go,6
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,10,go,7
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-69.npz,10,go,8
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/8-37.npz,10,go,9
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/9-11.npz,10,go,10
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/10-78.npz,10,no-go,11
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/11-74.npz,10,no-go,12
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/12-77.npz,10,no-go,13
-1B_4T,/home/educage/git_educage2/educage2/pythonProject1/stimuli/13-9.npz,10,no-go,14
+1T_0B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,100,go,1
+1T_1B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,50,go,2
+1T_1B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/13-66.npz,50,no-go,3

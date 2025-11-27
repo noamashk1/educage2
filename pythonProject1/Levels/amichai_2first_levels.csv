@@ -1,4 +1,4 @@
 Level Name,Stimulus Path,Probability,Value,Index
-1T_0B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,1,go,1
-1T_1B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,1,go,2
-1T_1B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/13-66.npz,1,no-go,3
+1T_0B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,100,go,1
+1T_1B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/7-07.npz,50,go,2
+1T_1B,/home/educage/git_educage2/educage2/pythonProject1/stimuli/13-66.npz,50,no-go,3

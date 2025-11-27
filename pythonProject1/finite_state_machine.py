@@ -382,7 +382,10 @@ class TrialState(State):
             try:
                 if self.fsm.exp.live_w.activate_window:
                   self.fsm.exp.live_w.toggle_indicator("stim", "on")
-                sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                #sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                #sd.play(stim_array, samplerate=sample_rate, blocking=True, latency='high')
+                sd.play(stim_array, samplerate=sample_rate, blocking=True, blocksize=8192)
+                #sd.play(stim_array, samplerate=sample_rate, blocking=True, latency='high', device=3)
                 start_time = time.time()
                 while time.time() - start_time < stim_duration:
                     if stop():
@@ -466,7 +469,8 @@ class TrialState(State):
             try:
                 if self.fsm.exp.live_w.activate_window:
                   self.fsm.exp.live_w.toggle_indicator("stim", "on")
-                sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                #sd.play(stim_array, samplerate=sample_rate, blocking=True)
+                sd.play(stim_array, samplerate=sample_rate, blocking=True, blocksize=8192)
                 start_time = time.time()
                 while time.time() - start_time < stim_duration:
                     if stop():
@@ -531,7 +535,8 @@ class TrialState(State):
         with audio_lock:
             sd.stop()
             try:
-                sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True)  #sd.wait(
+                #sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True)  #sd.wait(
+                sd.play(self.fsm.noise, samplerate=self.fsm.noise_Fs, blocking=True, blocksize=8192)
             finally:
                 sd.stop()
                 time.sleep(float(self.fsm.exp.exp_params["timeout_punishment"])) 
@@ -608,7 +613,7 @@ class FiniteStateMachine:
                 if data is not None and fs is not None:
                     print(f"[FSM] Playing sound from {path} (index {idx})")
                     print(f"[FSM] Length of sound: {len(data)} samples, fs={fs}")
-                    sd.play(data, fs)
+                    sd.play(data, fs, blocking=True, blocksize=8192)
                     sd.wait()
                 else:
                     print(f"[FSM] Skipping playback for row {idx} (missing data or fs): {single_row.iloc[0].to_dict()}")
