@@ -33,19 +33,8 @@ class MainApp:
         self.load_mice_button.pack(pady=10)
 
     def load_mice_list_from_file(self):
-#         if len(self.main_GUI.levels_list) == 0:
-#             messagebox.showerror("Error", "You must first set levels for the experiment.")
-#             return
-#         file_path = filedialog.askopenfilename(
-#             title="Select Mice List TXT File",
-#             filetypes=[("Text Files", "*.txt")])
-        # Get the parent directory of the current working directory
-        #parent_dir = os.path.dirname(os.getcwd())
         parent_dir = os.getcwd()
-        # Construct the default path to the "experiments" folder
         default_dir = os.path.join(parent_dir, "experiments")
-        
-        # Open file dialog, starting in the "experiments" folder if it exists
         initial_dir = default_dir if os.path.exists(default_dir) else parent_dir
         file_path = filedialog.askopenfilename(
             initialdir=initial_dir,
@@ -95,7 +84,7 @@ class MainApp:
         self.serial_thread = threading.Thread(target=self.read_from_serial)
         self.serial_thread.start()
         
-                # Create a new Toplevel window
+        # Create a new Toplevel window
         self.parameter_window = tk.Toplevel(self.master)
         self.parameter_window.title("mice table")
         
@@ -285,13 +274,13 @@ class MainApp:
         print(f"mice list: {list(data.keys())}")  # Display the dictionary
 
 
-# if __name__ == "__main__":
-#     root = tk.Tk()
-#     root.title("Mice Table")
-#     # Minimal GUI-like object so MainApp can run standalone (e.g. open_parameter_window checks levels_list)
-#     class MinimalGUI:
-#         levels_list = ["Level1"]
-#     frame = tk.Frame(root)
-#     frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-#     app = MainApp(frame, MinimalGUI())
-#     root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.title("Mice Table")
+    # Minimal GUI-like object so MainApp can run standalone (e.g. open_parameter_window checks levels_list)
+    class MinimalGUI:
+        levels_list = ["Level1"]
+    frame = tk.Frame(root)
+    frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+    app = MainApp(frame, MinimalGUI())
+    root.mainloop()
