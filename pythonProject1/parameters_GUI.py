@@ -229,8 +229,9 @@ class ParametersApp:
         """Show/hide delay_time & reinforcement_threshold; lock lick-time radios when enabled."""
         if self.reinforcement_delay.get():  # If checkbox is checked
             # Show reinforcement controls
-            self.delay_time_frame.pack(anchor=tk.W, padx=30, pady=5)
-            self.reinforcement_threshold_frame.pack(anchor=tk.W, padx=10, pady=10)
+            # Ensure order: checkbox frame -> delay_time_frame -> reinforcement_threshold_frame -> (e.g. OK)
+            self.delay_time_frame.pack(anchor=tk.W, padx=30, pady=5, after=self.reinforcement_delay_frame)
+            self.reinforcement_threshold_frame.pack(anchor=tk.W, padx=10, pady=10, after=self.delay_time_frame)
             # Force default and disable lick-time options
             self.lick_time_display_option.set('1')
             self.lick_time_with_stim_rb.config(state=tk.DISABLED)
