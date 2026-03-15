@@ -325,7 +325,6 @@ class TkinterApp:
                 "lick_time_bin_size": self.parameters_btns.lick_time_bin_size_entry.get() if self.parameters_btns.lick_time_display_option.get() == '3' else None,
                 "start_trial_option": self.parameters_btns.start_trial_display_option.get(),
                 "start_trial_time": self.parameters_btns.start_trial_bin_size_entry.get() if self.parameters_btns.start_trial_display_option.get() == '2' else None,
-                "IR_no_RFID_option": self.parameters_btns.option_var.get(),
                 "lick_threshold": self.parameters_btns.licks_entry.get(),
                 "time_to_lick_after_stim": self.parameters_btns.time_licks_entry.get(),
                 "open_valve_duration": self.parameters_btns.time_open_valve_entry.get(),
@@ -485,10 +484,6 @@ class TkinterApp:
                 if 'start_trial_time' in exp_params and exp_params['start_trial_time']:
                     self.parameters_btns.start_trial_bin_size_entry.delete(0, tk.END)
                     self.parameters_btns.start_trial_bin_size_entry.insert(0, str(exp_params['start_trial_time']))
-                
-                # IR_no_RFID option
-                if 'IR_no_RFID_option' in exp_params and exp_params['IR_no_RFID_option']:
-                    self.parameters_btns.option_var.set(str(exp_params['IR_no_RFID_option']))
                 
                 # lick_threshold
                 if 'lick_threshold' in exp_params and exp_params['lick_threshold'] is not None:
