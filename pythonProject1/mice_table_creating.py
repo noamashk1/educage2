@@ -112,6 +112,11 @@ class MainApp:
         self.clear_button = tk.Button(self.parameter_window, text="Clear", command=self.clear_box)
         self.clear_button.pack(pady=(0, 5))
 
+        # Status label for non-modal feedback (e.g., file load result)
+        self.status_label = tk.Label(self.parameter_window, text="", fg="gray")
+        # Push it a bit further down between Clear and Add-from-file buttons
+        self.status_label.pack(pady=(50, 5))
+
         # Add from existing list Button (will be packed at the bottom)
         self.add_from_file_button = tk.Button(self.parameter_window, text="Add from existing list", command=self.add_mice_from_file_to_display)
 
@@ -203,10 +208,16 @@ class MainApp:
                 self.unique_data_display.insert(tk.END, mouse_id + "\n")
                 added.append(mouse_id)
         self.unique_data_display.config(state=tk.DISABLED)
+
+        # Non-modal status message instead of blocking messagebox
         if added:
-            messagebox.showinfo("Done", f"Added {len(added)} mice from file.")
+            msg = f"Added {len(added)} mice from file."
         else:
-            messagebox.showinfo("Done", "No new mice added (all were already in the list).")
+            msg = "No new mice added \n(all were already in the list)."
+        if hasattr(self, "status_label") and self.status_label.winfo_exists():
+            self.status_label.config(text=msg, fg="green" if added else "gray")
+            # Clear the message after 3 seconds
+            self.status_label.after(3000, lambda: self.status_label.config(text=""))
 
     def save_and_close(self):
         self.stop_event.set()
