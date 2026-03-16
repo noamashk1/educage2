@@ -29,7 +29,7 @@ class TkinterApp:
         self.experiment = exp
 
         # Set the window dimensions
-        w = 1200
+        w = 1600
         h = 800
         self.root.geometry(f"{w}x{h}")  # Adjust the size as needed
 
