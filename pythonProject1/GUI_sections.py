@@ -21,7 +21,8 @@ from column_constants import ColumnNames
 class TkinterApp:
     def __init__(self, root,exp, exp_name):
         self.root = root
-        self.root.title("Educage")
+        # Show main app name + current directory (experiment folder)
+        self.root.title(f"Educage   |   Experiment folder: {exp_name}")
         #self.experiment = experiment_1.Experiment(exp_name, self.root)
         self.levels_list = []
         self.levels_df = None
