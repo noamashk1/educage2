@@ -39,7 +39,9 @@ port = ports[0]
 ser = serial.Serial(port=port, baudrate=9600, timeout=0.01)
 print(f"Connected to {port}")
 
-file_log_path = "/home/educage/git_educage2/educage2/pythonProject1/open_files_monitor.log"  # לשנות למיקום שתרצה
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+file_log_path = os.path.join(BASE_DIR, "open_files_monitor.log")
 file_logger = logging.getLogger("open_files_monitor")
 file_logger.setLevel(logging.INFO)
 fh = logging.FileHandler(file_log_path)
@@ -340,7 +342,8 @@ class TrialState(State):
             """
             ###########
             prob = 70
-            if self.fsm.current_trial.current_stim_path == "/home/educage/git_educage2/educage2/pythonProject1/stimuli/21-21.npz":
+            target_stim_path = os.path.join(BASE_DIR, "stimuli", "21-21.npz")
+            if os.path.abspath(self.fsm.current_trial.current_stim_path) == os.path.abspath(target_stim_path):
                 if random.randint(1, 100) <= prob:
                     self.give_reward()
             ###########
