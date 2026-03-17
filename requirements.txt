@@ -1,0 +1,9 @@
+numpy
+pandas
+matplotlib
+scipy
+sounddevice
+psutil
+objgraph
+pyserial
+pygame
