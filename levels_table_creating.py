@@ -5,6 +5,7 @@ import csv  # To handle CSV writing
 from tkinter import filedialog  # To open the file dialog for saving files
 import os
 from column_constants import ColumnNames
+import General_functions
 
 
 def _raise_tk_window(win):
@@ -57,6 +58,10 @@ class LevelDefinitionApp:
         self.scrollbar = None  # Scrollbar
         self.scrollable_frame = None  # Scrollable frame
         self.save_path = None
+
+        # Center the window after widgets are created.
+        # (Fixes cases where Tk opens at top-left for this Toplevel.)
+        General_functions.center_the_window(self.master)
 
     def add_level(self):
         level_name_entry = tk.Entry(self.frame)
