@@ -52,20 +52,21 @@ def play_npz_stim(stim_name: str):
     stim_path = os.path.join(os.getcwd(), "stimuli", f"{stim_name}.npz")
     with np.load(stim_path, mmap_mode="r") as z:
         if "data" in z:
-            signal = z["data"]
+            signal = np.array(z["data"], dtype=np.float32, copy=True)
         elif "noise" in z:
-            signal = z["noise"]
+            signal = np.array(z["noise"], dtype=np.float32, copy=True)
         else:
-            signal = z[z.files[0]]
+            signal = np.array(z[z.files[0]], dtype=np.float32, copy=True)
 
         if "rate" in z:
-            fs = int(z["rate"])
+            fs = int(z["rate"].item()) if hasattr(z["rate"], "item") else int(z["rate"])
         elif "Fs" in z:
-            fs = int(z["Fs"])
+            fs = int(z["Fs"].item()) if hasattr(z["Fs"], "item") else int(z["Fs"])
         else:
             raise KeyError(f"No sample-rate key ('rate'/'Fs') in {stim_path}")
 
-    sd.play(signal, samplerate=fs, blocking=True)
+    # Match the stable playback parameters used in GUI_sections.create_pure_tone
+    sd.play(signal, samplerate=fs, blocking=True, blocksize=8192)
     sd.stop()
     time.sleep(1)
 
