@@ -165,7 +165,7 @@ class ParametersApp:
         # Reinforcement delay checkbox
         self.reinforcement_delay_frame = tk.Frame(root)
         self.reinforcement_delay_frame.pack(anchor=tk.W, padx=10, pady=10)
-        self.reinforcement_delay = tk.BooleanVar(value=True)  # Default checked
+        self.reinforcement_delay = tk.BooleanVar(value=False)  # Default checked
         self.reinforcement_delay_checkbox = tk.Checkbutton(
             self.reinforcement_delay_frame,
             text="use reinforcement delay",
