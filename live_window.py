@@ -36,13 +36,13 @@ class LiveWindow:
         
         # Label for the level of the last RFID 
         self.create_labeled_frame("level:")
-        
+
         # Label for score with frame
         self.create_labeled_frame("trial value:")
 
         # Label for the current stimulus
         self.create_labeled_frame("stimulus:")
-        
+
         # Subtitle for indicators
         indicators_label = tk.Label(self.root, text="Indicators:", font=("Arial", 14))
         indicators_label.pack(anchor='w', padx=(10, 5), pady=(10, 5))
@@ -69,7 +69,7 @@ class LiveWindow:
 
         self.end_button = tk.Button(self.button_frame, text="End Experiment", command=self.end_experiment)
         self.end_button.pack(side='left', padx=5)
-
+        
         # Activate Window button (centered under existing buttons)
         self.activate_button_frame = tk.Frame(self.root)
         self.activate_button_frame.pack(pady=(0, 20))
@@ -116,7 +116,7 @@ class LiveWindow:
         if label_text == "last RFID:":
             self.last_rfid_value = value_label  # Store reference to the last RFID label
         elif label_text == "level:":
-            self.level_value = value_label  
+            self.level_value = value_label
         elif label_text == "stimulus:":
             self.stimulus_value = value_label
         elif label_text == "trial value:":
@@ -124,7 +124,7 @@ class LiveWindow:
         elif label_text == "score:":
             self.score_value = value_label  
 
-        
+
     def toggle_indicator(self, bulb_name, turn_to):
         # Check current state and toggle the indicator light
         if turn_to == "on":
@@ -144,8 +144,6 @@ class LiveWindow:
         elif bulb_name =="stim":
             self.stimulus_bulb.itemconfig(self.indicator_circle, fill=fill)
 
-        
-
     def on_activate_window(self):
         if self.activate_window == False:
             self.activate_window = True
@@ -161,7 +159,23 @@ class LiveWindow:
             highlightthickness=0,
             bg=(self._activate_btn_default_bg if self._activate_btn_default_bg else "#d9d9d9")  # reset to original or a neutral default
         )
+            self.reset_live_window_indicators()
 
+    def reset_live_window_indicators(self):
+        # Reset state and signal indicators to gray.
+        self.idle_bulb.itemconfig(self.indicator_circle, fill="gray")
+        self.in_port_bulb.itemconfig(self.indicator_circle, fill="gray")
+        self.trial_bulb.itemconfig(self.indicator_circle, fill="gray")
+        self.lick_bulb.itemconfig(self.indicator_circle, fill="gray")
+        self.ir_bulb.itemconfig(self.indicator_circle, fill="gray")
+        self.stimulus_bulb.itemconfig(self.indicator_circle, fill="gray")
+
+        # Clear status fields.
+        self.last_rfid_value.config(text="")
+        self.level_value.config(text="")
+        self.trial_value.config(text="")
+        self.stimulus_value.config(text="")
+        self.score_value.config(text="")
 
     def deactivate_states_indicators(self, state_name):
         self.idle_bulb.itemconfig(self.indicator_circle, fill="gray")  
@@ -184,7 +198,7 @@ class LiveWindow:
 
     def continue_experiment(self):
         self.pause = False
-#         self.main_GUI.disable_parameters_buttons()
+        # Restore the pause button's background to default (system default)
         self.pause_button.config(state=tk.NORMAL, bg=self.root.cget("bg"), activebackground=self.root.cget("bg"))
         self.continue_button.config(state=tk.DISABLED)
         print("Experiment continued")
