@@ -6,18 +6,6 @@ import tkinter.font as tkFont
 class ParametersApp:
     def __init__(self, root):#, experiment
         self.root = root
-        # self.root.title("Data Analysis App")
-        # self.experiment = experiment  # Reference to Experiment instance
-        # # Set window size and position
-        # window_width = 700
-        # window_height = 600
-        # screen_width = self.root.winfo_screenwidth()
-        # screen_height = self.root.winfo_screenheight()
-        # x_position = (screen_width // 2) - (window_width // 2)
-        # y_position = (screen_height // 2) - (window_height // 2)
-        # self.root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
-        #
-        #         # Font style for widgets
         self.font_style = tkFont.Font(family="Helvetica", size=13)
 #####################################################################################
         # Variable to track selected display option
@@ -129,15 +117,6 @@ class ParametersApp:
         self.punishment_timeout_frame.pack(anchor=tk.W, pady=10)
 
 #####################################################################
-        # Entry field for custom bin size (initially hidden)
-#         self.ITI_frame = tk.Frame(root)
-#         self.ITI_label = tk.Label(self.ITI_frame, text="ITI:", font=self.font_style)
-#         self.ITI_label.pack(side=tk.LEFT)
-#         self.ITI_entry = tk.Entry(self.ITI_frame, font=self.font_style, width=5)
-#         self.ITI_entry.insert(0,"3")
-#         self.ITI_entry.pack(side=tk.LEFT, padx=10)
-#         self.ITI_frame.pack(anchor=tk.W, pady=10)
-#####################################################################
         self.ITI_display_option = tk.StringVar(value='1')  # Default to 1
 
         # Radiobuttons frame
@@ -195,10 +174,6 @@ class ParametersApp:
         # Will be shown/hidden by reinforcement_delay_show_entry_field
 
 #####################################################################
-
-        # OK button to run analysis
-        # self.ok_button = tk.Button(root, text="OK", command=self.get_parameters, font=self.font_style)
-        # self.ok_button.pack(pady=20)
         
         # Show delay_time and reinforcement_threshold initially since checkbox is checked by default
         self.reinforcement_delay_show_entry_field()
@@ -250,38 +225,9 @@ class ParametersApp:
             self.lick_time_bin_size_entry.config(state=tk.NORMAL)
             self.lick_time_show_entry_field()
 
-#     def get_parameters(self):
-# 
-#         """Retrieve all user-selected parameters from the GUI."""
-#         parameters = {
-#             "display_option": self.display_option.get(),
-#             "bin_size": self.bin_size_entry.get() if self.display_option.get() == '3' else None,
-#             # Add other options similarly, following the widget structure
-#             # For example:
-#             "start_trial_option": self.display_option2.get(),
-#             "start_trial_time": self.bin_size_entry2.get() if self.display_option2.get() == '2' else None,
-#             "IR_no_RFID_option": self.option_var.get(),
-#             "lick_threshold": self.licks_entry.get(),
-#             "time_to_lick_after_stim": self.time_licks_entry.get(),
-#             "ITI": self.ITI_display_option.get(),
-#             "ITI_time": self.ITI_bin_size_entry.get() if self.ITI_display_option.get() == '2' else None,
-#         }
-#         # Set parameters in the Experiment class
-#         self.experiment.set_parameters(parameters)
-#         return parameters
-############################################
-    # def run_analysis(self):
-    #     """Run analysis using all selected parameters."""
-    #     params = self.get_parameters()
-    #     print("Running analysis with the following parameters:")
-    #     print(params)
-# Example usage
 def run():
     root = tk.Tk()
     app = ParametersApp(root)
     root.mainloop()
 if __name__ == "__main__":
     run()
-#     root = tk.Tk()
-#     app = App(root)
-#     root.mainloop()

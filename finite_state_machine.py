@@ -570,7 +570,7 @@ class TrialState(State):
             if self.fsm.exp.exp_params['ITI_time'] is None:
                 while GPIO.input(IR_pin) == GPIO.HIGH:
                     time.sleep(0.09)
-                time.sleep(1)  # wait one sec after exit- before pass to the next trial
+                time.sleep(0.2)  # wait 0.2 sec after exit- before pass to the next trial
             else:
                 time.sleep(int(self.fsm.exp.exp_params['ITI_time']))
             print("Transitioning from trial to idle")
