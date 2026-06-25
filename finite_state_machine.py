@@ -1,7 +1,8 @@
 import os
 import serial
 import time
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
+import lgpio
 import threading
 import glob
 from trial import Trial
@@ -22,13 +23,15 @@ valve_pin = 4  # 23
 IR_pin = 6  # 25
 lick_pin = 17  # 24
 
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(IR_pin, GPIO.IN)
-GPIO.setup(lick_pin, GPIO.IN)
-GPIO.setup(valve_pin, GPIO.OUT)
-
-GPIO.setwarnings(False)
+# GPIO.setwarnings(False)
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(IR_pin, GPIO.IN)
+# GPIO.setup(lick_pin, GPIO.IN)
+# GPIO.setup(valve_pin, GPIO.OUT)
+h = lgpio.gpiochip_open(0)
+lgpio.gpio_claim_input(h, IR_pin)
+lgpio.gpio_claim_input(h, lick_pin)
+lgpio.gpio_claim_output(h, valve_pin, 0)
 
 # Generic serial port detection (e.g., Arduino/USB-Serial)
 ports = glob.glob('/dev/ttyUSB*')
@@ -207,7 +210,8 @@ class InPortState(State):
         timeout_seconds = 15  # timeout
         start_time = time.time()
 
-        while GPIO.input(IR_pin) != GPIO.HIGH:
+        # while GPIO.input(IR_pin) != GPIO.HIGH:
+        while lgpio.gpio_read(h, IR_pin) != 1:
             if time.time() - start_time > timeout_seconds:
                 print("Timeout in InPortState: returning to IdleState")
                 self.on_event("timeout")
@@ -434,12 +438,15 @@ class TrialState(State):
 
         counter = 0
         self.got_response = False
-        previous_lick_state = GPIO.LOW  # Track previous state for edge detection
+        # previous_lick_state = GPIO.LOW  # Track previous state for edge detection
+        previous_lick_state = 0  # Track previous state for edge detection
         print('waiting for licks...')
         while not stop():
-            current_lick_state = GPIO.input(lick_pin)
+            # current_lick_state = GPIO.input(lick_pin)
+            current_lick_state = lgpio.gpio_read(h, lick_pin)
             # Only count lick on transition from LOW to HIGH (rising edge)
-            if current_lick_state == GPIO.HIGH and previous_lick_state == GPIO.LOW:
+            # if current_lick_state == GPIO.HIGH and previous_lick_state == GPIO.LOW:
+            if current_lick_state == 1 and previous_lick_state == 0:
                 self.fsm.current_trial.add_lick_time()
                 counter += 1
                 if self.fsm.exp.live_w.activate_window:
@@ -512,12 +519,15 @@ class TrialState(State):
     def receive_input_RD(self, stop):
         counter = 0
         self.got_response_RD = False
-        previous_lick_state = GPIO.LOW  # Track previous state for edge detection
+        # previous_lick_state = GPIO.LOW  # Track previous state for edge detection
+        previous_lick_state = 0  # Track previous state for edge detection
         print('waiting for licks...')
         while not stop():
-            current_lick_state = GPIO.input(lick_pin)
+            # current_lick_state = GPIO.input(lick_pin)
+            current_lick_state = lgpio.gpio_read(h, lick_pin)
             # Only count lick on transition from LOW to HIGH (rising edge)
-            if current_lick_state == GPIO.HIGH and previous_lick_state == GPIO.LOW:
+            # if current_lick_state == GPIO.HIGH and previous_lick_state == GPIO.LOW:
+            if current_lick_state == 1 and previous_lick_state == 0:
                 self.fsm.current_trial.add_lick_time_RD()
                 counter += 1
                 if self.fsm.exp.live_w.activate_window:
@@ -539,10 +549,20 @@ class TrialState(State):
         print('num of reinforcement licks: ' + str(counter))
 
 
+    def valve_on(self, gpio_number):
+        # GPIO.output(gpio_number, GPIO.HIGH)
+        lgpio.gpio_write(h, gpio_number, 1)
+
+    def valve_off(self, gpio_number):
+        # GPIO.output(gpio_number, GPIO.LOW)
+        lgpio.gpio_write(h, gpio_number, 0)
+
     def give_reward(self):
-        GPIO.output(valve_pin, GPIO.HIGH)
+        # GPIO.output(valve_pin, GPIO.HIGH)
+        self.valve_on(valve_pin)
         time.sleep(float(self.fsm.exp.exp_params["open_valve_duration"]))
-        GPIO.output(valve_pin, GPIO.LOW)
+        # GPIO.output(valve_pin, GPIO.LOW)
+        self.valve_off(valve_pin)
 
     def give_punishment(self):  # after changing to .npz
         with audio_lock:
@@ -568,7 +588,8 @@ class TrialState(State):
             time.sleep(0.5)
             self.fsm.current_trial.write_trial_to_csv(self.fsm.exp.txt_file_path)
             if self.fsm.exp.exp_params['ITI_time'] is None:
-                while GPIO.input(IR_pin) == GPIO.HIGH:
+                # while GPIO.input(IR_pin) == GPIO.HIGH:
+                while lgpio.gpio_read(h, IR_pin) == 1:
                     time.sleep(0.09)
                 time.sleep(0.1)  # wait 0.1 sec after exit- before pass to the next trial
             else:

@@ -1,7 +1,8 @@
 import argparse
 import time
 
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
+import lgpio
 
 
 # Match finite_state_machine.py
@@ -25,10 +26,12 @@ def release_drops(
     if inter_drop_delay_sec < 0:
         raise ValueError("inter_drop_delay_sec must be >= 0")
 
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(VALVE_PIN, GPIO.OUT)
-    GPIO.output(VALVE_PIN, GPIO.LOW)
+    # GPIO.setwarnings(False)
+    # GPIO.setmode(GPIO.BCM)
+    # GPIO.setup(VALVE_PIN, GPIO.OUT)
+    # GPIO.output(VALVE_PIN, GPIO.LOW)
+    h = lgpio.gpiochip_open(0)
+    lgpio.gpio_claim_output(h, VALVE_PIN, 0)
 
     print(
         f"Starting valve run: drops={drops}, "
@@ -38,9 +41,11 @@ def release_drops(
 
     try:
         for i in range(1, drops + 1):
-            GPIO.output(VALVE_PIN, GPIO.HIGH)
+            # GPIO.output(VALVE_PIN, GPIO.HIGH)
+            lgpio.gpio_write(h, VALVE_PIN, 1)
             time.sleep(open_valve_duration_sec)
-            GPIO.output(VALVE_PIN, GPIO.LOW)
+            # GPIO.output(VALVE_PIN, GPIO.LOW)
+            lgpio.gpio_write(h, VALVE_PIN, 0)
 
             if i < drops and inter_drop_delay_sec > 0:
                 time.sleep(inter_drop_delay_sec)
@@ -48,8 +53,11 @@ def release_drops(
             if i % 10 == 0 or i == drops:
                 print(f"Released {i}/{drops} drops")
     finally:
-        GPIO.output(VALVE_PIN, GPIO.LOW)
-        GPIO.cleanup(VALVE_PIN)
+        # GPIO.output(VALVE_PIN, GPIO.LOW)
+        # GPIO.cleanup(VALVE_PIN)
+        lgpio.gpio_write(h, VALVE_PIN, 0)
+        lgpio.gpio_free(h, VALVE_PIN)
+        lgpio.gpiochip_close(h)
         print("Done. Valve pin cleaned up.")
 
 
