@@ -9,6 +9,7 @@ from trial import Trial
 from datetime import datetime
 import numpy as np
 import sounddevice as sd
+sd.default.device = 1  # Scarlett 2i2 USB
 import psutil
 import gc
 import tracemalloc
