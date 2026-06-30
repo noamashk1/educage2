@@ -19,9 +19,9 @@ import shutil
 import random
 
 audio_lock = threading.Lock()
-valve_pin = 4  # 23
-IR_pin = 6  # 25
-lick_pin = 17  # 24
+valve_pin = 4  
+IR_pin = 27  
+lick_pin = 17  
 
 # GPIO.setwarnings(False)
 # GPIO.setmode(GPIO.BCM)
@@ -591,7 +591,7 @@ class TrialState(State):
                 # while GPIO.input(IR_pin) == GPIO.HIGH:
                 while lgpio.gpio_read(h, IR_pin) == 1:
                     time.sleep(0.09)
-                time.sleep(0.1)  # wait 0.1 sec after exit- before pass to the next trial
+                time.sleep(1)  # wait 0.1 sec after exit- before pass to the next trial
             else:
                 time.sleep(int(self.fsm.exp.exp_params['ITI_time']))
             print("Transitioning from trial to idle")
