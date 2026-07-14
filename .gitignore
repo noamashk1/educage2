@@ -38,3 +38,8 @@ dist/
 
 experiments/
 debug_log.txt
+
+# Ignore stimuli and levels data
+stimuli/
+Levels/
+
