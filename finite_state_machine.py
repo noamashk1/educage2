@@ -178,6 +178,7 @@ class IdleState(State):
         threading.Thread(target=self.wait_for_event, daemon=True).start()
 
     def wait_for_event(self):
+        global _last_serial_error_log, ser
         minutes_passed = 0
         last_log_time = time.time()
 
@@ -213,7 +214,6 @@ class IdleState(State):
             try:
                 has_data = ser.in_waiting > 0
             except OSError as e:
-                global _last_serial_error_log, ser
                 verbose = time.time() - _last_serial_error_log > 3600  # verbose once every hour
                 if verbose:
                     log_message(f"[SERIAL ERROR] Serial port disconnected: {e} — attempting reconnect...")
