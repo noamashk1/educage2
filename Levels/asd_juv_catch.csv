@@ -1,0 +1,10 @@
+Level Name,Stimulus Path,Probability,Value,Index
+L2_with_catch,/home/educage/projects/educage2/stimuli/7-07.npz,23,go,1
+L2_with_catch,/home/educage/projects/educage2/stimuli/9-17.npz,23,go,2
+L2_with_catch,/home/educage/projects/educage2/stimuli/10-95.npz,22,no-go,3
+L2_with_catch,/home/educage/projects/educage2/stimuli/14-14.npz,22,no-go,4
+L2_with_catch,/home/educage/projects/educage2/stimuli/8-49.npz,2,catch,5
+L2_with_catch,/home/educage/projects/educage2/stimuli/9-567.npz,2,go,6
+L2_with_catch,/home/educage/projects/educage2/stimuli/10.npz,2,catch,7
+L2_with_catch,/home/educage/projects/educage2/stimuli/10-44.npz,2,catch,8
+L2_with_catch,/home/educage/projects/educage2/stimuli/11-89.npz,2,catch,9

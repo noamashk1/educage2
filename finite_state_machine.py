@@ -152,8 +152,8 @@ class IdleState(State):
                     try:
                         self.fsm.exp.upload_data()
 
-                    except PermissionError:
-                        print("PermissionError")
+                    except PermissionError as e:
+                        print(f"PermissionError: {e}")
                     except FileNotFoundError:
                         print("FileNotFoundError")
                     except Exception as e:

@@ -1,0 +1,8 @@
+Level Name,Stimulus Path,Probability,Value,Index
+habituation,/home/educage/projects/educage2/stimuli/7-07.npz,100,go,1
+L1,/home/educage/projects/educage2/stimuli/7-07.npz,50,go,2
+L1,/home/educage/projects/educage2/stimuli/14-14.npz,50,no-go,3
+L2,/home/educage/projects/educage2/stimuli/7-07.npz,25,go,4
+L2,/home/educage/projects/educage2/stimuli/9-17.npz,25,go,5
+L2,/home/educage/projects/educage2/stimuli/10-95.npz,25,no-go,6
+L2,/home/educage/projects/educage2/stimuli/14-14.npz,25,no-go,7
