@@ -43,6 +43,46 @@ port = ports[0]
 ser = serial.Serial(port=port, baudrate=9600, timeout=0.01)
 print(f"Connected to {port}")
 
+##############################################################################################
+# ADDED: serial reconnect logic on OSError (to revert: remove this block and the try/except
+#        in wait_for_event below, replacing it with the original one-liner: if ser.in_waiting)
+_last_serial_error_log = 0  # timestamp of last serial error log
+
+def _reconnect_serial(retries=10, delay=3, verbose=True):
+    global ser
+    for attempt in range(1, retries + 1):
+        try:
+            try:
+                ser.close()
+            except Exception:
+                pass
+            ports = glob.glob('/dev/ttyUSB*')
+            if not ports:
+                if verbose:
+                    msg = f"[SERIAL] Reconnect attempt {attempt}/{retries}: no USB device found, retrying in {delay}s..."
+                    print(msg)
+                    log_message(msg)
+                time.sleep(delay)
+                continue
+            ser = serial.Serial(port=ports[0], baudrate=9600, timeout=0.01)
+            if verbose:
+                msg = f"[SERIAL RECONNECTED] Successfully reconnected to {ports[0]} (attempt {attempt}/{retries})"
+                print(msg)
+                log_message(msg)
+            return ser
+        except Exception as e:
+            if verbose:
+                msg = f"[SERIAL] Reconnect attempt {attempt}/{retries} failed: {e}, retrying in {delay}s..."
+                print(msg)
+                log_message(msg)
+            time.sleep(delay)
+    if verbose:
+        msg = "[SERIAL WARNING] Could not reconnect after all retries — serial communication may be broken"
+        print(msg)
+        log_message(msg)
+    return ser
+##############################################################################################
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 file_log_path = os.path.join(BASE_DIR, "open_files_monitor.log")
@@ -152,8 +192,8 @@ class IdleState(State):
                     try:
                         self.fsm.exp.upload_data()
 
-                    except PermissionError:
-                        print("PermissionError")
+                    except PermissionError as e:
+                        print(f"PermissionError: {e}")
                     except FileNotFoundError:
                         print("FileNotFoundError")
                     except Exception as e:
@@ -166,7 +206,23 @@ class IdleState(State):
                     #log_memory_usage_snap()
                     #log_open_files_count()
 
-            if ser.in_waiting > 0 and not self.fsm.exp.live_w.pause:
+
+            #if ser.in_waiting > 0 and not self.fsm.exp.live_w.pause: # was originally: 
+            ####################################################################################
+            # added:
+            try:
+                has_data = ser.in_waiting > 0
+            except OSError as e:
+                global _last_serial_error_log, ser
+                verbose = time.time() - _last_serial_error_log > 3600  # verbose once every hour
+                if verbose:
+                    log_message(f"[SERIAL ERROR] Serial port disconnected: {e} — attempting reconnect...")
+                    _last_serial_error_log = time.time()
+                ser = _reconnect_serial(verbose=verbose)
+                time.sleep(1)
+                continue
+            if has_data and not self.fsm.exp.live_w.pause:
+            ####################################################################################
                 try:
                     raw_data = ser.readline()
                     mouse_id = raw_data.decode('utf-8').rstrip()
